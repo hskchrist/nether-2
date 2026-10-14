@@ -1,0 +1,37 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "civilizacion_nether"
+version = "1.0.0"
+displayName = "Civilización del Nether"
+authors = "hskmusic"
+credits = "Void Dragon por RedVoid_ y Dragon Head por Joshie Models BB (CC BY 4.0)"
+description = '''
+Una civilización de humanos que prospera en el corazón del Nether, forjando su imperio con rubí, hierro y voluntad.
+Guerreros, arqueros y el Rey Necromancer; el Dragón del Nether (huevo, crías que crecen, vuelo, bolas de fuego y ráfaga) y la capital del Reino del Nether.
+Créditos: dragón basado en "Void Dragon" de RedVoid_ y "Dragon Head" de Joshie Models BB (CC BY 4.0).
+'''
+logoFile = "logo.png"
+
+[[dependencies.civilizacion_nether]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.civilizacion_nether]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.civilizacion_nether]]
+modId = "geckolib"
+type = "required"
+versionRange = "[4.7,)"
+ordering = "AFTER"
+side = "BOTH"
