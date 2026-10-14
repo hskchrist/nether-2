@@ -1,0 +1,6 @@
+{
+  "parent": "civilizacion_nether:item/ruby_bow",
+  "textures": {
+    "layer0": "civilizacion_nether:item/ruby_bow_pulling_0"
+  }
+}

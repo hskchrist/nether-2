@@ -1,0 +1,117 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "minecraft:builtin/entity",
+    "gui_light": "front",
+    "textures": {
+      "particle": "civilizacion_nether:item/necro_staff_icon"
+    },
+    "display": {
+      "thirdperson_righthand": {
+        "rotation": [
+          75,
+          0,
+          0
+        ],
+        "translation": [
+          0,
+          -1.24,
+          -4.64
+        ],
+        "scale": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      },
+      "thirdperson_lefthand": {
+        "rotation": [
+          75,
+          0,
+          0
+        ],
+        "translation": [
+          0,
+          -1.24,
+          -4.64
+        ],
+        "scale": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      },
+      "firstperson_righthand": {
+        "rotation": [
+          -10,
+          0,
+          10
+        ],
+        "translation": [
+          1.2,
+          -3.0,
+          0.5
+        ],
+        "scale": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "firstperson_lefthand": {
+        "rotation": [
+          -10,
+          0,
+          10
+        ],
+        "translation": [
+          1.2,
+          -3.0,
+          0.5
+        ],
+        "scale": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "head": {
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "translation": [
+          0,
+          6,
+          0
+        ],
+        "scale": [
+          0.6,
+          0.6,
+          0.6
+        ]
+      }
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "civilizacion_nether:item/necro_staff_icon"
+      }
+    },
+    "ground": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "civilizacion_nether:item/necro_staff_icon"
+      }
+    },
+    "fixed": {
+      "parent": "minecraft:item/generated",
+      "textures": {
+        "layer0": "civilizacion_nether:item/necro_staff_icon"
+      }
+    }
+  }
+}
