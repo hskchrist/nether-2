@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "RN",
+    "NR"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "N": {
+      "item": "minecraft:nether_bricks"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_bricks",
+    "count": 4
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RGL",
+    " BG",
+    "B R"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "L": {
+      "item": "minecraft:soul_lantern"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:necro_staff",
+    "count": 1
+  }
+}

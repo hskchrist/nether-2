@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "R",
+    "R",
+    "B"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_sword",
+    "count": 1
+  }
+}

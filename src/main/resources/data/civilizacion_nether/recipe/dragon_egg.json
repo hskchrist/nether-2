@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ORO",
+    "RBR",
+    "ORO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "B": {
+      "item": "civilizacion_nether:ruby_block"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:dragon_egg",
+    "count": 1
+  }
+}

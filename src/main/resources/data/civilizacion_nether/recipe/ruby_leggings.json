@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LGL",
+    "R R",
+    "L L"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_leggings",
+    "count": 1
+  }
+}

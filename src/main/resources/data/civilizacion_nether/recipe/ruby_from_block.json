@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "civilizacion_nether:ruby_block"
+    }
+  ],
+  "result": {
+    "id": "civilizacion_nether:ruby",
+    "count": 9
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "civilizacion_nether:ruby_ore"
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

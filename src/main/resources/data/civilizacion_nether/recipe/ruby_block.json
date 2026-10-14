@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "RRR",
+    "RRR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_block",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "civilizacion_nether:capital",
+  "biomes": "#minecraft:is_nether",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

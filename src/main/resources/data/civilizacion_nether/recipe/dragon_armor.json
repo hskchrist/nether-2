@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "  R",
+    "RBR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "B": {
+      "item": "civilizacion_nether:ruby_block"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:dragon_armor",
+    "count": 1
+  }
+}

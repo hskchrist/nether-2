@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": "civilizacion_nether:ruby_ore",
+  "step": "underground_decoration"
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " G ",
+    "RSR",
+    " G "
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "S": {
+      "item": "minecraft:shroomlight"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_lamp",
+    "count": 2
+  }
+}
