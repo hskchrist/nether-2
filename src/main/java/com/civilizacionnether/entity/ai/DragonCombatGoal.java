@@ -81,6 +81,9 @@ public class DragonCombatGoal extends Goal {
                 biteCooldown = 24;
                 dragon.bite(target);
             }
+        } else if (sees && distSq < 24 * 24 && !dragon.isInfernal() && dragon.canGrab() && dragon.canCarry(target)
+                && dragon.getRandom().nextInt(60) == 0) {
+            dragon.startGrab(target); // el Dragón del Nether también agarra mobs y los lanza por los aires
         } else if (sees && distSq < 14 * 14 && dragon.canBreathe() && dragon.getRandom().nextInt(25) == 0) {
             dragon.startBreath();
         } else if (sees && distSq > 8 * 8 && distSq < 40 * 40 && dragon.getRandom().nextInt(30) == 0) {

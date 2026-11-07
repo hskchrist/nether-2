@@ -201,6 +201,7 @@ public final class ModItems {
                 ModEntities.NETHER_DRAGON, 0x161014, 0xE0281E, new Item.Properties()));
         SPAWN_EGGS.add(DRAGON_SPAWN_EGG);
         SPAWN_EGGS.add(spawnEgg("dragon_infernal", ModEntities.DRAGON_INFERNAL, 0x2A0A04, 0xFF7A1A));
+        SPAWN_EGGS.add(spawnEgg("dragon_infernal_domesticable", ModEntities.DRAGON_INFERNAL_DOMESTICABLE, 0x2A0A04, 0xFFD24A));
         SPAWN_EGGS.add(spawnEgg("pez_brasa", ModEntities.PEZ_BRASA, 0x3A0A06, 0xFF8A1A));
         SPAWN_EGGS.add(spawnEgg("pez_alma", ModEntities.PEZ_ALMA, 0x10263A, 0x7AE6FF));
         SPAWN_EGGS.add(spawnEgg("anguila_rubi", ModEntities.ANGUILA_RUBI, 0x2A0610, 0xE0283C));

@@ -51,6 +51,7 @@ public final class CommonEvents {
         event.put(ModEntities.NETHER_DRAGON.get(), NetherDragonEntity.createAttributes().build());
         event.put(ModEntities.DRAGON_EGG.get(), DragonEggEntity.createAttributes().build());
         event.put(ModEntities.DRAGON_INFERNAL.get(), InfernalDragonEntity.createInfernalAttributes().build());
+        event.put(ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get(), InfernalDragonEntity.createInfernalAttributes().build());
         event.put(ModEntities.PEZ_BRASA.get(), NetherFishEntity.createAttributes(3.0).build());
         event.put(ModEntities.PEZ_ALMA.get(), NetherFishEntity.createAttributes(4.0).build());
         event.put(ModEntities.ANGUILA_RUBI.get(), NetherFishEntity.createAttributes(6.0).build());
@@ -127,6 +128,8 @@ public final class CommonEvents {
     public static void payloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("3");
         registrar.playToServer(DragonBreathPayload.TYPE, DragonBreathPayload.STREAM_CODEC, DragonBreathPayload::handle);
+        registrar.playToServer(com.civilizacionnether.network.DragonGrabPayload.TYPE,
+                com.civilizacionnether.network.DragonGrabPayload.STREAM_CODEC, com.civilizacionnether.network.DragonGrabPayload::handle);
         registrar.playToServer(DragonShootPayload.TYPE, DragonShootPayload.STREAM_CODEC, DragonShootPayload::handle);
         registrar.playToClient(RubyTridentPayload.TYPE, RubyTridentPayload.STREAM_CODEC, RubyTridentPayload::handle);
     }

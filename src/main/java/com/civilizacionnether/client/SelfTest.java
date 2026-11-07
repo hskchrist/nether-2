@@ -84,9 +84,8 @@ public final class SelfTest {
         cmd(in + "forceload add -32 -32 32 32");
         cmd(in + "fill -24 99 -4 24 112 30 minecraft:air");
         cmd(in + "fill -24 98 -4 24 98 30 " + block);
-        cmd(in + "fill -24 95 14 24 97 30 minecraft:water");
-        cmd(in + "fill -24 98 15 24 98 29 minecraft:water");
-        cmd(in + "fill -25 95 13 25 98 13 minecraft:glass");
+        cmd(in + "fill -25 88 13 25 98 31 minecraft:glass");
+        cmd(in + "fill -24 89 14 24 98 30 minecraft:water");
         cmd(in + "tp @s 0 106 -2 0 35");
         int i = 0;
         for (String t : TYPES) {
@@ -94,7 +93,7 @@ public final class SelfTest {
             int x = -20 + (i % 11) * 4;
             int z = sea ? 18 + (i / 11) * 4 : 3 + (i / 11) * 3;
             String extra = sea ? "" : "";
-            cmd(in + "summon " + t + " " + x + " " + (sea ? 96 : 99) + " " + z + extra);
+            cmd(in + "summon " + t + " " + x + " " + (sea ? 93 : 99) + " " + z + extra);
             i++;
         }
         cmd(in + "summon minecraft:villager 6 99 9");
@@ -126,6 +125,7 @@ public final class SelfTest {
             cmd("time set 6000");
             cmd("weather clear");
             cmd("gamemode spectator");
+            cmd("gamerule mobGriefing false");
         }
         String[] dims = {"minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"};
         String[] floors = {"minecraft:stone", "minecraft:netherrack", "minecraft:end_stone"};
@@ -139,6 +139,9 @@ public final class SelfTest {
             return;
         }
         String d = dims[phase].substring(10);
+        if (t > 60 && t % 40 == 0) {
+            logStats(mc, dims[phase]);
+        }
         if (t == 40) {
             stage(dims[phase], floors[phase]);
         } else if (t == 160 || t == 300 || t == 440) {
@@ -156,6 +159,28 @@ public final class SelfTest {
         } else if (t == 490) {
             cmd("execute in " + dims[phase] + " run kill @e[type=!player]");
         }
+    }
+
+    /** Anota dónde está y hacia dónde mira cada criatura (para ver si alguna gira sin parar o se queda trabada). */
+    private static void logStats(Minecraft mc, String dim) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        server.execute(() -> {
+            var key = net.minecraft.resources.ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim));
+            var level = server.getLevel(key);
+            if (level == null) {
+                return;
+            }
+            for (var e : level.getAllEntities()) {
+                ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
+                if (e instanceof net.minecraft.world.entity.LivingEntity le && (CivilizacionNether.MODID.equals(id.getNamespace())
+                        || id.getPath().equals("villager"))) {
+                    CivilizacionNether.LOGGER.info(String.format(java.util.Locale.ROOT,
+                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f",
+                            dim, id.getPath(), e.getId(), e.getX(), e.getY(), e.getZ(), e.getYRot(), le.yBodyRot, e.getXRot(),
+                            e.isInWater(), e.onGround(), le.getHealth()));
+                }
+            }
+        });
     }
 
     private SelfTest() {

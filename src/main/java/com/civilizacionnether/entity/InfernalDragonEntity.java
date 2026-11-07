@@ -55,7 +55,6 @@ import software.bernie.geckolib.animation.RawAnimation;
  * Si le robas el huevo, la cría que nazca será tuya.
  */
 public class InfernalDragonEntity extends NetherDragonEntity {
-    private static final EntityDataAccessor<Boolean> CARRYING = SynchedEntityData.defineId(InfernalDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final String P = "animation.dragon_infernal.";
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop(P + "idle");
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop(P + "walk");
@@ -65,21 +64,9 @@ public class InfernalDragonEntity extends NetherDragonEntity {
     private static final RawAnimation GLIDE = RawAnimation.begin().thenLoop(P + "glide");
     private static final RawAnimation HOVER = RawAnimation.begin().thenLoop(P + "hover");
     private static final RawAnimation CARRY = RawAnimation.begin().thenLoop(P + "carry");
-    private static final int NONE = 0;
-    private static final int SWOOP = 1;
-    private static final int LIFT = 2;
-    private static final int RIDER_CARRY = 3;
 
     @Nullable
     private BlockPos nest;
-    @Nullable
-    private LivingEntity grabTarget;
-    @Nullable
-    private LivingEntity carried;
-    private int grabPhase = NONE;
-    private int grabTicks;
-    private int grabCooldown = 100;
-    private double liftTopY;
 
     public InfernalDragonEntity(EntityType<? extends InfernalDragonEntity> entityType, Level level) {
         super(entityType, level);
@@ -90,19 +77,21 @@ public class InfernalDragonEntity extends NetherDragonEntity {
         return NetherDragonEntity.createAttributes().add(Attributes.ARMOR, 14.0);
     }
 
+    /** ¿Es el Dragón Infernal domesticable (el que sale de los huevos y se puede domar)? */
+    public boolean isTameVariant() {
+        return getType() == com.civilizacionnether.registry.ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get();
+    }
+
+    /** El salvaje no se domestica nunca (el domesticable sí, con rubíes o naciendo de su huevo). */
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(CARRYING, false);
+    protected boolean canBeTamed() {
+        return isTameVariant();
     }
 
-    public boolean isCarrying() {
-        return entityData.get(CARRYING);
-    }
-
+    /** El salvaje es enemigo de todos; el domesticable es como el Dragón del Nether. */
     @Override
     public boolean isWildHostile() {
-        return !isTame();
+        return !isTameVariant() && !isTame();
     }
 
     @Override
@@ -173,7 +162,7 @@ public class InfernalDragonEntity extends NetherDragonEntity {
 
     /** Salvaje: todos los mobs y jugadores cerca de su nido son presa (menos otros Dragones Infernales y los huevos). */
     private boolean isWildPrey(LivingEntity e) {
-        if (isTame() || !e.isAlive() || e instanceof InfernalDragonEntity || e instanceof DragonEggEntity) {
+        if (!isWildHostile() || !e.isAlive() || (e instanceof NetherDragonEntity d && d.isWildHostile()) || e instanceof DragonEggEntity) {
             return false;
         }
         if (!(e instanceof Mob) && !(e instanceof Player)) {
@@ -184,8 +173,8 @@ public class InfernalDragonEntity extends NetherDragonEntity {
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        if (!isTame()) {
-            if (target instanceof InfernalDragonEntity || target instanceof DragonEggEntity) {
+        if (isWildHostile()) {
+            if ((target instanceof NetherDragonEntity d && d.isWildHostile()) || target instanceof DragonEggEntity) {
                 return false;
             }
             if (target instanceof Player && level().getDifficulty() == Difficulty.PEACEFUL) {
@@ -218,7 +207,7 @@ public class InfernalDragonEntity extends NetherDragonEntity {
     /** En vez del aliento de fuego, la IA usa el agarre. */
     @Override
     public boolean canBreathe() {
-        return grabCooldown <= 0 && grabPhase == NONE && canFlyNow() && !isVehicle();
+        return canGrab();
     }
 
     @Override
@@ -234,137 +223,13 @@ public class InfernalDragonEntity extends NetherDragonEntity {
             grabCooldown = 60;
             return;
         }
-        grabTarget = target;
-        grabPhase = SWOOP;
-        grabTicks = 140;
-        if (!isFlying()) {
-            takeOff();
-        }
-        playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0f + getScale(), 1.1f);
+        startGrab(target);
     }
 
-    /** ¿Lo puede levantar? (nada más grande que él, ni jefes, ni otros dragones). */
-    private boolean canCarry(LivingEntity e) {
-        if (!e.isAlive() || e.isPassenger() || e.isVehicle() || e instanceof NetherDragonEntity || e instanceof DragonEggEntity) {
-            return false;
-        }
-        if (e.getType().is(Tags.EntityTypes.BOSSES)) {
-            return false;
-        }
-        float s = Math.max(0.5f, getScale());
-        return e.getBbWidth() <= 2.0f * s && e.getBbHeight() <= 3.0f * s;
-    }
-
-    private void grab(LivingEntity e, int phase, int ticks) {
-        carried = e;
-        grabTarget = null;
-        grabPhase = phase;
-        grabTicks = ticks;
-        entityData.set(CARRYING, true);
-        triggerAnim("action", "grab");
-        playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.2f + getScale(), 1.0f);
-        e.hurt(damageSources().mobAttack(this), 3.0f + 4.0f * getScale());
-        if (e instanceof Mob mob) {
-            mob.getNavigation().stop();
-        }
-    }
-
-    /** Lo suelta desde donde esté (la caída hace el resto). */
-    public void release() {
-        LivingEntity c = carried;
-        carried = null;
-        grabTarget = null;
-        grabPhase = NONE;
-        grabCooldown = 200;
-        entityData.set(CARRYING, false);
-        if (c != null && c.isAlive()) {
-            Vec3 throwDir = Vec3.directionFromRotation(0, getYRot()).scale(0.5);
-            c.setDeltaMovement(getDeltaMovement().add(throwDir).add(0.0, -0.3, 0.0));
-            c.hurtMarked = true;
-            playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0f + getScale(), 1.3f);
-        }
-    }
-
-    private void holdCarried(LivingEntity c) {
-        Vec3 forward = Vec3.directionFromRotation(0, yBodyRot).scale(0.8 * getScale());
-        Vec3 hold = position().add(forward).add(0.0, -c.getBbHeight() * 0.85, 0.0);
-        c.teleportTo(hold.x, hold.y, hold.z);
-        c.setDeltaMovement(Vec3.ZERO);
-        c.resetFallDistance();
-        c.hurtMarked = true;
-    }
-
-    private void tickGrab() {
-        if (grabPhase == SWOOP) {
-            LivingEntity t = grabTarget;
-            if (t == null || !t.isAlive() || t.level() != level() || --grabTicks < 0 || !canCarry(t)) {
-                grabPhase = NONE;
-                grabTarget = null;
-                grabCooldown = 100;
-                return;
-            }
-            if (!isFlying()) {
-                takeOff();
-            }
-            // picada: justo encima del objetivo
-            setFlyTarget(t.position().add(0.0, t.getBbHeight() + 0.3, 0.0));
-            if (position().distanceTo(t.position().add(0.0, t.getBbHeight(), 0.0)) < 2.2 + getBbWidth() * 0.4) {
-                grab(t, LIFT, 120);
-                liftTopY = getY() + 16.0 + random.nextInt(8);
-            }
-            return;
-        }
-        LivingEntity c = carried;
-        if (c == null || !c.isAlive() || c.level() != level() || --grabTicks < 0) {
-            release();
-            return;
-        }
-        holdCarried(c);
-        if (grabPhase == LIFT) {
-            Vec3 forward = Vec3.directionFromRotation(0, getYRot()).scale(3.0);
-            setFlyTarget(new Vec3(getX() + forward.x, liftTopY, getZ() + forward.z));
-            if (getY() >= liftTopY - 1.0 || horizontalCollision && grabTicks < 80) {
-                release();
-            }
-        } else if (grabPhase == RIDER_CARRY && !(getControllingPassenger() instanceof Player)) {
-            release();
-        }
-    }
-
-    /** R del jinete: con la barra llena agarra al mob que tenga adelante; si ya lleva uno, lo suelta. */
+    /** R del jinete: el agarre (el Infernal no tiene ráfaga). */
     @Override
     public void riderSpecial(Player rider) {
-        if (!isAdult()) {
-            return;
-        }
-        if (carried != null) {
-            release();
-            return;
-        }
-        if (getCharge() < MAX_CHARGE) {
-            rider.displayClientMessage(Component.translatable("msg.civilizacion_nether.burst_not_ready", getCharge(), MAX_CHARGE), true);
-            return;
-        }
-        Vec3 look = rider.getLookAngle();
-        Vec3 center = mouthPosition().add(look.scale(5.0));
-        LivingEntity best = null;
-        double bestDist = Double.MAX_VALUE;
-        for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, new AABB(center, center).inflate(7.0),
-                e -> e != this && e != rider && !NetherHumanoidEntity.isAlly(e) && canCarry(e))) {
-            double d = e.distanceToSqr(center);
-            if (d < bestDist) {
-                bestDist = d;
-                best = e;
-            }
-        }
-        if (best == null) {
-            rider.displayClientMessage(Component.translatable("msg.civilizacion_nether.nothing_to_grab"), true);
-            return;
-        }
-        setCharge(0);
-        grab(best, RIDER_CARRY, 600);
-        rider.displayClientMessage(Component.translatable("msg.civilizacion_nether.grab_hint"), true);
-        addBond(1);
+        riderGrab(rider);
     }
 
     @Override
@@ -377,14 +242,8 @@ public class InfernalDragonEntity extends NetherDragonEntity {
             }
             return;
         }
-        if (grabCooldown > 0) {
-            grabCooldown--;
-        }
-        if (grabPhase != NONE) {
-            tickGrab();
-        }
         // el salvaje no se aleja de su nido
-        if (!isTame() && nest != null && tickCount % 100 == 0 && getTarget() == null
+        if (isWildHostile() && nest != null && tickCount % 100 == 0 && getTarget() == null
                 && distanceToSqr(Vec3.atCenterOf(nest)) > 40.0 * 40.0) {
             if (isFlying()) {
                 setFlyTarget(Vec3.atCenterOf(nest).add(0.0, 8.0, 0.0));
@@ -392,14 +251,6 @@ public class InfernalDragonEntity extends NetherDragonEntity {
                 getNavigation().moveTo(nest.getX() + 0.5, nest.getY(), nest.getZ() + 0.5, 1.0);
             }
         }
-    }
-
-    @Override
-    public void remove(RemovalReason reason) {
-        if (carried != null) {
-            release();
-        }
-        super.remove(reason);
     }
 
     // ------------------------------------------------------------------ guardado

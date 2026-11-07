@@ -7,14 +7,16 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * Armadura del Frío Eterno (set completo): no te quemas en la lava, nadas y te mueves rápido dentro de ella.
- * (La visión perfecta bajo la lava está en ClientEvents, en la niebla.)
+ * Armadura del Frío Eterno (set completo): no te quemas en la lava, caminas, corres y nadas rápido dentro de ella.
+ * (La visión clara y sin fuego en la cara bajo la lava está en ClientEvents.)
  */
 @EventBusSubscriber(modid = CivilizacionNether.MODID)
 public final class FrostArmorEvents {
@@ -39,24 +41,53 @@ public final class FrostArmorEvents {
                 p.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100, 0, true, false, true));
             }
         }
+        // moverse bajo la lava: lo calcula el juego del jugador (en el servidor no hay teclas)
+        if (p.isInLava() && p.level().isClientSide() && p.isLocalPlayer() && !p.getAbilities().flying) {
+            lavaMove(p);
+        }
         if (p.isInLava()) {
-            // nadar en la lava como en el agua: más rápido y con control para subir y bajar
-            Vec3 v = p.getDeltaMovement();
-            double hx = v.x * 1.35;
-            double hz = v.z * 1.35;
-            double h = Math.sqrt(hx * hx + hz * hz);
-            double max = p.isSprinting() ? 0.42 : 0.3;
-            if (h > max) {
-                hx = hx / h * max;
-                hz = hz / h * max;
-            }
-            double vy = v.y;
-            if (p.isShiftKeyDown()) {
-                vy -= 0.03;
-            }
-            p.setDeltaMovement(hx, vy, hz);
             p.resetFallDistance();
         }
+    }
+
+    /**
+     * Bajo la lava se camina, se corre y se nada casi como en el agua: con W hacia adelante (más rápido corriendo),
+     * espacio para subir, Shift para bajar, y corriendo con la vista bajo la lava se nada hacia donde miras.
+     */
+    private static void lavaMove(Player p) {
+        Vec3 v = p.getDeltaMovement();
+        float fwd = p.zza;
+        float str = p.xxa;
+        float yaw = p.getYRot() * Mth.DEG_TO_RAD;
+        double sin = Mth.sin(yaw);
+        double cos = Mth.cos(yaw);
+        double wx = str * cos - fwd * sin;
+        double wz = fwd * cos + str * sin;
+        double len = Math.sqrt(wx * wx + wz * wz);
+        if (len > 1.0) {
+            wx /= len;
+            wz /= len;
+        }
+        boolean swimming = p.isSprinting() && fwd > 0 && p.isEyeInFluid(FluidTags.LAVA);
+        double speed = p.isSprinting() ? 0.30 : 0.18;
+        double vy;
+        if (swimming) {
+            // nadar: hacia donde miras, como en el agua
+            Vec3 look = p.getLookAngle();
+            double flat = Math.sqrt(Math.max(0.0, 1.0 - look.y * look.y));
+            wx *= flat;
+            wz *= flat;
+            vy = look.y * speed;
+        } else if (p.isShiftKeyDown()) {
+            vy = -0.15;
+        } else if (v.y > 0.0) {
+            vy = Math.min(0.28, v.y * 2.0 + 0.02);   // espacio: subir rápido
+        } else {
+            vy = Math.max(-0.08, v.y);                // se hunde despacio
+        }
+        double nx = Mth.lerp(0.5, v.x, wx * speed);
+        double nz = Mth.lerp(0.5, v.z, wz * speed);
+        p.setDeltaMovement(nx, Mth.lerp(0.5, v.y, vy), nz);
     }
 
     private FrostArmorEvents() {

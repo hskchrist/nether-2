@@ -88,6 +88,20 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
     private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(NetherDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> RESTING = SynchedEntityData.defineId(NetherDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> CHARGE = SynchedEntityData.defineId(NetherDragonEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> CARRYING = SynchedEntityData.defineId(NetherDragonEntity.class, EntityDataSerializers.BOOLEAN);
+    // agarre: baja en picada, toma a un mob con las patas, lo sube y lo lanza por los aires
+    protected static final int GRAB_NONE = 0;
+    protected static final int GRAB_SWOOP = 1;
+    protected static final int GRAB_LIFT = 2;
+    protected static final int GRAB_RIDER = 3;
+    @Nullable
+    private LivingEntity grabTarget;
+    @Nullable
+    private LivingEntity carried;
+    private int grabPhase = GRAB_NONE;
+    private int grabTicks;
+    protected int grabCooldown = 100;
+    private double liftTopY;
 
     /** Disparos necesarios para cargar la ráfaga grande. */
     public static final int MAX_CHARGE = 3;
@@ -162,6 +176,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         builder.define(FLYING, false);
         builder.define(RESTING, false);
         builder.define(CHARGE, 0);
+        builder.define(CARRYING, false);
     }
 
     // ------------------------------------------------------------------ estado
@@ -309,6 +324,14 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
                 AbstractGolem.class, AbstractVillager.class));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false,
                 e -> isTame() && NetherHumanoidEntity.isHostileTarget(e)));
+        // rivales: el Dragón del Nether (y el Infernal domesticable) pelea con los Dragones Infernales salvajes
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, NetherDragonEntity.class, 10, true, false,
+                e -> !isWildHostile() && e instanceof NetherDragonEntity d && d.isWildHostile()));
+    }
+
+    /** ¿Se puede domesticar con rubíes? */
+    protected boolean canBeTamed() {
+        return true;
     }
 
     /** Dragón Infernal salvaje: hostil con todos (los demás dragones y los humanos lo enfrentan). */
@@ -479,6 +502,160 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         if (before < MAX_CHARGE && getCharge() == MAX_CHARGE) {
             playSound(SoundEvents.ENDER_DRAGON_GROWL, 0.8f, 1.4f);
         }
+    }
+
+    // ------------------------------------------------------------------ agarre (los dos dragones)
+    public boolean isCarrying() {
+        return entityData.get(CARRYING);
+    }
+
+    /** ¿Puede hacer el agarre ahora? (adulto, volando o capaz de volar, sin jinete). */
+    public boolean canGrab() {
+        return grabCooldown <= 0 && grabPhase == GRAB_NONE && canFlyNow() && !isVehicle();
+    }
+
+    /** ¿Lo puede levantar? (nada más grande que él, ni jefes, ni otros dragones, ni sus aliados). */
+    public boolean canCarry(LivingEntity e) {
+        if (!e.isAlive() || e.isPassenger() || e.isVehicle() || e instanceof NetherDragonEntity || e instanceof DragonEggEntity) {
+            return false;
+        }
+        if (e.getType().is(net.neoforged.neoforge.common.Tags.EntityTypes.BOSSES)) {
+            return false;
+        }
+        float s = Math.max(0.5f, getScale());
+        return e.getBbWidth() <= 2.0f * s && e.getBbHeight() <= 3.0f * s;
+    }
+
+    /** La IA empieza el agarre: despega y baja en picada hacia el objetivo. */
+    public void startGrab(LivingEntity target) {
+        if (level().isClientSide || !canGrab() || !canCarry(target)) {
+            return;
+        }
+        grabTarget = target;
+        grabPhase = GRAB_SWOOP;
+        grabTicks = 140;
+        if (!isFlying()) {
+            takeOff();
+        }
+        playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0f + getScale(), 1.1f);
+    }
+
+    private void grab(LivingEntity e, int phase, int ticks) {
+        carried = e;
+        grabTarget = null;
+        grabPhase = phase;
+        grabTicks = ticks;
+        entityData.set(CARRYING, true);
+        triggerAnim("action", "grab");
+        playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.2f + getScale(), 1.0f);
+        e.hurt(damageSources().mobAttack(this), 3.0f + 4.0f * getScale());
+        if (e instanceof Mob mob) {
+            mob.getNavigation().stop();
+        }
+    }
+
+    /** Lo suelta lanzándolo por los aires (hacia adelante y hacia arriba); la caída hace el resto. */
+    public void release() {
+        LivingEntity c = carried;
+        carried = null;
+        grabTarget = null;
+        grabPhase = GRAB_NONE;
+        grabCooldown = 200;
+        entityData.set(CARRYING, false);
+        if (c != null && c.isAlive()) {
+            Vec3 toss = Vec3.directionFromRotation(0, getYRot()).scale(1.3);
+            c.setDeltaMovement(getDeltaMovement().add(toss).add(0.0, 0.9, 0.0));
+            c.hurtMarked = true;
+            playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0f + getScale(), 1.3f);
+        }
+    }
+
+    private void holdCarried(LivingEntity c) {
+        Vec3 forward = Vec3.directionFromRotation(0, yBodyRot).scale(0.8 * getScale());
+        Vec3 hold = position().add(forward).add(0.0, -c.getBbHeight() * 0.85, 0.0);
+        c.teleportTo(hold.x, hold.y, hold.z);
+        c.setDeltaMovement(Vec3.ZERO);
+        c.resetFallDistance();
+        c.hurtMarked = true;
+    }
+
+    private void tickGrab() {
+        if (grabPhase == GRAB_SWOOP) {
+            LivingEntity t = grabTarget;
+            if (t == null || !t.isAlive() || t.level() != level() || --grabTicks < 0 || !canCarry(t)) {
+                grabPhase = GRAB_NONE;
+                grabTarget = null;
+                grabCooldown = 100;
+                return;
+            }
+            if (!isFlying()) {
+                takeOff();
+            }
+            // picada: justo encima del objetivo
+            setFlyTarget(t.position().add(0.0, t.getBbHeight() + 0.3, 0.0));
+            if (position().distanceTo(t.position().add(0.0, t.getBbHeight(), 0.0)) < 2.2 + getBbWidth() * 0.4) {
+                grab(t, GRAB_LIFT, 120);
+                liftTopY = getY() + 14.0 + random.nextInt(8);
+            }
+            return;
+        }
+        LivingEntity c = carried;
+        if (c == null || !c.isAlive() || c.level() != level() || --grabTicks < 0) {
+            release();
+            return;
+        }
+        holdCarried(c);
+        if (grabPhase == GRAB_LIFT) {
+            Vec3 forward = Vec3.directionFromRotation(0, getYRot()).scale(3.0);
+            setFlyTarget(new Vec3(getX() + forward.x, liftTopY, getZ() + forward.z));
+            if (getY() >= liftTopY - 1.0 || horizontalCollision && grabTicks < 80) {
+                release();
+            }
+        } else if (grabPhase == GRAB_RIDER && !(getControllingPassenger() instanceof Player)) {
+            release();
+        }
+    }
+
+    /** Tecla G del jinete (y R en el Dragón Infernal): agarra al mob que tenga adelante; si ya lleva uno, lo lanza. */
+    public void riderGrab(Player rider) {
+        if (!isAdult()) {
+            return;
+        }
+        if (carried != null) {
+            release();
+            return;
+        }
+        if (grabCooldown > 0) {
+            rider.displayClientMessage(Component.translatable("msg.civilizacion_nether.grab_cooldown"), true);
+            return;
+        }
+        Vec3 look = rider.getLookAngle();
+        Vec3 center = mouthPosition().add(look.scale(5.0));
+        LivingEntity best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(center, center).inflate(7.0),
+                e -> e != this && e != rider && !NetherHumanoidEntity.isAlly(e) && canCarry(e))) {
+            double d = e.distanceToSqr(center);
+            if (d < bestDist) {
+                bestDist = d;
+                best = e;
+            }
+        }
+        if (best == null) {
+            rider.displayClientMessage(Component.translatable("msg.civilizacion_nether.nothing_to_grab"), true);
+            return;
+        }
+        grab(best, GRAB_RIDER, 600);
+        rider.displayClientMessage(Component.translatable("msg.civilizacion_nether.grab_hint"), true);
+        addBond(1);
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (carried != null) {
+            release();
+        }
+        super.remove(reason);
     }
 
     /** Tecla R del jinete: con la barra llena lanza la ráfaga de fuego grande. */
@@ -694,6 +871,12 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         if (shotCooldown > 0) {
             shotCooldown--;
         }
+        if (grabCooldown > 0) {
+            grabCooldown--;
+        }
+        if (grabPhase != GRAB_NONE) {
+            tickGrab();
+        }
         if (breathTicks > 0) {
             breathTicks--;
             if (level() instanceof ServerLevel server) {
@@ -858,9 +1041,9 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
             setResting(false);
         }
 
-        // Domesticar un dragón salvaje con rubí
+        // Domesticar un dragón salvaje con rubí (el Dragón Infernal salvaje no se deja)
         if (!isTame()) {
-            if (stack.is(ModItems.RUBY.get())) {
+            if (stack.is(ModItems.RUBY.get()) && canBeTamed()) {
                 if (!client) {
                     stack.consume(1, player);
                     if (getRandom().nextFloat() < 0.25f) {
@@ -1158,7 +1341,10 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
                 .triggerableAnim("bite", RawAnimation.begin().thenPlay(P + "bite"))
                 .triggerableAnim("breath", RawAnimation.begin().thenPlay(P + "breath"))
                 .triggerableAnim("roar", RawAnimation.begin().thenPlay(P + "roar"))
-                .triggerableAnim("takeoff", RawAnimation.begin().thenPlay(P + "takeoff")));
+                .triggerableAnim("takeoff", RawAnimation.begin().thenPlay(P + "takeoff"))
+                .triggerableAnim("grab", RawAnimation.begin().thenPlay(P + "grab")));
+        controllers.add(new AnimationController<>(this, "carry", 4,
+                state -> isCarrying() ? state.setAndContinue(RawAnimation.begin().thenLoop(P + "carry")) : PlayState.STOP));
     }
 
     @Override

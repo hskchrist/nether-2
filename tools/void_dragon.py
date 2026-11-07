@@ -416,6 +416,23 @@ def animations():
          "neck3": {"rotation": {0: [0, 0, 0], 0.5: [17.5, 0, 0], 1.7: [17.5, 0, 0], 2.2: [0, 0, 0]}},
          "head": {"rotation": {0: [0, 0, 0], 0.6: [-10, 6, 0], 1.2: [-10, -6, 0], 1.7: [-5, 0, 0], 2.2: [0, 0, 0]}},
          "jaw": {"rotation": {0: [0, 0, 0], 0.5: [60, 0, 0], 1.7: [60, 0, 0], 2.2: [0, 0, 0]}}}))
+    # agarrar: estira las patas delanteras hacia adelante y abajo, cierra las garras y abre la boca
+    grab = {"neck": {"rotation": {0: [0, 0, 0], 0.3: [15, 0, 0], 1.0: [0, 0, 0]}},
+            "jaw": {"rotation": {0: [0, 0, 0], 0.25: [40, 0, 0], 0.7: [0, 0, 0]}}}
+    for names in (LEG_FL, LEG_FR):
+        grab[names[0]] = {"rotation": {0: [45, 0, 0], 0.3: [-55, 0, 0], 0.6: [-35, 0, 0], 1.0: [-30, 0, 0]}}
+        grab[names[1]] = {"rotation": {0: [40, 0, 0], 0.3: [0, 0, 0], 0.6: [-50, 0, 0], 1.0: [-50, 0, 0]}}
+    for names in (LEG_BL, LEG_BR):
+        grab[names[0]] = {"rotation": {0: [62.5, 0, 0], 0.3: [10, 0, 0], 1.0: [20, 0, 0]}}
+    a[A + "grab"] = anim(1.0, False, grab)
+    # llevar algo agarrado (en bucle, encima del vuelo): las patas delanteras abrazan lo que lleva
+    carry = {}
+    for names in (LEG_FL, LEG_FR):
+        carry[names[0]] = {"rotation": {0: [-30, 0, 0], 1.0: [-30, 0, 0]}}
+        carry[names[1]] = {"rotation": {0: [-50, 0, 0], 1.0: [-50, 0, 0]}}
+    for names in (LEG_BL, LEG_BR):
+        carry[names[0]] = {"rotation": {0: [20, 0, 0], 1.0: [20, 0, 0]}}
+    a[A + "carry"] = anim(1.0, True, carry)
     return a
 
 

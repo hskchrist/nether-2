@@ -51,6 +51,9 @@ public final class ClientEvents {
     public static final KeyMapping BREATH_KEY = new KeyMapping("key.civilizacion_nether.breath",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.categories.civilizacion_nether");
     /** X: cámara de dragón (tercera persona alejada) mientras lo montas. */
+    /** G: agarrar al mob que tenga adelante y lanzarlo por los aires (los dos dragones). */
+    public static final KeyMapping GRAB_KEY = new KeyMapping("key.civilizacion_nether.dragon_grab",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.categories.civilizacion_nether");
     public static final KeyMapping CAMERA_KEY = new KeyMapping("key.civilizacion_nether.dragon_camera",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, "key.categories.civilizacion_nether");
     /** Distancia de la cámara de dragón (la normal de Minecraft es 4). */
@@ -68,6 +71,7 @@ public final class ClientEvents {
             event.registerEntityRenderer(ModEntities.DRAGON_EGG.get(), DragonEggRenderer::new);
             event.registerEntityRenderer(ModEntities.DRAGON_FIREBALL.get(), DragonFireballRenderer::new);
             event.registerEntityRenderer(ModEntities.DRAGON_INFERNAL.get(), InfernalDragonRenderer::new);
+            event.registerEntityRenderer(ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get(), InfernalDragonRenderer::new);
             event.registerEntityRenderer(net.minecraft.world.entity.EntityType.TRIDENT, RubyTridentRenderer::new);
             // aldeanos: los del Nether (y los de las 5 profesiones nuevas) con sus skins; los demás, igual que vanilla
             event.registerEntityRenderer(net.minecraft.world.entity.EntityType.VILLAGER, NetherVillagerRenderer::new);
@@ -90,6 +94,7 @@ public final class ClientEvents {
         public static void keys(RegisterKeyMappingsEvent event) {
             event.register(BREATH_KEY);
             event.register(CAMERA_KEY);
+            event.register(GRAB_KEY);
         }
 
         @SubscribeEvent
@@ -218,6 +223,11 @@ public final class ClientEvents {
                     PacketDistributor.sendToServer(new DragonBreathPayload());
                 }
             }
+            while (GRAB_KEY.consumeClick()) {
+                if (mc.player != null && mc.player.getVehicle() instanceof NetherDragonEntity) {
+                    PacketDistributor.sendToServer(new com.civilizacionnether.network.DragonGrabPayload());
+                }
+            }
         }
 
         /** X montado en el dragón: alterna la cámara de dragón; al bajarse vuelve a primera persona. */
@@ -251,8 +261,28 @@ public final class ClientEvents {
             Minecraft mc = Minecraft.getInstance();
             if (event.getType() == FogType.LAVA && mc.player != null && FrostArmorEvents.hasFullFrost(mc.player)) {
                 event.setNearPlaneDistance(0.0f);
-                event.setFarPlaneDistance(40.0f);
+                event.setFarPlaneDistance(96.0f);
                 event.setCanceled(true);
+            }
+        }
+
+        /** Con el set del Frío Eterno no se ve el fuego en la cara (ni en la lava ni prendido). */
+        @SubscribeEvent
+        public static void noFireOverlay(net.neoforged.neoforge.client.event.RenderBlockScreenEffectEvent event) {
+            if (event.getOverlayType() == net.neoforged.neoforge.client.event.RenderBlockScreenEffectEvent.OverlayType.FIRE
+                    && FrostArmorEvents.hasFullFrost(event.getPlayer())) {
+                event.setCanceled(true);
+            }
+        }
+
+        /** Bajo la lava con el Frío Eterno el color de la niebla es más claro (se ve como bajo el agua, pero naranja). */
+        @SubscribeEvent
+        public static void lavaFogColor(ViewportEvent.ComputeFogColor event) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null && event.getCamera().getFluidInCamera() == FogType.LAVA && FrostArmorEvents.hasFullFrost(mc.player)) {
+                event.setRed(0.55f);
+                event.setGreen(0.25f);
+                event.setBlue(0.08f);
             }
         }
 

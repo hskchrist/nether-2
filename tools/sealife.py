@@ -50,16 +50,21 @@ ITEMS = {
 MESSAGES = {
     "entity.civilizacion_nether.dragon_infernal": INFERNAL[:2],
     "item.civilizacion_nether.dragon_infernal_spawn_egg": ("Huevo de generación de Dragón Infernal", "Infernal Dragon Spawn Egg"),
+    "entity.civilizacion_nether.dragon_infernal_domesticable": ("Dragón Infernal Domesticable", "Tameable Infernal Dragon"),
+    "item.civilizacion_nether.dragon_infernal_domesticable_spawn_egg": ("Huevo de generación de Dragón Infernal Domesticable",
+                                                                         "Tameable Infernal Dragon Spawn Egg"),
+    "msg.civilizacion_nether.grab_cooldown": ("Tu dragón todavía no puede volver a agarrar", "Your dragon can't grab again yet"),
+    "key.civilizacion_nether.dragon_grab": ("Dragón: agarrar / lanzar", "Dragon: grab / throw"),
     "tooltip.civilizacion_nether.cooked_pez_brasa": ("Da resistencia al fuego por 30 segundos", "Grants fire resistance for 30 seconds"),
     "tooltip.civilizacion_nether.obsidian_turtle_helmet": ("Puedes respirar bajo el agua", "Lets you breathe underwater"),
     "tooltip.civilizacion_nether.serpent_helmet": ("Respiras y ves bajo el agua, y nadas más rápido",
                                                    "Breathe and see underwater, and swim faster"),
     "tooltip.civilizacion_nether.ruby_trident": ("Como el tridente normal; lanzado va en llamas y quema", "Like a trident; flies on fire and burns what it hits"),
-    "tooltip.civilizacion_nether.infernal_dragon_egg": ("La cría será un Dragón Infernal y será tuya", "The hatchling will be your Infernal Dragon"),
+    "tooltip.civilizacion_nether.infernal_dragon_egg": ("La cría será un Dragón Infernal Domesticable y será tuya", "The hatchling will be your Tameable Infernal Dragon"),
     "msg.civilizacion_nether.seahorse_tamed": ("¡El Caballito de Magma ahora te sigue!", "The Magma Seahorse follows you now!"),
     "msg.civilizacion_nether.manta_saddle": ("Ponle una silla para montarla", "Put a saddle on it to ride it"),
     "msg.civilizacion_nether.nest_robbed": ("¡El Dragón Infernal te vio robar su huevo!", "The Infernal Dragon saw you steal its egg!"),
-    "msg.civilizacion_nether.grab_hint": ("R: soltar lo que llevas agarrado", "R: drop what you are carrying"),
+    "msg.civilizacion_nether.grab_hint": ("G (o R en el Infernal): lanzar lo que llevas agarrado", "G (or R on the Infernal): throw what you carry"),
     "msg.civilizacion_nether.nothing_to_grab": ("No hay nada que agarrar adelante", "Nothing to grab in front of you"),
 }
 
@@ -79,6 +84,7 @@ LOOT = {
     "delfin_nether": [(R + "pez_brasa", 0, 1, None), (S, 1, 1, None)],
     "ballena_azul": [(M + "heart_of_the_sea", 1, 1, 0.25), (R + "pez_brasa", 3, 8, None), (M + "cod", 2, 5, None), (S, 1, 2, None)],
     "dragon_infernal": [(S, 2, 4, None), (M + "magma_cream", 1, 3, None), (M + "blaze_rod", 0, 2, None)],
+    "dragon_infernal_domesticable": [(S, 2, 4, None), (M + "magma_cream", 1, 3, None), (M + "blaze_rod", 0, 2, None)],
 }
 
 # apariciones en el Océano Púrpura: categoría -> [(id, peso, mín, máx)]
@@ -156,7 +162,7 @@ def item_models():
         "display": throw})
     save_json(os.path.join(im, "ruby_trident_inventory.json"), {
         "parent": "minecraft:item/generated", "textures": {"layer0": R + "item/ruby_trident"}})
-    for k in list(CREATURES) + ["dragon_infernal"]:
+    for k in list(CREATURES) + ["dragon_infernal", "dragon_infernal_domesticable"]:
         save_json(os.path.join(im, k + "_spawn_egg.json"), {"parent": "minecraft:item/template_spawn_egg"})
 
 
@@ -212,9 +218,24 @@ def nest():
         "step": "surface_structures"})
 
 
+REF_INFERNAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ref", "infernal")
+
+
+def tame_infernal_skin():
+    """Skin del Dragón Infernal domesticable: la del usuario si la mandó (ref/infernal/dragon_infernal_domesticable.png);
+    si no, por ahora la misma del salvaje."""
+    ent = os.path.join(ASSETS, "textures", "entity")
+    for suf in ("", "_glowmask"):
+        own = os.path.join(REF_INFERNAL, "dragon_infernal_domesticable%s.png" % suf)
+        src = own if os.path.exists(own) else os.path.join(ent, "dragon_infernal%s.png" % suf)
+        if os.path.exists(src):
+            shutil.copy(src, os.path.join(ent, "dragon_infernal_domesticable%s.png" % suf))
+
+
 def write_all():
     copy_models()
     infernal.write_all()
+    tame_infernal_skin()
     sea_icons.write_all()
     lang()
     item_models()

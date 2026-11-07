@@ -71,6 +71,15 @@ public final class ModEntities {
                     .fireImmune()
                     .clientTrackingRange(16)
                     .build("dragon_infernal"));
+    /** Dragón Infernal domesticable: sale de los huevos infernales con dueño y se doma con rubíes; los salvajes son sus rivales. */
+    public static final DeferredHolder<EntityType<?>, EntityType<InfernalDragonEntity>> DRAGON_INFERNAL_DOMESTICABLE = ENTITIES.register("dragon_infernal_domesticable",
+            () -> EntityType.Builder.<InfernalDragonEntity>of(InfernalDragonEntity::new, MobCategory.CREATURE)
+                    .sized(3.4f, 3.0f)
+                    .eyeHeight(2.7f)
+                    .passengerAttachments(new Vec3(0.0, 2.55, -0.4))
+                    .fireImmune()
+                    .clientTrackingRange(16)
+                    .build("dragon_infernal_domesticable"));
 
     // ------------------------------------------------------------------ fauna del Océano Púrpura
     public static final DeferredHolder<EntityType<?>, EntityType<NetherFishEntity>> PEZ_BRASA = fish("pez_brasa", 0.5f, 0.35f);

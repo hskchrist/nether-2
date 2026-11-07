@@ -39,7 +39,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.EnumSet;
 
 /**
- * Serpiente Marina del Nether: jefe rara del Océano Púrpura (300 de vida, barra de jefe).
+ * Serpiente Marina del Nether: criatura rara del Océano Púrpura (20 de vida, como el esqueleto wither; no es jefe).
  * Muerde fuerte y cada tanto ruge: empuja y debilita a los que estén cerca. Nunca entra a pelear dentro del Reino.
  * Suelta Escamas de Serpiente (para el Casco de la Serpiente) y a veces un Corazón del Mar.
  */
@@ -47,20 +47,18 @@ public class SeaSerpentEntity extends WaterAnimal implements GeoEntity, Enemy {
     private static final String P = "animation.serpiente_marina.";
     private static final RawAnimation SWIM = RawAnimation.begin().thenLoop(P + "swim");
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
-    private final ServerBossEvent bossEvent = new ServerBossEvent(Component.translatable("entity.civilizacion_nether.serpiente_marina"),
-            BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.NOTCHED_10);
     private int roarCooldown = 200;
 
     public SeaSerpentEntity(EntityType<? extends SeaSerpentEntity> type, Level level) {
         super(type, level);
         this.moveControl = new SteerSwimMoveControl(this, 40.0f, 6.0f, 0.035f);
         this.lookControl = new SmoothSwimmingLookControl(this, 10);
-        this.xpReward = 120;
+        this.xpReward = 10;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 300.0)
+                .add(Attributes.MAX_HEALTH, 20.0)
                 .add(Attributes.ATTACK_DAMAGE, 14.0)
                 .add(Attributes.ARMOR, 10.0)
                 .add(Attributes.MOVEMENT_SPEED, 1.0)
@@ -93,11 +91,9 @@ public class SeaSerpentEntity extends WaterAnimal implements GeoEntity, Enemy {
         }
     }
 
-    // ------------------------------------------------------------------ jefe
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        bossEvent.setProgress(getHealth() / getMaxHealth());
         LivingEntity target = getTarget();
         if (target != null && tickCount % 20 == 0 && target instanceof Player
                 && SeaLife.insideKingdom(level(), target.blockPosition()) && getLastHurtByMob() != target) {
@@ -130,32 +126,6 @@ public class SeaSerpentEntity extends WaterAnimal implements GeoEntity, Enemy {
             e.hurtMarked = true;
             e.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 160, 0), this);
             e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 1), this);
-        }
-    }
-
-    @Override
-    public void startSeenByPlayer(ServerPlayer player) {
-        super.startSeenByPlayer(player);
-        bossEvent.addPlayer(player);
-    }
-
-    @Override
-    public void stopSeenByPlayer(ServerPlayer player) {
-        super.stopSeenByPlayer(player);
-        bossEvent.removePlayer(player);
-    }
-
-    @Override
-    public void setCustomName(@Nullable Component name) {
-        super.setCustomName(name);
-        bossEvent.setName(getDisplayName());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (hasCustomName()) {
-            bossEvent.setName(getDisplayName());
         }
     }
 

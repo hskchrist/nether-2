@@ -163,7 +163,10 @@ public class DragonEggEntity extends Mob implements GeoEntity {
     }
 
     private void hatch(ServerLevel server) {
-        NetherDragonEntity baby = isInfernal() ? ModEntities.DRAGON_INFERNAL.get().create(server)
+        // huevo infernal con dueño (el que lo puso o lo robó del nido): sale el Dragón Infernal domesticable;
+        // sin dueño (en el nido salvaje): sale un Dragón Infernal salvaje
+        NetherDragonEntity baby = isInfernal()
+                ? (owner != null ? ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get() : ModEntities.DRAGON_INFERNAL.get()).create(server)
                 : ModEntities.NETHER_DRAGON.get().create(server);
         if (baby != null) {
             baby.moveTo(getX(), getY(), getZ(), getYRot(), 0.0f);
