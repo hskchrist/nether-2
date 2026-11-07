@@ -42,5 +42,9 @@ jobs:
         run: |
           TAG="compilacion-${GITHUB_REF_NAME//\//-}"
           gh release delete "$TAG" --yes --cleanup-tag || true
-          gh release create "$TAG" build/libs/*.jar --target "$GITHUB_SHA" --prerelease \
+          mkdir -p entregar && cp build/libs/*.jar entregar/
+          # GeckoLib (licencia MIT): el mismo .jar que Gradle bajó para compilar, para tenerlo a mano
+          find ~/.gradle -name "geckolib-neoforge-1.21.1-*.jar" ! -name "*sources*" ! -name "*javadoc*" -exec cp {} entregar/ \; || true
+          ls -la entregar
+          gh release create "$TAG" entregar/*.jar --target "$GITHUB_SHA" --prerelease \
             --title "Mod compilado ($GITHUB_REF_NAME)" --notes "Última compilación de la rama $GITHUB_REF_NAME. Pon el .jar en la carpeta mods junto con GeckoLib."
