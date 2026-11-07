@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WAW",
+    "AAA",
+    "WAW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "A": {
+      "item": "civilizacion_nether:soul"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:necromancer_table",
+    "count": 1
+  }
+}

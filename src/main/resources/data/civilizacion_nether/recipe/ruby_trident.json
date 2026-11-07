@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "DRD",
+    " P ",
+    " P "
+  ],
+  "key": {
+    "D": {
+      "item": "civilizacion_nether:dientes_tiburon"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "P": {
+      "item": "minecraft:prismarine_shard"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_trident",
+    "count": 1
+  }
+}

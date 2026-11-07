@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CKC",
+    " P ",
+    "PPP"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:crimson_planks"
+    },
+    "K": {
+      "item": "minecraft:book"
+    },
+    "P": {
+      "item": "minecraft:polished_blackstone"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:librarian_lectern",
+    "count": 1
+  }
+}

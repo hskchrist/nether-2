@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PRP",
+    "CCC",
+    "C C"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "C": {
+      "item": "minecraft:crimson_planks"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:cartographer_desk",
+    "count": 1
+  }
+}

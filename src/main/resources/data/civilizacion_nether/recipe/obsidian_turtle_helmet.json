@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SSS",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "civilizacion_nether:obsidian_scale"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:obsidian_turtle_helmet",
+    "count": 1
+  }
+}

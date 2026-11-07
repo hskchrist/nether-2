@@ -11,6 +11,7 @@ DATA_VERSION = 3955  # Minecraft 1.21.1
 class Byte(int): pass
 class Int(int): pass
 class Double(float): pass
+class Float(float): pass
 class ListOf(list):
     def __init__(self, tag, items):
         super().__init__(items)
@@ -24,6 +25,8 @@ def _payload(v):
         return 3, struct.pack(">i", v)
     if isinstance(v, Double):
         return 6, struct.pack(">d", v)
+    if isinstance(v, Float):
+        return 5, struct.pack(">f", v)
     if isinstance(v, str):
         b = v.encode("utf-8")
         return 8, struct.pack(">H", len(b)) + b

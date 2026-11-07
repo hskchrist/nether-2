@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WAW",
+    "CCC"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:purple_wool"
+    },
+    "A": {
+      "item": "civilizacion_nether:soul"
+    },
+    "C": {
+      "item": "minecraft:crimson_planks"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:nether_bed",
+    "count": 1
+  }
+}

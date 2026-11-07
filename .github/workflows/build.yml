@@ -1,5 +1,6 @@
 name: Compilar el mod
 
+# Se ejecuta al subir el proyecto a GitHub o al pulsar "Run workflow" en la pestaña Actions.
 on:
   push:
   workflow_dispatch:

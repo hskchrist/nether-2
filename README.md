@@ -54,6 +54,8 @@ El mod queda en `build/libs/civilizacion_nether-1.0.0.jar`.
 
 - Cuerpo, alas y animaciones base del dragón: modelo **"Void Dragon" por RedVoid_** (CC BY 4.0).
 - Cabeza del dragón: modelo **"Dragon Head" por Joshie Models BB** (CC BY 4.0).
+- Dragón Infernal: modelo **"Ender Dragon" por Vader** (sketchfab.com/mojtavaam, CC BY 4.0), editado por el autor del mod.
+- Tridente de Rubí (en la mano y lanzado): modelo **"Minecraft trident" por BoBkiNN_** (sketchfab.com/bobkinn_, CC BY 4.0), recoloreado en rojo.
 
-Ambos modelos se adaptaron (recoloreado, cuerpo más grande, alas más gruesas, montura y animaciones nuevas).
+Los modelos se adaptaron (recoloreado, cuerpo más grande, alas más gruesas, montura y animaciones nuevas).
 Licencia CC BY 4.0: https://creativecommons.org/licenses/by/4.0/

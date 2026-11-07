@@ -30,6 +30,21 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
+import org.joml.Vector3f;
+import com.civilizacionnether.event.FrostArmorEvents;
+import com.civilizacionnether.registry.ModFluids;
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.level.material.FogType;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
 public final class ClientEvents {
     /** R: ráfaga de fuego grande (cuando la barra de carga está llena). */
@@ -52,6 +67,23 @@ public final class ClientEvents {
             event.registerEntityRenderer(ModEntities.NETHER_DRAGON.get(), DragonRenderer::new);
             event.registerEntityRenderer(ModEntities.DRAGON_EGG.get(), DragonEggRenderer::new);
             event.registerEntityRenderer(ModEntities.DRAGON_FIREBALL.get(), DragonFireballRenderer::new);
+            event.registerEntityRenderer(ModEntities.DRAGON_INFERNAL.get(), InfernalDragonRenderer::new);
+            event.registerEntityRenderer(net.minecraft.world.entity.EntityType.TRIDENT, RubyTridentRenderer::new);
+            // aldeanos: los del Nether (y los de las 5 profesiones nuevas) con sus skins; los demás, igual que vanilla
+            event.registerEntityRenderer(net.minecraft.world.entity.EntityType.VILLAGER, NetherVillagerRenderer::new);
+            // fauna del Océano Púrpura: (nombre, escala, sombra, se inclina al nadar, brilla, transparente)
+            event.registerEntityRenderer(ModEntities.PEZ_BRASA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "pez_brasa", 1.0f, 0.25f, false, true, false));
+            event.registerEntityRenderer(ModEntities.PEZ_ALMA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "pez_alma", 1.0f, 0.25f, false, true, false));
+            event.registerEntityRenderer(ModEntities.ANGUILA_RUBI.get(), ctx -> new SeaCreatureRenderer<>(ctx, "anguila_rubi", 1.0f, 0.25f, false, true, false));
+            event.registerEntityRenderer(ModEntities.MEDUSA_VACIO.get(), ctx -> new SeaCreatureRenderer<>(ctx, "medusa_vacio", 1.0f, 0.35f, false, true, true));
+            event.registerEntityRenderer(ModEntities.CANGREJO_BASALTO.get(), ctx -> new SeaCreatureRenderer<>(ctx, "cangrejo_basalto", 1.0f, 0.5f, false, true, false));
+            event.registerEntityRenderer(ModEntities.CABALLITO_MAGMA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "caballito_magma", 1.0f, 0.25f, false, true, false));
+            event.registerEntityRenderer(ModEntities.MANTA_CARMESI.get(), ctx -> new SeaCreatureRenderer<>(ctx, "manta_carmesi", 1.0f, 1.2f, true, true, false));
+            event.registerEntityRenderer(ModEntities.TORTUGA_OBSIDIANA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "tortuga_obsidiana", 1.0f, 0.8f, true, true, false));
+            event.registerEntityRenderer(ModEntities.TIBURON_INFERNAL.get(), ctx -> new SeaCreatureRenderer<>(ctx, "tiburon_infernal", 1.0f, 0.8f, true, true, false));
+            event.registerEntityRenderer(ModEntities.SERPIENTE_MARINA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "serpiente_marina", 1.0f, 1.6f, true, true, false));
+            event.registerEntityRenderer(ModEntities.DELFIN_NETHER.get(), ctx -> new SeaCreatureRenderer<>(ctx, "delfin_nether", 1.0f, 0.5f, true, true, false));
+            event.registerEntityRenderer(ModEntities.BALLENA_AZUL.get(), ctx -> new SeaCreatureRenderer<>(ctx, "ballena_azul", 2.0f, 2.5f, true, false, false));
         }
 
         @SubscribeEvent
@@ -84,7 +116,92 @@ public final class ClientEvents {
                         });
                 ItemProperties.register(ModItems.RUBY_BOW.get(), ResourceLocation.withDefaultNamespace("pulling"),
                         (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0f : 0.0f);
+                // Ballesta de rubí: tensado y cargada (como la ballesta normal)
+                ItemProperties.register(ModItems.RUBY_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("pull"),
+                        (stack, level, entity, seed) -> {
+                            if (entity == null || entity.getUseItem() != stack || CrossbowItem.isCharged(stack)) {
+                                return 0.0f;
+                            }
+                            return (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 25.0f;
+                        });
+                ItemProperties.register(ModItems.RUBY_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("pulling"),
+                        (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack
+                                && !CrossbowItem.isCharged(stack) ? 1.0f : 0.0f);
+                ItemProperties.register(ModItems.RUBY_CROSSBOW.get(), ResourceLocation.withDefaultNamespace("charged"),
+                        (stack, level, entity, seed) -> CrossbowItem.isCharged(stack) ? 1.0f : 0.0f);
+                // Tridente de Rubí: pose de lanzar (como el tridente normal)
+                ItemProperties.register(ModItems.RUBY_TRIDENT.get(), ResourceLocation.withDefaultNamespace("throwing"),
+                        (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0f : 0.0f);
+                // el agua del Nether es transparente como el agua
+                ItemBlockRenderTypes.setRenderLayer(ModFluids.NETHER_WATER.get(), RenderType.translucent());
+                ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_NETHER_WATER.get(), RenderType.translucent());
             });
+        }
+
+        /** Agua del Nether: texturas animadas, niebla morada bajo el agua (como en la foto del usuario). */
+        /** El dibujo plano del Tridente de Rubí (para el inventario) se carga aparte del modelo 3D. */
+        @SubscribeEvent
+        public static void additionalModels(net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional event) {
+            event.register(RubyTridentItemRenderer.INVENTORY_MODEL);
+        }
+
+        @SubscribeEvent
+        public static void clientExtensions(RegisterClientExtensionsEvent event) {
+            // Tridente de Rubí: modelo 3D rojo en la mano
+            event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+                private RubyTridentItemRenderer renderer;
+
+                @Override
+                public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                    if (renderer == null) {
+                        renderer = new RubyTridentItemRenderer();
+                    }
+                    return renderer;
+                }
+            }, ModItems.RUBY_TRIDENT.get());
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                private final ResourceLocation still = CivilizacionNether.id("block/nether_water_still");
+                private final ResourceLocation flow = CivilizacionNether.id("block/nether_water_flow");
+                private final ResourceLocation overlay = ResourceLocation.withDefaultNamespace("textures/misc/underwater.png");
+
+                @Override
+                public ResourceLocation getStillTexture() {
+                    return still;
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture() {
+                    return flow;
+                }
+
+                @Override
+                public ResourceLocation getOverlayTexture() {
+                    return flow;
+                }
+
+                @Override
+                public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+                    return overlay;
+                }
+
+                @Override
+                public int getTintColor() {
+                    return 0xFFFFFFFF;
+                }
+
+                @Override
+                public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance,
+                                               float darkenWorldAmount, Vector3f fluidFogColor) {
+                    return new Vector3f(0.32f, 0.10f, 0.58f);
+                }
+
+                @Override
+                public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick,
+                                            float nearDistance, float farDistance, FogShape shape) {
+                    RenderSystem.setShaderFogStart(-4.0f);
+                    RenderSystem.setShaderFogEnd(40.0f);
+                }
+            }, ModFluids.NETHER_WATER_TYPE.get());
         }
 
         private ModBus() {
@@ -125,6 +242,17 @@ public final class ClientEvents {
             Minecraft mc = Minecraft.getInstance();
             if (dragonCamera && mc.player != null && mc.player.getVehicle() instanceof NetherDragonEntity dragon) {
                 event.setDistance(Math.max(event.getDistance(), DRAGON_CAMERA_DISTANCE * Math.max(0.6f, dragon.getScale())));
+            }
+        }
+
+        /** Armadura del Frío Eterno completa: se ve perfecto dentro de la lava. */
+        @SubscribeEvent
+        public static void lavaFog(ViewportEvent.RenderFog event) {
+            Minecraft mc = Minecraft.getInstance();
+            if (event.getType() == FogType.LAVA && mc.player != null && FrostArmorEvents.hasFullFrost(mc.player)) {
+                event.setNearPlaneDistance(0.0f);
+                event.setFarPlaneDistance(40.0f);
+                event.setCanceled(true);
             }
         }
 

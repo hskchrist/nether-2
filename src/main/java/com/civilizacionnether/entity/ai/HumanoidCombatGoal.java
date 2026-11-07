@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import java.util.EnumSet;
 
 /**
- * Combate de la civilización: el Guerrero y los Súbditos pelean cuerpo a cuerpo, el Arquero dispara con su arco
+ * Combate de la civilización: guerreros, profesiones y súbditos pelean cuerpo a cuerpo, el Arquero y el Ballestero disparan
  * de rubí manteniendo la distancia y el Rey Necromancer lanza rayos de almas e invoca súbditos.
  */
 public class HumanoidCombatGoal extends Goal {
@@ -25,7 +25,8 @@ public class HumanoidCombatGoal extends Goal {
     @Override
     public boolean canUse() {
         LivingEntity target = mob.getTarget();
-        return target != null && target.isAlive() && !mob.isOrderedToSit();
+        return target != null && target.isAlive() && !mob.isOrderedToSit() && !mob.isSleeping()
+                && mob.getHumanoidType().combat != HumanoidType.Combat.NONE;
     }
 
     @Override
@@ -69,7 +70,7 @@ public class HumanoidCombatGoal extends Goal {
         if (windup > 0) {
             mob.getNavigation().stop();
             if (--windup == 0 && target.isAlive() && sees) {
-                if (type.combat == HumanoidType.Combat.BOW) {
+                if (type.combat == HumanoidType.Combat.BOW || type.combat == HumanoidType.Combat.CROSSBOW) {
                     mob.shootArrow(target);
                 } else {
                     mob.castBolt(target);
@@ -121,6 +122,9 @@ public class HumanoidCombatGoal extends Goal {
             if (type.combat == HumanoidType.Combat.BOW) {
                 mob.playAction("attack_bow");
                 windup = 16;
+            } else if (type.combat == HumanoidType.Combat.CROSSBOW) {
+                mob.playAction("attack_crossbow");
+                windup = 26;
             } else {
                 mob.playAction("cast");
                 windup = 10;

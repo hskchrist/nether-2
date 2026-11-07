@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "EEE",
+    "EHE"
+  ],
+  "key": {
+    "E": {
+      "item": "civilizacion_nether:escama_serpiente"
+    },
+    "H": {
+      "item": "civilizacion_nether:obsidian_turtle_helmet"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:serpent_helmet",
+    "count": 1
+  }
+}

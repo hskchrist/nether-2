@@ -38,7 +38,8 @@ def clear_cache():
 
 
 def render(geo_path, tex_path, size=(600, 600), yaw=35, pitch=15, pose=None, hidden=(), scale=None, bg=(24, 10, 12, 255),
-           emissive=None, center=None, ss=2, out_path=None, light=(0.45, 0.8, -0.4), ambient=0.55, ground=None, markers=()):
+           emissive=None, center=None, ss=2, out_path=None, light=(0.45, 0.8, -0.4), ambient=0.55, ground=None, markers=(),
+           return_faces=False):
     """Devuelve una imagen PIL. pose = {hueso: {"rotation": [..], "position": [..], "scale": [..]}}.
     center = punto del modelo (x, y, z) que queda en el centro de la imagen (por defecto, el centro del modelo).
     ground = altura (y) donde dibujar una sombra elíptica, o None."""
@@ -85,6 +86,7 @@ def render(geo_path, tex_path, size=(600, 600), yaw=35, pitch=15, pose=None, hid
     L = L / np.linalg.norm(L)
 
     faces = []  # (p0, eu, ev, normal, uvrect, emissive_ok)
+    flat = set()  # caras de cubos planos (tamaño 0): en el juego solo se ve la cara que mira a la cámara
     for b in geo["bones"]:
         if hidden_bone(b["name"]):
             continue
@@ -145,10 +147,14 @@ def render(geo_path, tex_path, size=(600, 600), yaw=35, pitch=15, pose=None, hid
                 n = np.cross(ev, eu)
                 nn = np.linalg.norm(n)
                 n = n / nn if nn > 1e-9 else np.array([0, 1.0, 0])
+                if min(w, h, d) == 0:
+                    flat.add(len(faces))
                 faces.append((a, eu, ev, n, rect))
 
     if not faces:
         raise RuntimeError("nada que dibujar")
+    if return_faces:
+        return faces, flat, tex
     # proyectar
     pts = []
     for a, eu, ev, n, rect in faces:
@@ -184,7 +190,9 @@ def render(geo_path, tex_path, size=(600, 600), yaw=35, pitch=15, pose=None, hid
         color[m] *= (0.55 + 0.45 * e[m])[:, None]
 
     texf = tex.astype(float)
-    for a, eu, ev, n, (fu, fv, fw, fh) in faces:
+    for fi, (a, eu, ev, n, (fu, fv, fw, fh)) in enumerate(faces):
+        if fi in flat and (V @ n)[2] > 0:
+            continue
         A = to_screen(a)
         U = to_screen(a + eu) - A
         Vv = to_screen(a + ev) - A

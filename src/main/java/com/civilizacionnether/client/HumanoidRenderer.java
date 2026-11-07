@@ -32,8 +32,10 @@ public class HumanoidRenderer extends GeoEntityRenderer<NetherHumanoidEntity> {
     public void render(NetherHumanoidEntity entity, float entityYaw, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight) {
         if (entity.isBaby()) {
+            // los hijos crecen de a poco: el tamaño sigue a su crecimiento
+            float s = entity.getAgeScale();
             poseStack.pushPose();
-            poseStack.scale(0.5f, 0.5f, 0.5f);
+            poseStack.scale(s, s, s);
             super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
             poseStack.popPose();
         } else {

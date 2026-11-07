@@ -52,6 +52,14 @@ HUMANOIDS = [
     ("arquero", "Arquero del Nether", "Nether Archer"),
     ("rey_necromancer", "Rey Necromancer", "Necromancer King"),
     ("subdito_alma", "Súbdito de Almas", "Soul Minion"),
+    ("guerrero_real", "Guerrero Real", "Royal Warrior"),
+    ("ballestero", "Ballestero del Nether", "Nether Crossbowman"),
+    ("bibliotecario", "Bibliotecario del Nether", "Nether Librarian"),
+    ("domador", "Domador de Dragones", "Dragon Tamer"),
+    ("granjero", "Granjero del Nether", "Nether Farmer"),
+    ("minero", "Minero del Nether", "Nether Miner"),
+    ("ciudadano", "Ciudadano del Nether", "Nether Citizen"),
+    ("aldeano_necromancer", "Aldeano Necromancer", "Necromancer Villager"),
 ]
 DRAGONS = [
     ("nether_dragon", "Dragón del Nether", "Nether Dragon"),

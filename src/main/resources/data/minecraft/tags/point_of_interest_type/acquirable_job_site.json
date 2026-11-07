@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "civilizacion_nether:cartographer_desk",
+    "civilizacion_nether:fletcher_bench",
+    "civilizacion_nether:leather_cauldron",
+    "civilizacion_nether:shepherd_loom",
+    "civilizacion_nether:mason_cutter"
+  ]
+}

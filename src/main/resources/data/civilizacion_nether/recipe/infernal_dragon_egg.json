@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MFM",
+    "FEF",
+    "MFM"
+  ],
+  "key": {
+    "M": {
+      "item": "minecraft:magma_block"
+    },
+    "F": {
+      "item": "minecraft:fire_charge"
+    },
+    "E": {
+      "item": "civilizacion_nether:dragon_egg"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:infernal_dragon_egg",
+    "count": 1
+  }
+}

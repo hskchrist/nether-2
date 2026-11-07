@@ -1,6 +1,7 @@
 package com.civilizacionnether.worldgen;
 
 import com.civilizacionnether.CivilizacionNether;
+import com.civilizacionnether.registry.ModBlocks;
 import com.civilizacionnether.registry.ModStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,17 +21,18 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 /**
- * La pieza de la capital. Antes de colocar la plantilla (data/civilizacion_nether/structure/capital.nbt), en cada chunk:
- * excava la caverna (aire), pone la plataforma de piedra negra y los pilares de ladrillo del Nether sobre la lava.
- * Así la plantilla no necesita guardar aire y pesa mucho menos.
+ * La pieza del Reino Humano del Nether (192 x 192). Antes de colocar la plantilla (data/civilizacion_nether/structure/capital.nbt),
+ * en cada chunk: excava el aire, levanta la isla redonda de piedra negra (radio 84 + borde de 2) y deja alrededor el
+ * Océano Púrpura de agua del Nether. Así la plantilla no necesita guardar aire y pesa mucho menos.
  */
 public class CapitalPiece extends TemplateStructurePiece {
     public static final ResourceLocation TEMPLATE = CivilizacionNether.id("capital");
-    public static final int SIZE = 176;
-    public static final int HEIGHT = 72;
+    public static final int SIZE = 192;
+    public static final int HEIGHT = 80;
     public static final int FLOOR = 4;
-    private static final int WALL0 = 8;
-    private static final int WALL1 = 167;
+    private static final double CENTER = 96.0;
+    private static final double ISLAND = 84.5;
+    private static final double RIM = 86.5;
 
     public CapitalPiece(StructureTemplateManager manager, BlockPos origin) {
         super(ModStructures.CAPITAL_PIECE.get(), 0, manager, TEMPLATE, TEMPLATE.toString(), new StructurePlaceSettings(), origin);
@@ -55,24 +57,33 @@ public class CapitalPiece extends TemplateStructurePiece {
         int baseY = origin.getY();
         BlockState air = Blocks.AIR.defaultBlockState();
         BlockState bricks = Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState();
-        BlockState netherrack = Blocks.NETHERRACK.defaultBlockState();
         BlockState blackstone = Blocks.BLACKSTONE.defaultBlockState();
-        BlockState pillar = Blocks.NETHER_BRICKS.defaultBlockState();
+        BlockState basalt = Blocks.BASALT.defaultBlockState();
+        BlockState water = ModBlocks.NETHER_WATER.get().defaultBlockState();
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
         for (int x = minX; x <= maxX; x++) {
             for (int z = minZ; z <= maxZ; z++) {
-                int lx = x - origin.getX();
-                int lz = z - origin.getZ();
-                boolean inside = lx >= WALL0 && lx <= WALL1 && lz >= WALL0 && lz <= WALL1;
-                for (int y = baseY + FLOOR; y < baseY + HEIGHT; y++) {
-                    level.setBlock(p.set(x, y, z), air, 2);
-                }
-                level.setBlock(p.set(x, baseY + FLOOR - 1, z), inside ? bricks : netherrack, 2);
-                level.setBlock(p.set(x, baseY + FLOOR - 2, z), blackstone, 2);
-                if (lx % 6 < 2 && lz % 6 < 2) {
-                    for (int y = baseY; y < baseY + FLOOR - 2; y++) {
-                        level.setBlock(p.set(x, y, z), pillar, 2);
+                double dx = x - origin.getX() + 0.5 - CENTER;
+                double dz = z - origin.getZ() + 0.5 - CENTER;
+                double r = Math.sqrt(dx * dx + dz * dz);
+                if (r <= RIM) {
+                    // la isla: aire arriba, piso de ladrillo (o borde de piedra negra) y un cimiento macizo hasta abajo
+                    for (int y = baseY + FLOOR; y < baseY + HEIGHT; y++) {
+                        level.setBlock(p.set(x, y, z), air, 2);
                     }
+                    level.setBlock(p.set(x, baseY + FLOOR - 1, z), r <= ISLAND ? bricks : blackstone, 2);
+                    for (int y = baseY - 10; y < baseY + FLOOR - 1; y++) {
+                        level.setBlock(p.set(x, y, z), (x * 7 + y * 3 + z * 5) % 11 == 0 ? basalt : blackstone, 2);
+                    }
+                } else {
+                    // el Océano Púrpura alrededor del reino (la superficie queda a la altura del mar del Nether)
+                    for (int y = baseY + 2; y < baseY + HEIGHT; y++) {
+                        level.setBlock(p.set(x, y, z), air, 2);
+                    }
+                    for (int y = baseY - 6; y <= baseY + 1; y++) {
+                        level.setBlock(p.set(x, y, z), water, 2);
+                    }
+                    level.setBlock(p.set(x, baseY - 7, z), blackstone, 2);
                 }
             }
         }

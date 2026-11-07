@@ -213,7 +213,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         return entityData.get(CHARGE);
     }
 
-    private void setCharge(int charge) {
+    protected void setCharge(int charge) {
         entityData.set(CHARGE, Mth.clamp(charge, 0, MAX_CHARGE));
     }
 
@@ -311,8 +311,36 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
                 e -> isTame() && NetherHumanoidEntity.isHostileTarget(e)));
     }
 
+    /** Dragón Infernal salvaje: hostil con todos (los demás dragones y los humanos lo enfrentan). */
+    public boolean isWildHostile() {
+        return false;
+    }
+
+    /** ¿Es un Dragón Infernal? (sus huevos son infernales). */
+    public boolean isInfernal() {
+        return false;
+    }
+
+    /** Golpes que no le hacen daño: los suyos propios, los de sus aliados y los de su jinete. */
+    protected boolean ignoresDamageFrom(@Nullable Entity attacker) {
+        if (attacker == null) {
+            return false;
+        }
+        if (attacker == this || hasPassenger(attacker)) {
+            return true;
+        }
+        boolean wild = isWildHostile();
+        if (attacker instanceof NetherDragonEntity other) {
+            return !wild && !other.isWildHostile();
+        }
+        return attacker instanceof NetherHumanoidEntity && !wild;
+    }
+
     @Override
     public boolean canAttack(LivingEntity target) {
+        if (target instanceof NetherDragonEntity other && other.isWildHostile()) {
+            return super.canAttack(target);
+        }
         if (target instanceof NetherHumanoidEntity || target instanceof NetherDragonEntity
                 || target instanceof AbstractVillager || target instanceof AbstractGolem) {
             return false;
@@ -331,10 +359,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         Entity attacker = source.getEntity();
-        if (attacker instanceof NetherHumanoidEntity || attacker instanceof NetherDragonEntity) {
-            return false;
-        }
-        if (attacker != null && hasPassenger(attacker)) {
+        if (ignoresDamageFrom(attacker)) {
             return false;
         }
         if (isOrderedToSit() && attacker != null && !(attacker instanceof Player)) {
@@ -433,10 +458,15 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         }
         shotCooldown = SHOT_COOLDOWN;
         float damage = 6.0f + 4.0f * getScale() + getBond() / 20.0f;
-        DragonFireballEntity.shoot(this, mouthPosition(), direction, damage);
+        spawnFireball(mouthPosition(), direction, damage);
         triggerAnim("action", "bite");
         playSound(SoundEvents.BLAZE_SHOOT, 1.5f, 0.6f + getRandom().nextFloat() * 0.2f);
         return true;
+    }
+
+    /** La bola de fuego de cada dragón (el Infernal la cambia por una explosiva). */
+    protected void spawnFireball(Vec3 from, Vec3 direction, float damage) {
+        DragonFireballEntity.shoot(this, from, direction, damage);
     }
 
     /** Clic derecho del jinete: dispara y carga la barra. */
@@ -903,7 +933,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         }
 
         // Silla (solo adulto)
-        if (stack.is(Items.SADDLE) && !isSaddled()) {
+        if (isSaddleItem(stack) && !isSaddled()) {
             if (!client) {
                 if (!isAdult()) {
                     player.displayClientMessage(Component.translatable("msg.civilizacion_nether.too_young", getDisplayName(),
@@ -965,7 +995,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         }
         if (!isSaddled()) {
             if (!client) {
-                player.displayClientMessage(Component.translatable("msg.civilizacion_nether.need_saddle"), true);
+                player.displayClientMessage(Component.translatable(needSaddleMessage()), true);
             }
             return InteractionResult.sidedSuccess(client);
         }
@@ -983,7 +1013,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
 
     @Override
     public boolean canMate(Animal other) {
-        return other != this && other instanceof NetherDragonEntity mate && isAdult() && mate.isAdult()
+        return other != this && other.getType() == getType() && other instanceof NetherDragonEntity mate && isAdult() && mate.isAdult()
                 && isTame() && mate.isTame() && isInLove() && mate.isInLove();
     }
 
@@ -994,6 +1024,7 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         if (egg != null) {
             egg.moveTo(getX(), getY(), getZ(), getRandom().nextFloat() * 360.0f, 0.0f);
             egg.setOwner(getOwnerUUID());
+            egg.setInfernal(isInfernal());
             level.addFreshEntity(egg);
             if (getOwner() instanceof Player owner) {
                 owner.displayClientMessage(Component.translatable("msg.civilizacion_nether.egg_laid"), false);
@@ -1040,11 +1071,25 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         }
     }
 
+    /** La silla que acepta este dragón (el Dragón del Nether usa la silla normal). */
+    protected boolean isSaddleItem(ItemStack stack) {
+        return stack.is(Items.SADDLE);
+    }
+
+    /** La silla que suelta al morir si estaba ensillado. */
+    protected net.minecraft.world.level.ItemLike saddleItem() {
+        return Items.SADDLE;
+    }
+
+    protected String needSaddleMessage() {
+        return "msg.civilizacion_nether.need_saddle";
+    }
+
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, source, recentlyHit);
         if (isSaddled()) {
-            spawnAtLocation(Items.SADDLE);
+            spawnAtLocation(saddleItem());
         }
         if (isArmored()) {
             spawnAtLocation(ModItems.DRAGON_ARMOR.get());
@@ -1065,6 +1110,13 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
     @Override
     protected SoundEvent getDeathSound() {
         return SoundEvents.ENDER_DRAGON_GROWL;
+    }
+
+    /** Al recibir un golpe: rugido de dolor más el golpe sobre las escamas. */
+    @Override
+    protected void playHurtSound(DamageSource source) {
+        super.playHurtSound(source);
+        playSound(SoundEvents.SHIELD_BLOCK, 0.7f, 0.55f + getRandom().nextFloat() * 0.1f);
     }
 
     @Override

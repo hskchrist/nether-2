@@ -7,11 +7,11 @@ modId = "civilizacion_nether"
 version = "1.0.0"
 displayName = "Civilización del Nether"
 authors = "hskmusic"
-credits = "Void Dragon por RedVoid_ y Dragon Head por Joshie Models BB (CC BY 4.0)"
+credits = "Void Dragon por RedVoid_, Dragon Head por Joshie Models BB y Ender Dragon por Vader (CC BY 4.0)"
 description = '''
 Una civilización de humanos que prospera en el corazón del Nether, forjando su imperio con rubí, hierro y voluntad.
 Guerreros, arqueros y el Rey Necromancer; el Dragón del Nether (huevo, crías que crecen, vuelo, bolas de fuego y ráfaga) y la capital del Reino del Nether.
-Créditos: dragón basado en "Void Dragon" de RedVoid_ y "Dragon Head" de Joshie Models BB (CC BY 4.0).
+Créditos: dragón basado en "Void Dragon" de RedVoid_ y "Dragon Head" de Joshie Models BB; Dragón Infernal basado en "Ender Dragon" de Vader (CC BY 4.0).
 '''
 logoFile = "logo.png"
 

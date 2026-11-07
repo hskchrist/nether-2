@@ -6,6 +6,9 @@ import com.civilizacionnether.registry.ModParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -44,6 +47,8 @@ import java.util.UUID;
  */
 public class DragonEggEntity extends Mob implements GeoEntity {
     public static final int HATCH_TIME = 6000;
+    /** Huevo de Dragón Infernal (otra textura; nace un Dragón Infernal). */
+    private static final EntityDataAccessor<Boolean> INFERNAL = SynchedEntityData.defineId(DragonEggEntity.class, EntityDataSerializers.BOOLEAN);
     private static final String P = "animation.nether_dragon_egg.";
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop(P + "idle");
 
@@ -67,6 +72,39 @@ public class DragonEggEntity extends Mob implements GeoEntity {
 
     public void setOwner(@Nullable UUID owner) {
         this.owner = owner;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(INFERNAL, false);
+    }
+
+    public boolean isInfernal() {
+        return entityData.get(INFERNAL);
+    }
+
+    public void setInfernal(boolean infernal) {
+        entityData.set(INFERNAL, infernal);
+    }
+
+    /** Huevo del nido de un Dragón Infernal salvaje: si alguien lo toma, el dragón lo ataca. */
+    private void angerGuardians(Player thief) {
+        if (!isInfernal() || owner != null) {
+            return;
+        }
+        boolean any = false;
+        for (InfernalDragonEntity d : level().getEntitiesOfClass(InfernalDragonEntity.class, getBoundingBox().inflate(48.0),
+                d -> !d.isTame() && d.isAlive())) {
+            d.setResting(false);
+            d.setTarget(thief);
+            d.triggerAnim("action", "roar");
+            any = true;
+        }
+        if (any) {
+            playSound(SoundEvents.ENDER_DRAGON_GROWL, 2.0f, 0.8f);
+            thief.displayClientMessage(Component.translatable("msg.civilizacion_nether.nest_robbed"), true);
+        }
     }
 
     @Override
@@ -125,7 +163,8 @@ public class DragonEggEntity extends Mob implements GeoEntity {
     }
 
     private void hatch(ServerLevel server) {
-        NetherDragonEntity baby = ModEntities.NETHER_DRAGON.get().create(server);
+        NetherDragonEntity baby = isInfernal() ? ModEntities.DRAGON_INFERNAL.get().create(server)
+                : ModEntities.NETHER_DRAGON.get().create(server);
         if (baby != null) {
             baby.moveTo(getX(), getY(), getZ(), getYRot(), 0.0f);
             if (owner != null) {
@@ -161,10 +200,12 @@ public class DragonEggEntity extends Mob implements GeoEntity {
         }
         Entity attacker = source.getEntity();
         if (attacker instanceof Player player && hatchTimer < 0) {
-            ItemStack stack = new ItemStack(ModItems.DRAGON_EGG.get());
+            angerGuardians(player);
+            ItemStack stack = new ItemStack(isInfernal() ? ModItems.INFERNAL_DRAGON_EGG.get() : ModItems.DRAGON_EGG.get());
             if (!player.getInventory().add(stack)) {
                 spawnAtLocation(stack);
             }
+            playSound(SoundEvents.TURTLE_EGG_CRACK, 0.8f, 0.6f);
             playSound(SoundEvents.ITEM_PICKUP, 0.6f, 0.8f);
             discard();
             return true;
@@ -178,6 +219,7 @@ public class DragonEggEntity extends Mob implements GeoEntity {
             return InteractionResult.SUCCESS;
         }
         if (owner == null) {
+            angerGuardians(player);
             owner = player.getUUID();
             player.displayClientMessage(Component.translatable("msg.civilizacion_nether.egg_adopted"), true);
         } else {
@@ -215,6 +257,7 @@ public class DragonEggEntity extends Mob implements GeoEntity {
             tag.putUUID("EggOwner", owner);
         }
         tag.putInt("Incubation", incubation);
+        tag.putBoolean("Infernal", isInfernal());
     }
 
     @Override
@@ -222,6 +265,7 @@ public class DragonEggEntity extends Mob implements GeoEntity {
         super.readAdditionalSaveData(tag);
         owner = tag.hasUUID("EggOwner") ? tag.getUUID("EggOwner") : null;
         incubation = tag.getInt("Incubation");
+        setInfernal(tag.getBoolean("Infernal"));
     }
 
     // ------------------------------------------------------------------ GeckoLib

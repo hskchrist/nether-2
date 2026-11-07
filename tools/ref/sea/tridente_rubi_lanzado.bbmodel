@@ -1,0 +1,489 @@
+{
+ "meta": {
+  "format_version": "4.5",
+  "model_format": "free",
+  "box_uv": false
+ },
+ "name": "tridente_rojo",
+ "model_identifier": "",
+ "visible_box": [
+  1,
+  1,
+  0
+ ],
+ "variable_placeholders": "",
+ "variable_placeholder_buttons": [],
+ "timeline_setups": [],
+ "unhandled_root_fields": {},
+ "resolution": {
+  "width": 32,
+  "height": 32
+ },
+ "elements": [
+  {
+   "name": "punta_derecha",
+   "box_uv": false,
+   "rescale": false,
+   "locked": false,
+   "render_order": "default",
+   "allow_mirror_modeling": true,
+   "from": [
+    1.5,
+    26.0,
+    -0.5
+   ],
+   "to": [
+    2.5,
+    30.0,
+    0.5
+   ],
+   "autouv": 0,
+   "color": 0,
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      7.0,
+      4.0,
+      6.0,
+      8.0
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      7.0,
+      4.0,
+      6.0,
+      8.0
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      5.0,
+      3.0,
+      6.0,
+      4.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      6.0,
+      3.0,
+      7.0,
+      4.0
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      6.0,
+      4.0,
+      5.0,
+      8.0
+     ],
+     "texture": 0
+    },
+    "north": {
+     "uv": [
+      8.0,
+      4.0,
+      7.0,
+      8.0
+     ],
+     "texture": 0
+    }
+   },
+   "type": "cube",
+   "uuid": "35a26302-ca88-4888-9750-8cf47056e128"
+  },
+  {
+   "name": "base",
+   "box_uv": false,
+   "rescale": false,
+   "locked": false,
+   "render_order": "default",
+   "allow_mirror_modeling": true,
+   "from": [
+    -1.5,
+    25.0,
+    -0.5
+   ],
+   "to": [
+    1.5,
+    27.0,
+    0.5
+   ],
+   "autouv": 0,
+   "color": 1,
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      5.0,
+      3.0,
+      4.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      9.0,
+      3.0,
+      8.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      5.0,
+      0.0,
+      8.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      8.0,
+      0.0,
+      11.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      8.0,
+      1.0,
+      5.0,
+      3.0
+     ],
+     "texture": 0
+    },
+    "north": {
+     "uv": [
+      12.0,
+      1.0,
+      9.0,
+      3.0
+     ],
+     "texture": 0
+    }
+   },
+   "type": "cube",
+   "uuid": "d9b1563d-d362-4d3a-8995-92473749925b"
+  },
+  {
+   "name": "punta_izquierda",
+   "box_uv": false,
+   "rescale": false,
+   "locked": false,
+   "render_order": "default",
+   "allow_mirror_modeling": true,
+   "from": [
+    -2.5,
+    26.0,
+    -0.5
+   ],
+   "to": [
+    -1.5,
+    30.0,
+    0.5
+   ],
+   "autouv": 0,
+   "color": 2,
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      7.0,
+      4.0,
+      6.0,
+      8.0
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      5.0,
+      4.0,
+      4.0,
+      8.0
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      5.0,
+      3.0,
+      6.0,
+      4.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      6.0,
+      3.0,
+      7.0,
+      4.0
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      6.0,
+      4.0,
+      5.0,
+      8.0
+     ],
+     "texture": 0
+    },
+    "north": {
+     "uv": [
+      6.0,
+      4.0,
+      5.0,
+      8.0
+     ],
+     "texture": 0
+    }
+   },
+   "type": "cube",
+   "uuid": "f63a6cc1-987c-4145-a417-d3b4a3d41a65"
+  },
+  {
+   "name": "punta_central",
+   "box_uv": false,
+   "rescale": false,
+   "locked": false,
+   "render_order": "default",
+   "allow_mirror_modeling": true,
+   "from": [
+    -0.5,
+    27.0,
+    -0.5
+   ],
+   "to": [
+    0.5,
+    31.0,
+    0.5
+   ],
+   "autouv": 0,
+   "color": 3,
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      3.0,
+      5.0,
+      2.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      1.0,
+      5.0,
+      -0.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      1.0,
+      0.0,
+      2.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      2.0,
+      0.0,
+      3.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      2.0,
+      5.0,
+      1.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "north": {
+     "uv": [
+      4.0,
+      5.0,
+      3.0,
+      1.0
+     ],
+     "texture": 0
+    }
+   },
+   "type": "cube",
+   "uuid": "46ca84b3-d157-4807-a1fd-cf772ca3afa4"
+  },
+  {
+   "name": "palo",
+   "box_uv": false,
+   "rescale": false,
+   "locked": false,
+   "render_order": "default",
+   "allow_mirror_modeling": true,
+   "from": [
+    -0.5,
+    -0.0,
+    -0.5
+   ],
+   "to": [
+    0.5,
+    25.0,
+    0.5
+   ],
+   "autouv": 0,
+   "color": 4,
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      4.0,
+      7.0,
+      3.0,
+      32.0
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      2.0,
+      7.0,
+      1.0,
+      32.0
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      1.0,
+      6.0,
+      2.0,
+      7.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      0.0,
+      6.0,
+      1.0,
+      7.0
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      1.0,
+      7.0,
+      0.0,
+      32.0
+     ],
+     "texture": 0
+    },
+    "north": {
+     "uv": [
+      3.0,
+      7.0,
+      2.0,
+      32.0
+     ],
+     "texture": 0
+    }
+   },
+   "type": "cube",
+   "uuid": "e40bc50b-4597-4ff6-8e92-3400ba64dd81"
+  }
+ ],
+ "outliner": [
+  {
+   "name": "tridente",
+   "origin": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "uuid": "a73dd14b-0c05-4286-bb5d-9357b6554b94",
+   "export": true,
+   "isOpen": true,
+   "visibility": true,
+   "autouv": 0,
+   "children": [
+    "35a26302-ca88-4888-9750-8cf47056e128",
+    "d9b1563d-d362-4d3a-8995-92473749925b",
+    "f63a6cc1-987c-4145-a417-d3b4a3d41a65",
+    "46ca84b3-d157-4807-a1fd-cf772ca3afa4",
+    "e40bc50b-4597-4ff6-8e92-3400ba64dd81"
+   ]
+  }
+ ],
+ "textures": [
+  {
+   "path": "",
+   "name": "tridente_rojo.png",
+   "folder": "",
+   "namespace": "",
+   "id": "0",
+   "particle": false,
+   "render_mode": "default",
+   "render_sides": "auto",
+   "frame_time": 1,
+   "frame_order_type": "loop",
+   "frame_order": "",
+   "frame_interpolate": false,
+   "visible": true,
+   "mode": "bitmap",
+   "saved": false,
+   "uuid": "e4a3bd84-5d05-4ad5-b283-9fee8776b4ef",
+   "relative_path": "",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABwUlEQVR4nO2XMUvDQBTHf4ZDQiilpEFKcRCH4ujQQTI7ST9CPoCDdHB28EMUB+eOjuJHKBkEHRwcRIqIOJyliBwlBM8p0rTS3Flrl/7geNzLcff+7y65FwA9OjnUnaCuAQ3odsnX+uxUt0u+jrzKd8ue27QinMf9kI/+Mwe7W8ioRbvk03Bdbs4vaLguvuOw53kcNzbpBHVMkFHLaByAA1ANm2R28PlJrBS95wGxUlN9k4Wz+UwCEZOOrhoioxa3vXuO5EvOX0Q1bEL3Mt8vwAF4612T2cf9EIDt7Q2rVE7OM24LA3i665PZcs2nGja/rQ1Pd306QT1ni1g7rWzoQAhkmhIIwcHuFuWaz/vrgHLNJxhLqQmRV2HP84iVoquGaK1njncekoRYKTKbKRm3NnTVEJmmRmcGQLQq5Zzj6rafO3y/4SFJjMc6MkkZb/MuDjApamYAc6/2AzJJlxuADSJYn/oW/SsLyYCNKGGzX4tgIVtgI0rcq9GfB2C1BTuem/cM5w/ARtRCzsCO5xoLWfoZWL2Gq7tgFcDSAxAyXfJlZFO/mWIjaqooNa1mZzFXUfoXWBWl2b9ArJRV6mZhI+QLTPoXYdT2jTIAAAAASUVORK5CYII="
+  }
+ ],
+ "animations": []
+}

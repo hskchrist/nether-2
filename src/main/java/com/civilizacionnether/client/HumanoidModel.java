@@ -10,7 +10,7 @@ import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
-/** Cada clase usa su propio modelo, textura y animaciones; la cabeza sigue la mirada. */
+/** Cada clase usa su propio modelo, textura (según hombre/mujer y su skin) y animaciones; la cabeza sigue la mirada. */
 public class HumanoidModel extends GeoModel<NetherHumanoidEntity> {
 
     @Override
@@ -20,12 +20,12 @@ public class HumanoidModel extends GeoModel<NetherHumanoidEntity> {
 
     @Override
     public ResourceLocation getTextureResource(NetherHumanoidEntity animatable) {
-        return CivilizacionNether.id("textures/entity/" + animatable.getHumanoidType().texture + ".png");
+        return CivilizacionNether.id(animatable.getHumanoidType().textureFor(animatable.isFemale(), animatable.getVariant()));
     }
 
     @Override
     public ResourceLocation getAnimationResource(NetherHumanoidEntity animatable) {
-        return CivilizacionNether.id("animations/entity/" + animatable.getHumanoidType().model + ".animation.json");
+        return CivilizacionNether.id("animations/entity/" + animatable.getHumanoidType().anim + ".animation.json");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class HumanoidModel extends GeoModel<NetherHumanoidEntity> {
         super.setCustomAnimations(animatable, instanceId, animationState);
         GeoBone head = getAnimationProcessor().getBone("head");
         EntityModelData data = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
-        if (head != null && data != null) {
+        if (head != null && data != null && !animatable.isSleeping()) {
             head.setRotX(data.headPitch() * Mth.DEG_TO_RAD);
             head.setRotY(data.netHeadYaw() * Mth.DEG_TO_RAD);
         }

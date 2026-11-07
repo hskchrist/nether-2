@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FRF",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "C": {
+      "item": "minecraft:crimson_planks"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:fletcher_bench",
+    "count": 1
+  }
+}

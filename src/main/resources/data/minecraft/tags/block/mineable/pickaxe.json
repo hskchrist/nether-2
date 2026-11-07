@@ -4,6 +4,10 @@
     "civilizacion_nether:ruby_block",
     "civilizacion_nether:ruby_ore",
     "civilizacion_nether:ruby_lamp",
-    "civilizacion_nether:ruby_bricks"
+    "civilizacion_nether:ruby_bricks",
+    "civilizacion_nether:librarian_lectern",
+    "civilizacion_nether:miner_cart",
+    "civilizacion_nether:leather_cauldron",
+    "civilizacion_nether:mason_cutter"
   ]
 }

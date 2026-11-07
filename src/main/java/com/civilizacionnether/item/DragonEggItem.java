@@ -20,8 +20,16 @@ import java.util.List;
 
 /** Huevo de Dragón del Nether: clic derecho sobre el suelo para ponerlo; la cría que nazca será tuya. */
 public class DragonEggItem extends Item {
+    private final boolean infernal;
+
     public DragonEggItem(Properties properties) {
+        this(properties, false);
+    }
+
+    /** infernal = Huevo de Dragón Infernal (nace un Dragón Infernal). */
+    public DragonEggItem(Properties properties, boolean infernal) {
         super(properties);
+        this.infernal = infernal;
     }
 
     @Override
@@ -42,6 +50,7 @@ public class DragonEggItem extends Item {
         egg.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
                 player != null ? player.getYRot() + 180.0f : 0.0f, 0.0f);
         egg.setPersistenceRequired();
+        egg.setInfernal(infernal);
         if (player != null) {
             egg.setOwner(player.getUUID());
             player.displayClientMessage(Component.translatable("msg.civilizacion_nether.egg_placed"), true);
@@ -57,7 +66,8 @@ public class DragonEggItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.civilizacion_nether.dragon_egg").withStyle(ChatFormatting.GOLD));
+        tooltip.add(Component.translatable(infernal ? "tooltip.civilizacion_nether.infernal_dragon_egg"
+                : "tooltip.civilizacion_nether.dragon_egg").withStyle(ChatFormatting.GOLD));
         tooltip.add(Component.translatable("tooltip.civilizacion_nether.dragon_egg2").withStyle(ChatFormatting.GRAY));
     }
 }

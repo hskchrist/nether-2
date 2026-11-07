@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "civilizacion_nether:block/farmer_basket"
+    },
+    "facing=east": {
+      "model": "civilizacion_nether:block/farmer_basket",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "civilizacion_nether:block/farmer_basket",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "civilizacion_nether:block/farmer_basket",
+      "y": 270
+    }
+  }
+}

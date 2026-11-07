@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "  B",
+    "GR ",
+    "SG "
+  ],
+  "key": {
+    "B": {
+      "item": "civilizacion_nether:ruby_block"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "S": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:ruby_longsword",
+    "count": 1
+  }
+}

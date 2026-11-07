@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "civilizacion_nether:necromancer_table",
+    "civilizacion_nether:farmer_basket",
+    "civilizacion_nether:nether_bed",
+    "civilizacion_nether:cartographer_desk",
+    "civilizacion_nether:fletcher_bench",
+    "civilizacion_nether:shepherd_loom"
+  ]
+}

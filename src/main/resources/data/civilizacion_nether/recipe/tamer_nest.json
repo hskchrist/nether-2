@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RAR",
+    "B B",
+    "BBB"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:crimson_roots"
+    },
+    "A": {
+      "item": "civilizacion_nether:soul"
+    },
+    "B": {
+      "item": "minecraft:basalt"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:tamer_nest",
+    "count": 1
+  }
+}

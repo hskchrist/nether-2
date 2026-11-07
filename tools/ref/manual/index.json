@@ -1,0 +1,417 @@
+{
+ "pages": 114,
+ "width": 700,
+ "height": 965,
+ "index": [
+  {
+   "page": 3,
+   "label": "El Reino del Nether",
+   "chapter": false
+  },
+  {
+   "page": 4,
+   "label": "I. Los Habitantes",
+   "chapter": true
+  },
+  {
+   "page": 5,
+   "label": "Guerrero del Nether",
+   "chapter": false
+  },
+  {
+   "page": 7,
+   "label": "Arquero del Nether",
+   "chapter": false
+  },
+  {
+   "page": 9,
+   "label": "Rey Necromancer",
+   "chapter": false
+  },
+  {
+   "page": 11,
+   "label": "Súbdito de Almas",
+   "chapter": false
+  },
+  {
+   "page": 12,
+   "label": "Guerrero Real",
+   "chapter": false
+  },
+  {
+   "page": 14,
+   "label": "Ballestero",
+   "chapter": false
+  },
+  {
+   "page": 15,
+   "label": "Las soldados",
+   "chapter": false
+  },
+  {
+   "page": 16,
+   "label": "Los oficios",
+   "chapter": false
+  },
+  {
+   "page": 18,
+   "label": "Sus tiendas",
+   "chapter": false
+  },
+  {
+   "page": 19,
+   "label": "Aldeano Necromancer",
+   "chapter": false
+  },
+  {
+   "page": 21,
+   "label": "Aldeanos del Nether",
+   "chapter": false
+  },
+  {
+   "page": 34,
+   "label": "Vida diaria",
+   "chapter": false
+  },
+  {
+   "page": 35,
+   "label": "Familias",
+   "chapter": false
+  },
+  {
+   "page": 36,
+   "label": "Tu ejército",
+   "chapter": false
+  },
+  {
+   "page": 37,
+   "label": "Todas las skins",
+   "chapter": false
+  },
+  {
+   "page": 43,
+   "label": "II. El Dragón del Nether",
+   "chapter": true
+  },
+  {
+   "page": 44,
+   "label": "Ficha del adulto",
+   "chapter": false
+  },
+  {
+   "page": 45,
+   "label": "Del huevo al adulto",
+   "chapter": false
+  },
+  {
+   "page": 46,
+   "label": "El huevo",
+   "chapter": false
+  },
+  {
+   "page": 47,
+   "label": "Alimentación",
+   "chapter": false
+  },
+  {
+   "page": 48,
+   "label": "Domesticar y vínculo",
+   "chapter": false
+  },
+  {
+   "page": 49,
+   "label": "Comportamiento natural",
+   "chapter": false
+  },
+  {
+   "page": 50,
+   "label": "Órdenes y báculo",
+   "chapter": false
+  },
+  {
+   "page": 51,
+   "label": "Montar y volar",
+   "chapter": false
+  },
+  {
+   "page": 52,
+   "label": "Fuego negro",
+   "chapter": false
+  },
+  {
+   "page": 54,
+   "label": "Combate y crianza",
+   "chapter": false
+  },
+  {
+   "page": 55,
+   "label": "III. Almas y magia",
+   "chapter": true
+  },
+  {
+   "page": 56,
+   "label": "Hoz de almas",
+   "chapter": false
+  },
+  {
+   "page": 57,
+   "label": "Pociones encantadas",
+   "chapter": false
+  },
+  {
+   "page": 58,
+   "label": "Báculo del Rey",
+   "chapter": false
+  },
+  {
+   "page": 59,
+   "label": "IV. El arsenal de rubí",
+   "chapter": true
+  },
+  {
+   "page": 60,
+   "label": "Espada y arco",
+   "chapter": false
+  },
+  {
+   "page": 61,
+   "label": "Armadura de rubí",
+   "chapter": false
+  },
+  {
+   "page": 62,
+   "label": "Crafteos de armadura",
+   "chapter": false
+  },
+  {
+   "page": 63,
+   "label": "Bloques de rubí",
+   "chapter": false
+  },
+  {
+   "page": 64,
+   "label": "Espada larga y ballesta",
+   "chapter": false
+  },
+  {
+   "page": 65,
+   "label": "Armadura Humana",
+   "chapter": false
+  },
+  {
+   "page": 67,
+   "label": "Armadura del Frío Eterno",
+   "chapter": false
+  },
+  {
+   "page": 69,
+   "label": "V. Mesas, cama y agua",
+   "chapter": true
+  },
+  {
+   "page": 70,
+   "label": "Mesas de trabajo",
+   "chapter": false
+  },
+  {
+   "page": 71,
+   "label": "Mesas de los aldeanos",
+   "chapter": false
+  },
+  {
+   "page": 72,
+   "label": "Cama del Nether",
+   "chapter": false
+  },
+  {
+   "page": 73,
+   "label": "Agua del Nether",
+   "chapter": false
+  },
+  {
+   "page": 74,
+   "label": "VI. El Reino Humano",
+   "chapter": true
+  },
+  {
+   "page": 75,
+   "label": "El Océano Púrpura",
+   "chapter": false
+  },
+  {
+   "page": 76,
+   "label": "Plano del reino",
+   "chapter": false
+  },
+  {
+   "page": 77,
+   "label": "Salón del Rey",
+   "chapter": false
+  },
+  {
+   "page": 78,
+   "label": "Las salas",
+   "chapter": false
+  },
+  {
+   "page": 80,
+   "label": "VII. La fauna del Océano Púrpura",
+   "chapter": true
+  },
+  {
+   "page": 81,
+   "label": "Peces",
+   "chapter": false
+  },
+  {
+   "page": 82,
+   "label": "Medusa, cangrejo y caballito",
+   "chapter": false
+  },
+  {
+   "page": 83,
+   "label": "Manta y tortuga",
+   "chapter": false
+  },
+  {
+   "page": 84,
+   "label": "Delfín del Nether",
+   "chapter": false
+  },
+  {
+   "page": 85,
+   "label": "Ballena Azul",
+   "chapter": false
+  },
+  {
+   "page": 86,
+   "label": "Tiburón Infernal",
+   "chapter": false
+  },
+  {
+   "page": 87,
+   "label": "Tridente de Rubí",
+   "chapter": false
+  },
+  {
+   "page": 88,
+   "label": "Serpiente Marina",
+   "chapter": false
+  },
+  {
+   "page": 89,
+   "label": "Comida y pociones del mar",
+   "chapter": false
+  },
+  {
+   "page": 90,
+   "label": "VIII. El Dragón Infernal",
+   "chapter": true
+  },
+  {
+   "page": 91,
+   "label": "Salvaje y su nido",
+   "chapter": false
+  },
+  {
+   "page": 92,
+   "label": "Sus ataques",
+   "chapter": false
+  },
+  {
+   "page": 93,
+   "label": "Su silla",
+   "chapter": false
+  },
+  {
+   "page": 94,
+   "label": "IX. Guía rápida",
+   "chapter": true
+  },
+  {
+   "page": 95,
+   "label": "Qué suelta cada criatura",
+   "chapter": false
+  },
+  {
+   "page": 96,
+   "label": "Comandos y créditos",
+   "chapter": false
+  },
+  {
+   "page": 97,
+   "label": "X. Recetario completo",
+   "chapter": true
+  },
+  {
+   "page": 98,
+   "label": "Rubí y bloques",
+   "chapter": false
+  },
+  {
+   "page": 99,
+   "label": "Armas de rubí",
+   "chapter": false
+  },
+  {
+   "page": 100,
+   "label": "Armas especiales",
+   "chapter": false
+  },
+  {
+   "page": 101,
+   "label": "Armadura de rubí",
+   "chapter": false
+  },
+  {
+   "page": 102,
+   "label": "Armadura humana",
+   "chapter": false
+  },
+  {
+   "page": 103,
+   "label": "Armadura del Frío Eterno",
+   "chapter": false
+  },
+  {
+   "page": 104,
+   "label": "Hoja del Frío y cascos del mar",
+   "chapter": false
+  },
+  {
+   "page": 105,
+   "label": "Dragones",
+   "chapter": false
+  },
+  {
+   "page": 106,
+   "label": "Mesas de trabajo",
+   "chapter": false
+  },
+  {
+   "page": 107,
+   "label": "Mesas de trabajo (2)",
+   "chapter": false
+  },
+  {
+   "page": 108,
+   "label": "Mesas de los aldeanos",
+   "chapter": false
+  },
+  {
+   "page": 109,
+   "label": "Mesas de los aldeanos (2)",
+   "chapter": false
+  },
+  {
+   "page": 110,
+   "label": "Cama, agua y manual",
+   "chapter": false
+  },
+  {
+   "page": 111,
+   "label": "Hornos y pociones",
+   "chapter": false
+  }
+ ]
+}

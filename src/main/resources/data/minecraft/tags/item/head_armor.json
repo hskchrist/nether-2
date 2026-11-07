@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "civilizacion_nether:human_helmet",
+    "civilizacion_nether:frost_helmet",
+    "civilizacion_nether:ruby_helmet",
+    "civilizacion_nether:obsidian_turtle_helmet",
+    "civilizacion_nether:serpent_helmet"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "RHR",
+    "I I",
+    "I I"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "H": {
+      "item": "civilizacion_nether:eternal_frost_leaf"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:frost_leggings",
+    "count": 1
+  }
+}

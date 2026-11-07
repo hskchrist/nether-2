@@ -16,6 +16,9 @@ import net.minecraft.resources.ResourceLocation;
 public class DragonFireballRenderer extends EntityRenderer<DragonFireballEntity> {
     private static final ResourceLocation TEXTURE = CivilizacionNether.id("textures/entity/black_fireball.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE);
+    /** Bola explosiva del Dragón Infernal. */
+    private static final ResourceLocation EXPLOSIVE = CivilizacionNether.id("textures/entity/infernal_fireball.png");
+    private static final RenderType EXPLOSIVE_TYPE = RenderType.entityCutoutNoCull(EXPLOSIVE);
     private static final int FULL_BRIGHT = 0xF000F0;
 
     public DragonFireballRenderer(EntityRendererProvider.Context context) {
@@ -30,7 +33,7 @@ public class DragonFireballRenderer extends EntityRenderer<DragonFireballEntity>
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
         poseStack.mulPose(Axis.ZP.rotationDegrees((entity.tickCount + partialTick) * 25.0f));
         PoseStack.Pose pose = poseStack.last();
-        VertexConsumer consumer = buffer.getBuffer(RENDER_TYPE);
+        VertexConsumer consumer = buffer.getBuffer(entity.isExplosive() ? EXPLOSIVE_TYPE : RENDER_TYPE);
         vertex(consumer, pose, 0.0f, 0, 0, 1);
         vertex(consumer, pose, 1.0f, 0, 1, 1);
         vertex(consumer, pose, 1.0f, 1, 1, 0);
@@ -50,6 +53,6 @@ public class DragonFireballRenderer extends EntityRenderer<DragonFireballEntity>
 
     @Override
     public ResourceLocation getTextureLocation(DragonFireballEntity entity) {
-        return TEXTURE;
+        return entity.isExplosive() ? EXPLOSIVE : TEXTURE;
     }
 }

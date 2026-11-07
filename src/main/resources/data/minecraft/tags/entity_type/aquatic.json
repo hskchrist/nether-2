@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "civilizacion_nether:pez_brasa",
+    "civilizacion_nether:pez_alma",
+    "civilizacion_nether:anguila_rubi",
+    "civilizacion_nether:medusa_vacio",
+    "civilizacion_nether:cangrejo_basalto",
+    "civilizacion_nether:caballito_magma",
+    "civilizacion_nether:manta_carmesi",
+    "civilizacion_nether:tortuga_obsidiana",
+    "civilizacion_nether:tiburon_infernal",
+    "civilizacion_nether:serpiente_marina",
+    "civilizacion_nether:delfin_nether",
+    "civilizacion_nether:ballena_azul"
+  ]
+}

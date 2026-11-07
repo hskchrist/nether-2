@@ -1,0 +1,194 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "t0": "civilizacion_nether:block/necromancer_table_arriba",
+    "t1": "civilizacion_nether:block/necromancer_table_delante",
+    "t2": "civilizacion_nether:block/necromancer_table_atras",
+    "t3": "civilizacion_nether:block/necromancer_table_izquierda",
+    "t4": "civilizacion_nether:block/necromancer_table_derecha",
+    "particle": "civilizacion_nether:block/necromancer_table_delante"
+  },
+  "elements": [
+    {
+      "name": "mesa",
+      "from": [
+        1.398,
+        0,
+        1.398
+      ],
+      "to": [
+        14.602,
+        15.729,
+        14.602
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1.8125,
+            0.75,
+            14.0,
+            15.25
+          ],
+          "texture": "#t1"
+        },
+        "east": {
+          "uv": [
+            1.8125,
+            0.75,
+            14.0625,
+            15.25
+          ],
+          "texture": "#t3"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            0.75,
+            14.0,
+            15.25
+          ],
+          "texture": "#t2"
+        },
+        "west": {
+          "uv": [
+            2.0625,
+            0.75,
+            14.3125,
+            15.25
+          ],
+          "texture": "#t4"
+        },
+        "up": {
+          "uv": [
+            0.8125,
+            0.6875,
+            15.25,
+            15.3125
+          ],
+          "texture": "#t0"
+        }
+      }
+    },
+    {
+      "name": "interior_delante",
+      "from": [
+        1.398,
+        0,
+        1.418
+      ],
+      "to": [
+        14.602,
+        15.729,
+        1.418
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            14.0,
+            0.75,
+            1.8125,
+            15.25
+          ],
+          "texture": "#t1"
+        }
+      }
+    },
+    {
+      "name": "interior_atras",
+      "from": [
+        1.398,
+        0,
+        14.582
+      ],
+      "to": [
+        14.602,
+        15.729,
+        14.582
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            14.0,
+            0.75,
+            2.0,
+            15.25
+          ],
+          "texture": "#t2"
+        }
+      }
+    },
+    {
+      "name": "interior_izquierda",
+      "from": [
+        14.582,
+        0,
+        1.398
+      ],
+      "to": [
+        14.582,
+        15.729,
+        14.602
+      ],
+      "faces": {
+        "west": {
+          "uv": [
+            14.0625,
+            0.75,
+            1.8125,
+            15.25
+          ],
+          "texture": "#t3"
+        }
+      }
+    },
+    {
+      "name": "interior_derecha",
+      "from": [
+        1.418,
+        0,
+        1.398
+      ],
+      "to": [
+        1.418,
+        15.729,
+        14.602
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            14.3125,
+            0.75,
+            2.0625,
+            15.25
+          ],
+          "texture": "#t4"
+        }
+      }
+    },
+    {
+      "name": "interior_techo",
+      "from": [
+        1.398,
+        15.709,
+        1.398
+      ],
+      "to": [
+        14.602,
+        15.709,
+        14.602
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0.8125,
+            15.3125,
+            15.25,
+            0.6875
+          ],
+          "texture": "#t0"
+        }
+      }
+    }
+  ]
+}

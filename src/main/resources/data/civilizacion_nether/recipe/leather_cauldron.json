@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "B B",
+    "BLB",
+    "BRB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:polished_blackstone"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:leather_cauldron",
+    "count": 1
+  }
+}

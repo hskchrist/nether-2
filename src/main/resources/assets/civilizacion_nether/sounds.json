@@ -1,0 +1,26 @@
+{
+  "human.man.hurt": {
+    "subtitle": "subtitles.civilizacion_nether.human.hurt",
+    "sounds": [
+      "civilizacion_nether:human/hombre_golpe_1"
+    ]
+  },
+  "human.boy.hurt": {
+    "subtitle": "subtitles.civilizacion_nether.human.hurt",
+    "sounds": [
+      "civilizacion_nether:human/nino_golpe_1"
+    ]
+  },
+  "human.girl.hurt": {
+    "subtitle": "subtitles.civilizacion_nether.human.hurt",
+    "sounds": [
+      "civilizacion_nether:human/nina_golpe_1"
+    ]
+  },
+  "human.woman.hurt": {
+    "subtitle": "subtitles.civilizacion_nether.human.hurt",
+    "sounds": [
+      "civilizacion_nether:human/mujer_golpe_1"
+    ]
+  }
+}
