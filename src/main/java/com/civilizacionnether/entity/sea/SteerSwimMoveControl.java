@@ -27,7 +27,7 @@ public class SteerSwimMoveControl extends MoveControl {
             mob.setSpeed(0.0f);
             mob.setZza(0.0f);
             mob.setYya(0.0f);
-            mob.setXRot(rotlerp(mob.getXRot(), 0.0f, 2.0f));
+            mob.setXRot(Mth.wrapDegrees(rotlerp(mob.getXRot(), 0.0f, 2.0f)));
             return;
         }
         double dx = wantedX - mob.getX();
@@ -50,7 +50,7 @@ public class SteerSwimMoveControl extends MoveControl {
             double horizontal = Math.sqrt(dx * dx + dz * dz);
             float pitch = -(float) (Mth.atan2(dy, horizontal) * Mth.RAD_TO_DEG);
             pitch = Mth.clamp(Mth.wrapDegrees(pitch), -maxPitch, maxPitch);
-            mob.setXRot(rotlerp(mob.getXRot(), pitch, 3.0f));
+            mob.setXRot(Mth.wrapDegrees(rotlerp(mob.getXRot(), pitch, 3.0f)));
             float cos = Mth.cos(mob.getXRot() * Mth.DEG_TO_RAD);
             float sin = Mth.sin(mob.getXRot() * Mth.DEG_TO_RAD);
             mob.zza = cos * speed;

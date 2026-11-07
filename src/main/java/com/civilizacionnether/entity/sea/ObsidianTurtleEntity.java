@@ -50,7 +50,7 @@ public class ObsidianTurtleEntity extends Animal implements GeoEntity {
 
     public ObsidianTurtleEntity(EntityType<? extends ObsidianTurtleEntity> type, Level level) {
         super(type, level);
-        this.moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.06f, 0.6f, false);
+        this.moveControl = new SmoothSwimmingMoveControl(this, 20, 10, 0.06f, 0.6f, false);
         this.lookControl = new SmoothSwimmingLookControl(this, 20);
         setPathfindingMalus(PathType.WATER, 0.0f);
     }

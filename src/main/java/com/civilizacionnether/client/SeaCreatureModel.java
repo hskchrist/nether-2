@@ -10,7 +10,8 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 /**
  * Modelo de las criaturas del mar (geo/entity, textures/entity y animations/entity con el mismo nombre).
- * Las que nadan en 3D inclinan el cuerpo al subir y bajar.
+ * Las que nadan en 3D inclinan el cuerpo al subir y bajar (en SeaCreatureRenderer: antes se sumaba al hueso "root"
+ * cada cuadro y la criatura terminaba dando vueltas).
  */
 public class SeaCreatureModel<T extends LivingEntity & GeoAnimatable> extends DefaultedEntityGeoModel<T> {
     private final boolean pitch;
@@ -20,16 +21,8 @@ public class SeaCreatureModel<T extends LivingEntity & GeoAnimatable> extends De
         this.pitch = pitch;
     }
 
-    @Override
-    public void setCustomAnimations(T animatable, long instanceId, AnimationState<T> animationState) {
-        super.setCustomAnimations(animatable, instanceId, animationState);
-        if (!pitch) {
-            return;
-        }
-        GeoBone root = getAnimationProcessor().getBone("root");
-        if (root != null) {
-            float xRot = Mth.lerp(animationState.getPartialTick(), animatable.xRotO, animatable.getXRot());
-            root.setRotX(root.getRotX() - xRot * Mth.DEG_TO_RAD);
-        }
+    /** ¿Inclina el cuerpo al subir y bajar? (lo hace SeaCreatureRenderer sobre todo el modelo). */
+    public boolean pitches() {
+        return pitch;
     }
 }

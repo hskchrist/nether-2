@@ -52,13 +52,16 @@ public class DragonModel extends GeoModel<NetherDragonEntity> {
         for (String l : LEG_ROOTS) {
             scale(l, legs);
         }
-        GeoBone root = getAnimationProcessor().getBone("root");
-        if (root != null && legs < 0.999f) {
-            root.setPosY(root.getPosY() - LEG_DROP * (1.0f - legs));
-        }
         hide("saddle", !animatable.isSaddled());
         hide("spikes_b2", animatable.isSaddled());
         hide("ray", true);
+    }
+
+    /** Cuánto se baja el cuerpo de las crías (patas más cortas), en píxeles del modelo. Lo aplica DragonRenderer
+     *  (antes se restaba al hueso "root" cada cuadro y la cría se iba hundiendo en el suelo). */
+    public static float legDrop(NetherDragonEntity d) {
+        float legs = DragonStages.lerp(DragonStages.LEGS, d.getGrowth());
+        return legs < 0.999f ? LEG_DROP * (1.0f - legs) : 0.0f;
     }
 
     private void scale(String name, float s) {

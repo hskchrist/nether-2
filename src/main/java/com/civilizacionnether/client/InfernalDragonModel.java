@@ -62,10 +62,12 @@ public class InfernalDragonModel extends GeoModel<InfernalDragonEntity> {
         if (spike != null) {
             spike.setHidden(animatable.isSaddled());
         }
-        GeoBone root = getAnimationProcessor().getBone("root");
-        if (root != null && legs < 0.999f && !animatable.isFlying() && !animatable.isResting()) {
-            root.setPosY(root.getPosY() - LEG_LIFT * (1.0f - legs));
-        }
+    }
+
+    /** Cuánto se baja el cuerpo de las crías en tierra (patas más cortas), en píxeles del modelo (InfernalDragonRenderer). */
+    public static float legDrop(InfernalDragonEntity d) {
+        float legs = DragonStages.lerp(DragonStages.LEGS, d.getGrowth());
+        return legs < 0.999f && !d.isFlying() && !d.isResting() ? LEG_LIFT * (1.0f - legs) : 0.0f;
     }
 
     private void scale(String name, float s) {

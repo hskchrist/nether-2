@@ -1,6 +1,8 @@
 package com.civilizacionnether.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.util.Mth;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -39,6 +41,20 @@ public class SeaCreatureRenderer<T extends LivingEntity & GeoAnimatable> extends
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         if (baby) {
             poseStack.popPose();
+        }
+    }
+
+    /** Inclina todo el cuerpo según hacia dónde nada (arriba/abajo), girando desde el centro de la criatura. */
+    @Override
+    protected void applyRotations(T entity, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick, float nativeScale) {
+        super.applyRotations(entity, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
+        if (getGeoModel() instanceof SeaCreatureModel<?> m && m.pitches() && entity.isAlive() && entity.isInWater()) {
+            float xRot = Mth.wrapDegrees(Mth.rotLerp(partialTick, entity.xRotO, entity.getXRot()));
+            xRot = Mth.clamp(xRot, -80.0f, 80.0f);
+            float h = entity.getBbHeight() * 0.5f;
+            poseStack.translate(0.0f, h, 0.0f);
+            poseStack.mulPose(Axis.XP.rotationDegrees(-xRot));
+            poseStack.translate(0.0f, -h, 0.0f);
         }
     }
 

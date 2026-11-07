@@ -27,4 +27,14 @@ public class DragonRenderer extends GeoEntityRenderer<NetherDragonEntity> {
         this.shadowRadius = 1.8f * entity.getScale();
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
+
+    @Override
+    protected void applyRotations(NetherDragonEntity entity, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick,
+                                  float nativeScale) {
+        super.applyRotations(entity, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
+        float drop = DragonModel.legDrop(entity);
+        if (drop > 0.0f) {
+            poseStack.translate(0.0f, -drop / 16.0f, 0.0f);
+        }
+    }
 }
