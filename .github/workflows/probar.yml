@@ -2,14 +2,17 @@ name: Probar el mod (juego real)
 
 # Abre Minecraft con el mod en una pantalla virtual, hace aparecer todas las criaturas en el mundo normal,
 # el Nether y el End, saca fotos y guarda los registros (y el reporte si se cae) en Releases → "prueba-automatica".
+# (Se corre al subir un cambio cuyo mensaje diga [probar], o a mano desde la pestaña Actions.)
 on:
   workflow_dispatch:
+  push:
 
 permissions:
   contents: write
 
 jobs:
   probar:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[probar]')
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
