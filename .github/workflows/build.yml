@@ -5,6 +5,10 @@ on:
   push:
   workflow_dispatch:
 
+# Permiso para publicar el .jar como "release" del repositorio
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,3 +35,12 @@ jobs:
         with:
           name: civilizacion_nether-jar
           path: build/libs/*.jar
+
+      - name: Publicar el .jar en Releases (se descarga directo desde la página del repo)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="compilacion-${GITHUB_REF_NAME//\//-}"
+          gh release delete "$TAG" --yes --cleanup-tag || true
+          gh release create "$TAG" build/libs/*.jar --target "$GITHUB_SHA" --prerelease \
+            --title "Mod compilado ($GITHUB_REF_NAME)" --notes "Última compilación de la rama $GITHUB_REF_NAME. Pon el .jar en la carpeta mods junto con GeckoLib."
