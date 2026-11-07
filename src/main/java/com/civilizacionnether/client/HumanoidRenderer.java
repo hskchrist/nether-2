@@ -24,7 +24,7 @@ public class HumanoidRenderer extends GeoEntityRenderer<NetherHumanoidEntity> {
         super(context, new HumanoidModel());
         withScale(type.renderScale);
         this.shadowRadius = type.width * 0.7f;
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new SafeGlowLayer<>(this));
         addRenderLayer(new HeldItemLayer(this));
     }
 

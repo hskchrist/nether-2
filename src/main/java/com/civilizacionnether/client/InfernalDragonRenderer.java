@@ -15,7 +15,7 @@ public class InfernalDragonRenderer extends GeoEntityRenderer<InfernalDragonEnti
         super(context, new InfernalDragonModel());
         withScale(ADULT_SCALE);
         this.shadowRadius = 1.8f;
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new SafeGlowLayer<>(this));
         addRenderLayer(new InfernalSaddleLayer(this));
     }
 

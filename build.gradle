@@ -37,6 +37,16 @@ neoForge {
             server()
             programArgument '--nogui'
         }
+        // prueba automática en GitHub: crea un mundo, hace aparecer todo, saca fotos y cierra (client/SelfTest)
+        selftest {
+            client()
+            gameDirectory = project.file('run-selftest')
+            systemProperty 'civilizacion_nether.selftest', 'true'
+            programArgument '--width'
+            programArgument '1280'
+            programArgument '--height'
+            programArgument '720'
+        }
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             logLevel = org.slf4j.event.Level.INFO

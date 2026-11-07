@@ -1,0 +1,46 @@
+name: Probar el mod (juego real)
+
+# Abre Minecraft con el mod en una pantalla virtual, hace aparecer todas las criaturas en el mundo normal,
+# el Nether y el End, saca fotos y guarda los registros (y el reporte si se cae) en Releases → "prueba-automatica".
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+      - name: Pantalla virtual
+        run: sudo apt-get update -q && sudo apt-get install -y -q xvfb libgl1-mesa-dri mesa-utils zip
+      - name: Opciones del juego
+        run: |
+          mkdir -p run-selftest/config
+          printf 'earlyWindowControl = false\n' > run-selftest/config/fml.toml
+          printf 'onboardAccessibility:false\ntutorialStep:none\nrenderDistance:5\nsimulationDistance:5\npauseOnLostFocus:false\nskipMultiplayerWarning:true\njoinedFirstServer:true\nnarrator:0\nsoundCategory_master:0.0\n' > run-selftest/options.txt
+      - name: Jugar la prueba
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          MESA_GL_VERSION_OVERRIDE: '4.5'
+        run: timeout 30m xvfb-run -a -s "-screen 0 1280x720x24" gradle runSelftest --no-daemon || echo "el juego terminó con error"
+      - name: Guardar resultados
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd run-selftest
+          zip -r ../prueba.zip logs crash-reports screenshots 2>/dev/null || true
+          cd ..
+          ls -la prueba.zip || exit 0
+          gh release delete prueba-automatica --yes --cleanup-tag || true
+          gh release create prueba-automatica prueba.zip --target "$GITHUB_SHA" --prerelease --title "Prueba automática" --notes "Registros, fotos y reportes de la última prueba."

@@ -24,7 +24,7 @@ public class SeaCreatureRenderer<T extends LivingEntity & GeoAnimatable> extends
         this.shadowRadius = shadow;
         this.translucent = translucent;
         if (glow) {
-            addRenderLayer(new AutoGlowingGeoLayer<>(this));
+            addRenderLayer(new SafeGlowLayer<>(this));
         }
     }
 

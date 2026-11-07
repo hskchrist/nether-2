@@ -18,7 +18,7 @@ public class DragonRenderer extends GeoEntityRenderer<NetherDragonEntity> {
         super(context, new DragonModel());
         withScale(ADULT_SCALE);
         this.shadowRadius = 1.8f;
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new SafeGlowLayer<>(this));
     }
 
     @Override

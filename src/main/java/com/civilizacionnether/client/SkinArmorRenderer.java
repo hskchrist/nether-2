@@ -30,7 +30,7 @@ public class SkinArmorRenderer extends GeoArmorRenderer<SkinArmorItem> {
             }
         });
         if (glowing) {
-            addRenderLayer(new AutoGlowingGeoLayer<>(this));
+            addRenderLayer(new SafeGlowLayer<>(this));
         }
     }
 }

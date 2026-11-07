@@ -21,6 +21,6 @@ public class DragonEggRenderer extends GeoEntityRenderer<DragonEggEntity> {
         });
         withScale(1.4f);
         this.shadowRadius = 0.45f;
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new SafeGlowLayer<>(this));
     }
 }

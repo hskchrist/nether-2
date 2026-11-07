@@ -10,6 +10,6 @@ import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 public class NecroStaffRenderer extends GeoItemRenderer<NecroStaffItem> {
     public NecroStaffRenderer() {
         super(new DefaultedItemGeoModel<>(CivilizacionNether.id("necro_staff")));
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new SafeGlowLayer<>(this));
     }
 }

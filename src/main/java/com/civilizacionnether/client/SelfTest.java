@@ -1,0 +1,163 @@
+package com.civilizacionnether.client;
+
+import com.civilizacionnether.CivilizacionNether;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.LevelSettings;
+import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.levelgen.WorldOptions;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Prueba automática (sólo para la compilación en GitHub; en el juego normal no hace nada): con
+ * -Dcivilizacion_nether.selftest=true crea un mundo, hace aparecer todas las criaturas del mod (y aldeanos)
+ * en el mundo normal, el Nether y el End, saca fotos y cierra el juego. Si algo se cae, queda el reporte.
+ */
+@EventBusSubscriber(modid = CivilizacionNether.MODID, value = Dist.CLIENT)
+public final class SelfTest {
+    private static final boolean ON = Boolean.getBoolean("civilizacion_nether.selftest");
+    private static boolean started;
+    private static int tick;
+    private static int step;
+    private static final List<String> TYPES = new ArrayList<>();
+
+    @SubscribeEvent
+    public static void screen(ScreenEvent.Init.Post event) {
+        if (!ON || started) {
+            return;
+        }
+        if (event.getScreen() instanceof TitleScreen || event.getScreen() instanceof AccessibilityOnboardingScreen) {
+            started = true;
+            Minecraft mc = Minecraft.getInstance();
+            mc.execute(() -> {
+                LevelSettings settings = new LevelSettings("prueba", GameType.CREATIVE, false, Difficulty.NORMAL, true,
+                        new GameRules(), WorldDataConfiguration.DEFAULT);
+                mc.createWorldOpenFlows().createFreshLevel("prueba", settings, new WorldOptions(12345L, true, false),
+                        reg -> reg.lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),
+                        new TitleScreen());
+            });
+        }
+    }
+
+    private static void cmd(String c) {
+        Minecraft mc = Minecraft.getInstance();
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (server == null || mc.player == null) {
+            return;
+        }
+        server.execute(() -> {
+            var p = server.getPlayerList().getPlayer(mc.player.getUUID());
+            if (p != null) {
+                server.getCommands().performPrefixedCommand(p.createCommandSourceStack().withPermission(4).withSuppressedOutput(), c);
+            }
+        });
+        CivilizacionNether.LOGGER.info("SELFTEST cmd: {}", c);
+    }
+
+    private static void shot(String name) {
+        Minecraft mc = Minecraft.getInstance();
+        Screenshot.grab(mc.gameDirectory, name + ".png", mc.getMainRenderTarget(), m -> CivilizacionNether.LOGGER.info("SELFTEST foto {}", name));
+    }
+
+    /** Arma una pileta de agua y un piso, y pone todas las criaturas en fila delante de la cámara. */
+    private static void stage(String dim, String block) {
+        String in = "execute in " + dim + " run ";
+        cmd(in + "forceload add -32 -32 32 32");
+        cmd(in + "fill -24 99 -4 24 112 30 minecraft:air");
+        cmd(in + "fill -24 98 -4 24 98 30 " + block);
+        cmd(in + "fill -24 95 14 24 97 30 minecraft:water");
+        cmd(in + "fill -24 98 15 24 98 29 minecraft:water");
+        cmd(in + "fill -25 95 13 25 98 13 minecraft:glass");
+        cmd(in + "tp @s 0 106 -2 0 35");
+        int i = 0;
+        for (String t : TYPES) {
+            boolean sea = t.matches(".*(pez|anguila|medusa|cangrejo|caballito|manta|tortuga|tiburon|serpiente|delfin|ballena).*");
+            int x = -20 + (i % 11) * 4;
+            int z = sea ? 18 + (i / 11) * 4 : 3 + (i / 11) * 3;
+            String extra = sea ? "" : "";
+            cmd(in + "summon " + t + " " + x + " " + (sea ? 96 : 99) + " " + z + extra);
+            i++;
+        }
+        cmd(in + "summon minecraft:villager 6 99 9");
+        cmd(in + "summon minecraft:villager 9 99 9 {VillagerData:{type:\"civilizacion_nether:nether\",profession:\"civilizacion_nether:albanil\",level:2}}");
+        cmd(in + "summon minecraft:villager 12 99 9 {VillagerData:{type:\"civilizacion_nether:nether\",profession:\"minecraft:cleric\",level:2}}");
+    }
+
+    @SubscribeEvent
+    public static void tick(ClientTickEvent.Post event) {
+        if (!ON || !started) {
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.getSingleplayerServer() == null) {
+            return;
+        }
+        tick++;
+        if (TYPES.isEmpty()) {
+            for (ResourceLocation id : BuiltInRegistries.ENTITY_TYPE.keySet()) {
+                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(id);
+                if (CivilizacionNether.MODID.equals(id.getNamespace()) && type.getCategory() != MobCategory.MISC) {
+                    TYPES.add(id.toString());
+                }
+            }
+            TYPES.add("civilizacion_nether:dragon_egg");
+            CivilizacionNether.LOGGER.info("SELFTEST criaturas: {}", TYPES);
+            mc.options.hideGui = true;
+            cmd("gamerule doDaylightCycle false");
+            cmd("time set 6000");
+            cmd("weather clear");
+            cmd("gamemode spectator");
+        }
+        String[] dims = {"minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"};
+        String[] floors = {"minecraft:stone", "minecraft:netherrack", "minecraft:end_stone"};
+        int phase = tick / 500;
+        int t = tick % 500;
+        if (phase >= dims.length) {
+            if (t == 1) {
+                CivilizacionNether.LOGGER.info("SELFTEST terminado sin caerse");
+                mc.stop();
+            }
+            return;
+        }
+        String d = dims[phase].substring(10);
+        if (t == 40) {
+            stage(dims[phase], floors[phase]);
+        } else if (t == 160 || t == 300 || t == 440) {
+            shot(d + "_" + t);
+        } else if (t == 230) {
+            cmd("execute in " + dims[phase] + " run tp @s 0 100 8 0 15");
+        } else if (t == 240) {
+            shot(d + "_cerca");
+        } else if (t == 250) {
+            cmd("execute in " + dims[phase] + " run tp @s 0 98.5 10 0 10");
+        } else if (t == 262) {
+            shot(d + "_agua");
+        } else if (t == 270) {
+            cmd("execute in " + dims[phase] + " run tp @s 0 106 -2 0 35");
+        } else if (t == 490) {
+            cmd("execute in " + dims[phase] + " run kill @e[type=!player]");
+        }
+    }
+
+    private SelfTest() {
+    }
+}

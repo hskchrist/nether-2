@@ -5,6 +5,7 @@ Uso:  python tools/generate.py      (requiere Python 3, Pillow y numpy:  pip ins
 Si editas un modelo o una textura a mano en Blockbench, NO vuelvas a ejecutar este script
 o se sobrescribirán tus cambios.
 """
+import os
 import models
 import textures
 import datagen
@@ -48,4 +49,12 @@ if __name__ == "__main__":
     sealife.write_all()      # fauna del Océano Púrpura (12 criaturas) y Dragón Infernal con su nido
     infernal_saddle.write_all()  # silla visible del Dragón Infernal (hueso nuevo + su propia textura) y su crafteo
     info = kingdom.write_all()
+    # GeckoLib cierra el juego si una máscara de brillo está vacía: esas se borran (sin máscara = sin brillo)
+    import glob
+    import numpy as np
+    from PIL import Image
+    for f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "main", "resources", "assets",
+                                    "civilizacion_nether", "textures", "**", "*_glowmask.png"), recursive=True):
+        if not (np.array(Image.open(f).convert("RGBA"))[..., 3] > 0).any():
+            os.remove(f)
     print("Recursos generados. Reino: %d bloques, %d habitantes." % info)
