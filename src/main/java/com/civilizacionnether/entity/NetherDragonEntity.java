@@ -579,8 +579,9 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         grabCooldown = 200;
         entityData.set(CARRYING, false);
         if (c != null && c.isAlive()) {
-            Vec3 toss = Vec3.directionFromRotation(0, getYRot()).scale(1.3);
-            c.setDeltaMovement(getDeltaMovement().add(toss).add(0.0, 0.9, 0.0));
+            boolean player = c instanceof Player;
+            Vec3 toss = Vec3.directionFromRotation(0, getYRot()).scale(player ? 0.9 : 1.3);
+            c.setDeltaMovement((player ? Vec3.ZERO : getDeltaMovement()).add(toss).add(0.0, player ? 0.3 : 0.9, 0.0));
             c.hurtMarked = true;
             playSound(SoundEvents.ENDER_DRAGON_GROWL, 1.0f + getScale(), 1.3f);
         }
@@ -611,7 +612,8 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
             setFlyTarget(t.position().add(0.0, t.getBbHeight() + 0.3, 0.0));
             if (position().distanceTo(t.position().add(0.0, t.getBbHeight(), 0.0)) < 2.2 + getBbWidth() * 0.4) {
                 grab(t, GRAB_LIFT, 120);
-                liftTopY = getY() + 14.0 + random.nextInt(8);
+                // a un jugador lo sube poco (la armadura no protege de la caída): duele pero no mata de una
+                liftTopY = getY() + (t instanceof Player ? 3.0 + random.nextInt(2) : 14.0 + random.nextInt(8));
             }
             return;
         }

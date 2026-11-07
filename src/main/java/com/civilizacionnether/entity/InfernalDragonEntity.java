@@ -236,7 +236,7 @@ public class InfernalDragonEntity extends NetherDragonEntity {
     /** Bola de fuego explosiva. */
     @Override
     protected void spawnFireball(Vec3 from, Vec3 direction, float damage) {
-        DragonFireballEntity.shootExplosive(this, from, direction, damage * 0.7f, isTame() ? 2.0f : 2.6f, isWildHostile());
+        DragonFireballEntity.shootExplosive(this, from, direction, damage * 0.7f, isTame() ? 2.0f : 2.2f, isWildHostile());
     }
 
     /** En vez del aliento de fuego, la IA usa el agarre. */

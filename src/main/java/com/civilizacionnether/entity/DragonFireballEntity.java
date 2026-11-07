@@ -158,11 +158,20 @@ public class DragonFireballEntity extends Projectile {
         target.setRemainingFireTicks(100);
     }
 
+    /** La explosión le hace la mitad de daño a los jugadores (con buena armadura se aguanta). */
+    private static final net.minecraft.world.level.ExplosionDamageCalculator PLAYER_SAFE = new net.minecraft.world.level.ExplosionDamageCalculator() {
+        @Override
+        public float getEntityDamageAmount(net.minecraft.world.level.Explosion explosion, Entity entity) {
+            float d = super.getEntityDamageAmount(explosion, entity);
+            return entity instanceof net.minecraft.world.entity.player.Player ? d * 0.5f : d;
+        }
+    };
+
     @Override
     protected void onHit(HitResult result) {
         super.onHit(result);
         if (!level().isClientSide && level() instanceof ServerLevel server && isExplosive()) {
-            server.explode(this, getX(), getY(), getZ(), power, griefing,
+            server.explode(this, null, PLAYER_SAFE, getX(), getY(), getZ(), power, griefing,
                     griefing ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
             discard();
             return;
