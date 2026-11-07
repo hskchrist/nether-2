@@ -30,7 +30,7 @@ public class ManualScreen extends Screen {
     private static final int TEX_W = 700;
     private static final int TEX_H = 965;
     private static final int INDEX_PAGE = 2;
-    private static int pages = 114;
+    private static int pages = 116;
     private static List<Entry> index;
     private static int lastSpread;
     private static final Set<ResourceLocation> FILTERED = new HashSet<>();
