@@ -52,6 +52,10 @@ public final class CommonEvents {
         event.put(ModEntities.DRAGON_EGG.get(), DragonEggEntity.createAttributes().build());
         event.put(ModEntities.DRAGON_INFERNAL.get(), InfernalDragonEntity.createInfernalAttributes().build());
         event.put(ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get(), InfernalDragonEntity.createInfernalAttributes().build());
+        event.put(ModEntities.DRAGON_ALMAS.get(), InfernalDragonEntity.createInfernalAttributes().build());
+        event.put(ModEntities.DRAGON_ALMAS_DOMESTICABLE.get(), InfernalDragonEntity.createInfernalAttributes().build());
+        event.put(ModEntities.DRAGON_OBSIDIANA.get(), InfernalDragonEntity.createInfernalAttributes().build());
+        event.put(ModEntities.DRAGON_OBSIDIANA_DOMESTICABLE.get(), InfernalDragonEntity.createInfernalAttributes().build());
         event.put(ModEntities.PEZ_BRASA.get(), NetherFishEntity.createAttributes(3.0).build());
         event.put(ModEntities.PEZ_ALMA.get(), NetherFishEntity.createAttributes(4.0).build());
         event.put(ModEntities.ANGUILA_RUBI.get(), NetherFishEntity.createAttributes(6.0).build());
@@ -76,6 +80,12 @@ public final class CommonEvents {
         event.register(ModEntities.NETHER_DRAGON.get(), SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, CommonEvents::canSpawnDragon,
                 RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        // dragones Infernal, de Almas y de Obsidiana (salvajes y domesticables)
+        for (var t : java.util.List.of(ModEntities.DRAGON_INFERNAL, ModEntities.DRAGON_INFERNAL_DOMESTICABLE, ModEntities.DRAGON_ALMAS,
+                ModEntities.DRAGON_ALMAS_DOMESTICABLE, ModEntities.DRAGON_OBSIDIANA, ModEntities.DRAGON_OBSIDIANA_DOMESTICABLE)) {
+            event.register(t.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    CommonEvents::canSpawnInfernal, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        }
         // fauna del Océano Púrpura
         RegisterSpawnPlacementsEvent.Operation op = RegisterSpawnPlacementsEvent.Operation.REPLACE;
         Heightmap.Types hm = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
@@ -114,6 +124,16 @@ public final class CommonEvents {
         }
         BlockPos below = pos.below();
         return level.getBlockState(below).isValidSpawn(level, below, type) && !level.getBlockState(below).liquid();
+    }
+
+    private static boolean canSpawnInfernal(EntityType<InfernalDragonEntity> type, ServerLevelAccessor level,
+                                            MobSpawnType reason, BlockPos pos, RandomSource random) {
+        if (reason == MobSpawnType.NATURAL && random.nextInt(3) != 0) {
+            return false;
+        }
+        BlockPos below = pos.below();
+        return level.getBlockState(below).isValidSpawn(level, below, type) && !level.getBlockState(below).liquid()
+                && level.noCollision(type.getSpawnAABB(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
     }
 
     /** La lava con agua del Nether forma obsidiana (fuente) o piedra negra (corriente). */

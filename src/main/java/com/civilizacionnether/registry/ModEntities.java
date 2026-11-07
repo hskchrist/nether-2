@@ -80,6 +80,42 @@ public final class ModEntities {
                     .fireImmune()
                     .clientTrackingRange(16)
                     .build("dragon_infernal_domesticable"));
+    /** Dragón de Almas salvaje (fuego azul; nido en el Valle de Arena de Almas). */
+    public static final DeferredHolder<EntityType<?>, EntityType<InfernalDragonEntity>> DRAGON_ALMAS = ENTITIES.register("dragon_almas",
+            () -> EntityType.Builder.<InfernalDragonEntity>of(InfernalDragonEntity::new, MobCategory.CREATURE)
+                    .sized(3.4f, 3.0f)
+                    .eyeHeight(2.7f)
+                    .passengerAttachments(new Vec3(0.0, 2.55, -0.4))
+                    .fireImmune()
+                    .clientTrackingRange(16)
+                    .build("dragon_almas"));
+    /** Dragón de Almas domesticable. */
+    public static final DeferredHolder<EntityType<?>, EntityType<InfernalDragonEntity>> DRAGON_ALMAS_DOMESTICABLE = ENTITIES.register("dragon_almas_domesticable",
+            () -> EntityType.Builder.<InfernalDragonEntity>of(InfernalDragonEntity::new, MobCategory.CREATURE)
+                    .sized(3.4f, 3.0f)
+                    .eyeHeight(2.7f)
+                    .passengerAttachments(new Vec3(0.0, 2.55, -0.4))
+                    .fireImmune()
+                    .clientTrackingRange(16)
+                    .build("dragon_almas_domesticable"));
+    /** Dragón de Obsidiana salvaje (fuego morado; nido en los Deltas de Basalto). */
+    public static final DeferredHolder<EntityType<?>, EntityType<InfernalDragonEntity>> DRAGON_OBSIDIANA = ENTITIES.register("dragon_obsidiana",
+            () -> EntityType.Builder.<InfernalDragonEntity>of(InfernalDragonEntity::new, MobCategory.CREATURE)
+                    .sized(3.4f, 3.0f)
+                    .eyeHeight(2.7f)
+                    .passengerAttachments(new Vec3(0.0, 2.55, -0.4))
+                    .fireImmune()
+                    .clientTrackingRange(16)
+                    .build("dragon_obsidiana"));
+    /** Dragón de Obsidiana domesticable. */
+    public static final DeferredHolder<EntityType<?>, EntityType<InfernalDragonEntity>> DRAGON_OBSIDIANA_DOMESTICABLE = ENTITIES.register("dragon_obsidiana_domesticable",
+            () -> EntityType.Builder.<InfernalDragonEntity>of(InfernalDragonEntity::new, MobCategory.CREATURE)
+                    .sized(3.4f, 3.0f)
+                    .eyeHeight(2.7f)
+                    .passengerAttachments(new Vec3(0.0, 2.55, -0.4))
+                    .fireImmune()
+                    .clientTrackingRange(16)
+                    .build("dragon_obsidiana_domesticable"));
 
     // ------------------------------------------------------------------ fauna del Océano Púrpura
     public static final DeferredHolder<EntityType<?>, EntityType<NetherFishEntity>> PEZ_BRASA = fish("pez_brasa", 0.5f, 0.35f);

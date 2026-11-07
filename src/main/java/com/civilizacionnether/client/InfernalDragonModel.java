@@ -17,6 +17,8 @@ public class InfernalDragonModel extends GeoModel<InfernalDragonEntity> {
     private static final ResourceLocation TEXTURE = CivilizacionNether.id("textures/entity/dragon_infernal.png");
     /** Skin del Dragón Infernal domesticable (la puede pintar distinta el usuario). */
     private static final ResourceLocation TAME_TEXTURE = CivilizacionNether.id("textures/entity/dragon_infernal_domesticable.png");
+    private static final ResourceLocation ALMAS_TEXTURE = CivilizacionNether.id("textures/entity/dragon_almas.png");
+    private static final ResourceLocation OBSIDIANA_TEXTURE = CivilizacionNether.id("textures/entity/dragon_obsidiana.png");
     private static final ResourceLocation ANIMATIONS = CivilizacionNether.id("animations/entity/dragon_infernal.animation.json");
     private static final String[] WINGS = {"wing", "wing1"};
     private static final String[] LEGS = {"frontleg", "frontleg1", "rearleg", "rearleg1"};
@@ -30,7 +32,11 @@ public class InfernalDragonModel extends GeoModel<InfernalDragonEntity> {
 
     @Override
     public ResourceLocation getTextureResource(InfernalDragonEntity animatable) {
-        return animatable.isTameVariant() ? TAME_TEXTURE : TEXTURE;
+        return switch (animatable.species()) {
+            case ALMAS -> ALMAS_TEXTURE;
+            case OBSIDIANA -> OBSIDIANA_TEXTURE;
+            default -> animatable.isTameVariant() ? TAME_TEXTURE : TEXTURE;
+        };
     }
 
     @Override

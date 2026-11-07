@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SFS",
+    "FEF",
+    "SFS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:soul_soil"
+    },
+    "F": {
+      "item": "minecraft:soul_lantern"
+    },
+    "E": {
+      "item": "civilizacion_nether:dragon_egg"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:almas_dragon_egg",
+    "count": 1
+  }
+}

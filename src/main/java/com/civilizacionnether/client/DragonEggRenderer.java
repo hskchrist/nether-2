@@ -11,12 +11,11 @@ import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 public class DragonEggRenderer extends GeoEntityRenderer<DragonEggEntity> {
     public DragonEggRenderer(EntityRendererProvider.Context context) {
         super(context, new DefaultedEntityGeoModel<DragonEggEntity>(CivilizacionNether.id("nether_dragon_egg")) {
-            private final net.minecraft.resources.ResourceLocation infernal =
-                    CivilizacionNether.id("textures/entity/infernal_dragon_egg.png");
-
             @Override
             public net.minecraft.resources.ResourceLocation getTextureResource(DragonEggEntity egg) {
-                return egg.isInfernal() ? infernal : super.getTextureResource(egg);
+                // huevo de cada especie: infernal_dragon_egg, almas_dragon_egg, obsidiana_dragon_egg
+                return egg.isInfernal() ? CivilizacionNether.id("textures/entity/" + egg.getSpecies().id + "_dragon_egg.png")
+                        : super.getTextureResource(egg);
             }
         });
         withScale(1.4f);

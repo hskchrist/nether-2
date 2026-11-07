@@ -1,0 +1,21 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:basalt_deltas",
+    "civilizacion_nether:oceano_purpura"
+  ],
+  "spawners": [
+    {
+      "type": "civilizacion_nether:dragon_obsidiana",
+      "weight": 2,
+      "minCount": 1,
+      "maxCount": 1
+    },
+    {
+      "type": "civilizacion_nether:dragon_obsidiana_domesticable",
+      "weight": 1,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package com.civilizacionnether.worldgen;
 
 import com.civilizacionnether.entity.DragonEggEntity;
+import com.civilizacionnether.entity.DragonSpecies;
 import com.civilizacionnether.entity.InfernalDragonEntity;
 import com.civilizacionnether.registry.ModEntities;
 import com.mojang.serialization.Codec;
@@ -20,8 +21,36 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
  * magma al centro con un Huevo de Dragón Infernal encima, y el dragón salvaje que lo cuida.
  */
 public class InfernalNestFeature extends Feature<NoneFeatureConfiguration> {
-    public InfernalNestFeature(Codec<NoneFeatureConfiguration> codec) {
+    private final DragonSpecies species;
+
+    public InfernalNestFeature(Codec<NoneFeatureConfiguration> codec, DragonSpecies species) {
         super(codec);
+        this.species = species;
+    }
+
+    /** Centro caliente del nido. */
+    private BlockState core() {
+        return switch (species) {
+            case ALMAS -> Blocks.SOUL_SOIL.defaultBlockState();
+            case OBSIDIANA -> Blocks.CRYING_OBSIDIAN.defaultBlockState();
+            default -> Blocks.MAGMA_BLOCK.defaultBlockState();
+        };
+    }
+
+    private BlockState base(RandomSource rnd) {
+        return switch (species) {
+            case ALMAS -> rnd.nextInt(3) == 0 ? Blocks.SOUL_SAND.defaultBlockState() : Blocks.SOUL_SOIL.defaultBlockState();
+            case OBSIDIANA -> rnd.nextInt(4) == 0 ? Blocks.CRYING_OBSIDIAN.defaultBlockState() : Blocks.OBSIDIAN.defaultBlockState();
+            default -> rnd.nextInt(4) == 0 ? Blocks.BASALT.defaultBlockState() : Blocks.BLACKSTONE.defaultBlockState();
+        };
+    }
+
+    private BlockState decoration(RandomSource rnd) {
+        return switch (species) {
+            case ALMAS -> rnd.nextBoolean() ? Blocks.SOUL_FIRE.defaultBlockState() : Blocks.WARPED_ROOTS.defaultBlockState();
+            case OBSIDIANA -> rnd.nextBoolean() ? Blocks.AMETHYST_CLUSTER.defaultBlockState() : Blocks.CRYING_OBSIDIAN.defaultBlockState();
+            default -> rnd.nextBoolean() ? Blocks.CRIMSON_ROOTS.defaultBlockState() : Blocks.SOUL_SAND.defaultBlockState();
+        };
     }
 
     @Override
@@ -50,8 +79,7 @@ public class InfernalNestFeature extends Feature<NoneFeatureConfiguration> {
                 }
                 BlockPos base = floor.offset(dx, -1, dz);
                 // base del nido (rellena huecos debajo)
-                level.setBlock(base, d < 1.6 ? Blocks.MAGMA_BLOCK.defaultBlockState()
-                        : rnd.nextInt(4) == 0 ? Blocks.BASALT.defaultBlockState() : Blocks.BLACKSTONE.defaultBlockState(), 2);
+                level.setBlock(base, d < 1.6 ? core() : base(rnd), 2);
                 for (int dy = 2; dy <= 3; dy++) {
                     BlockPos under = floor.offset(dx, -dy, dz);
                     if (level.isEmptyBlock(under)) {
@@ -62,22 +90,21 @@ public class InfernalNestFeature extends Feature<NoneFeatureConfiguration> {
                 if (d > r - 1.0) {
                     int h = 1 + rnd.nextInt(2);
                     for (int dy = 0; dy < h; dy++) {
-                        level.setBlock(floor.offset(dx, dy, dz), rim(rnd, dx, dz), 2);
+                        level.setBlock(floor.offset(dx, dy, dz), rim(rnd, dx, dz, species), 2);
                     }
                 } else if (d > 1.6 && rnd.nextInt(7) == 0) {
-                    level.setBlock(floor.offset(dx, 0, dz), rnd.nextBoolean() ? Blocks.CRIMSON_ROOTS.defaultBlockState()
-                            : Blocks.SOUL_SAND.defaultBlockState(), 2);
+                    level.setBlock(floor.offset(dx, 0, dz), decoration(rnd), 2);
                 }
             }
         }
         DragonEggEntity egg = ModEntities.DRAGON_EGG.get().create(level.getLevel());
         if (egg != null) {
             egg.moveTo(floor.getX() + 0.5, floor.getY(), floor.getZ() + 0.5, rnd.nextFloat() * 360.0f, 0.0f);
-            egg.setInfernal(true);
+            egg.setSpecies(species);
             egg.setPersistenceRequired();
             level.addFreshEntity(egg);
         }
-        InfernalDragonEntity dragon = ModEntities.DRAGON_INFERNAL.get().create(level.getLevel());
+        InfernalDragonEntity dragon = species.wildType().create(level.getLevel());
         if (dragon != null) {
             dragon.moveTo(floor.getX() + 0.5, floor.getY(), floor.getZ() + 3.5, rnd.nextFloat() * 360.0f, 0.0f);
             dragon.setNest(floor);
@@ -88,8 +115,19 @@ public class InfernalNestFeature extends Feature<NoneFeatureConfiguration> {
         return true;
     }
 
-    private static BlockState rim(RandomSource rnd, int dx, int dz) {
+    private static BlockState rim(RandomSource rnd, int dx, int dz, DragonSpecies species) {
         int k = rnd.nextInt(6);
+        Direction.Axis axis = Math.abs(dx) > Math.abs(dz) ? Direction.Axis.Z : Direction.Axis.X;
+        if (species == DragonSpecies.ALMAS) {
+            return k == 0 ? Blocks.BONE_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis)
+                    : k == 1 ? Blocks.WARPED_STEM.defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis)
+                    : k == 2 ? Blocks.SOUL_SOIL.defaultBlockState() : Blocks.BASALT.defaultBlockState();
+        }
+        if (species == DragonSpecies.OBSIDIANA) {
+            return k == 0 ? Blocks.BONE_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, axis)
+                    : k == 1 ? Blocks.CRYING_OBSIDIAN.defaultBlockState()
+                    : k == 2 ? Blocks.POLISHED_BLACKSTONE.defaultBlockState() : Blocks.OBSIDIAN.defaultBlockState();
+        }
         if (k == 0) {
             return Blocks.BONE_BLOCK.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Math.abs(dx) > Math.abs(dz) ? Direction.Axis.Z : Direction.Axis.X);
         }

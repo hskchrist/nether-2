@@ -68,6 +68,8 @@ public final class ModCreativeTabs {
                 output.accept(ModItems.SERPENT_HELMET.get());
                 output.accept(ModItems.RUBY_TRIDENT.get());
                 output.accept(ModItems.INFERNAL_DRAGON_EGG.get());
+                output.accept(ModItems.ALMAS_DRAGON_EGG.get());
+                output.accept(ModItems.OBSIDIANA_DRAGON_EGG.get());
                 output.accept(ModItems.INFERNAL_SADDLE.get());
                 output.accept(ModItems.MANUAL.get());
                 ModItems.SPAWN_EGGS.forEach(egg -> output.accept(egg.get()));

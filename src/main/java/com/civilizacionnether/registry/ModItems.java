@@ -179,7 +179,11 @@ public final class ModItems {
                     .component(DataComponents.TOOL, TridentItem.createToolProperties())));
     /** Huevo de Dragón Infernal: está en los nidos del Bosque Carmesí (y lo ponen dos Dragones Infernales). */
     public static final DeferredItem<DragonEggItem> INFERNAL_DRAGON_EGG = ITEMS.register("infernal_dragon_egg",
-            () -> new DragonEggItem(new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).fireResistant(), true));
+            () -> new DragonEggItem(new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).fireResistant(), com.civilizacionnether.entity.DragonSpecies.INFERNAL));
+    public static final DeferredItem<DragonEggItem> ALMAS_DRAGON_EGG = ITEMS.register("almas_dragon_egg",
+            () -> new DragonEggItem(new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).fireResistant(), com.civilizacionnether.entity.DragonSpecies.ALMAS));
+    public static final DeferredItem<DragonEggItem> OBSIDIANA_DRAGON_EGG = ITEMS.register("obsidiana_dragon_egg",
+            () -> new DragonEggItem(new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).fireResistant(), com.civilizacionnether.entity.DragonSpecies.OBSIDIANA));
 
     /** Manual de la Civilización del Nether (el libro del mod; llega al entrar por primera vez a un mundo). */
     public static final DeferredItem<ManualItem> MANUAL = ITEMS.register("manual",
@@ -202,6 +206,10 @@ public final class ModItems {
         SPAWN_EGGS.add(DRAGON_SPAWN_EGG);
         SPAWN_EGGS.add(spawnEgg("dragon_infernal", ModEntities.DRAGON_INFERNAL, 0x2A0A04, 0xFF7A1A));
         SPAWN_EGGS.add(spawnEgg("dragon_infernal_domesticable", ModEntities.DRAGON_INFERNAL_DOMESTICABLE, 0x2A0A04, 0xFFD24A));
+        SPAWN_EGGS.add(spawnEgg("dragon_almas", ModEntities.DRAGON_ALMAS, 0x0E1A2E, 0x3FD0FF));
+        SPAWN_EGGS.add(spawnEgg("dragon_almas_domesticable", ModEntities.DRAGON_ALMAS_DOMESTICABLE, 0x0E1A2E, 0xA8F0FF));
+        SPAWN_EGGS.add(spawnEgg("dragon_obsidiana", ModEntities.DRAGON_OBSIDIANA, 0x1A0A26, 0xE040FF));
+        SPAWN_EGGS.add(spawnEgg("dragon_obsidiana_domesticable", ModEntities.DRAGON_OBSIDIANA_DOMESTICABLE, 0x1A0A26, 0xF2A8FF));
         SPAWN_EGGS.add(spawnEgg("pez_brasa", ModEntities.PEZ_BRASA, 0x3A0A06, 0xFF8A1A));
         SPAWN_EGGS.add(spawnEgg("pez_alma", ModEntities.PEZ_ALMA, 0x10263A, 0x7AE6FF));
         SPAWN_EGGS.add(spawnEgg("anguila_rubi", ModEntities.ANGUILA_RUBI, 0x2A0610, 0xE0283C));

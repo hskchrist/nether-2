@@ -20,16 +20,16 @@ import java.util.List;
 
 /** Huevo de Dragón del Nether: clic derecho sobre el suelo para ponerlo; la cría que nazca será tuya. */
 public class DragonEggItem extends Item {
-    private final boolean infernal;
+    private final com.civilizacionnether.entity.DragonSpecies species;
 
     public DragonEggItem(Properties properties) {
-        this(properties, false);
+        this(properties, com.civilizacionnether.entity.DragonSpecies.NETHER);
     }
 
-    /** infernal = Huevo de Dragón Infernal (nace un Dragón Infernal). */
-    public DragonEggItem(Properties properties, boolean infernal) {
+    /** Huevo de cada especie (la cría que nace será de esa especie, y tuya). */
+    public DragonEggItem(Properties properties, com.civilizacionnether.entity.DragonSpecies species) {
         super(properties);
-        this.infernal = infernal;
+        this.species = species;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DragonEggItem extends Item {
         egg.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
                 player != null ? player.getYRot() + 180.0f : 0.0f, 0.0f);
         egg.setPersistenceRequired();
-        egg.setInfernal(infernal);
+        egg.setSpecies(species);
         if (player != null) {
             egg.setOwner(player.getUUID());
             player.displayClientMessage(Component.translatable("msg.civilizacion_nether.egg_placed"), true);
@@ -66,7 +66,7 @@ public class DragonEggItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable(infernal ? "tooltip.civilizacion_nether.infernal_dragon_egg"
+        tooltip.add(Component.translatable(species.infernalFamily() ? "tooltip.civilizacion_nether." + species.id + "_dragon_egg"
                 : "tooltip.civilizacion_nether.dragon_egg").withStyle(ChatFormatting.GOLD));
         tooltip.add(Component.translatable("tooltip.civilizacion_nether.dragon_egg2").withStyle(ChatFormatting.GRAY));
     }

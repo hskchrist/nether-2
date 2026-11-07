@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "OCO",
+    "CEC",
+    "OCO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "C": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "E": {
+      "item": "civilizacion_nether:dragon_egg"
+    }
+  },
+  "result": {
+    "id": "civilizacion_nether:obsidiana_dragon_egg",
+    "count": 1
+  }
+}

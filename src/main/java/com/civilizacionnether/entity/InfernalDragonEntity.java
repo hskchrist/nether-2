@@ -51,8 +51,9 @@ import software.bernie.geckolib.animation.RawAnimation;
  *   <li>Agarre: baja en picada, toma al mob con las patas, lo sube y lo suelta desde lo alto
  *       (por su cuenta, o el jinete con la barra llena + R; R otra vez lo suelta).</li>
  * </ul>
- * El salvaje vive en un nido del Bosque Carmesí con su huevo, y ataca a todos los mobs sin excepción.
- * Si le robas el huevo, la cría que nazca será tuya.
+ * Hay tres especies con este modelo: Infernal (fuego naranja), de Almas (fuego azul) y de Obsidiana (fuego morado),
+ * cada una salvaje o domesticable. Comen hoglins y piglins; el salvaje defiende su nido y su huevo, y las especies
+ * distintas pelean si alguna es salvaje.
  */
 public class InfernalDragonEntity extends NetherDragonEntity {
     private static final String P = "animation.dragon_infernal.";
@@ -67,6 +68,9 @@ public class InfernalDragonEntity extends NetherDragonEntity {
 
     @Nullable
     private BlockPos nest;
+    /** Hambre: sube con el tiempo; con hambre caza hoglins y piglins. */
+    private int hunger = 1200 + (int) (Math.random() * 2400);
+    private static final int HUNGRY = 3600;
 
     public InfernalDragonEntity(EntityType<? extends InfernalDragonEntity> entityType, Level level) {
         super(entityType, level);
@@ -77,9 +81,34 @@ public class InfernalDragonEntity extends NetherDragonEntity {
         return NetherDragonEntity.createAttributes().add(Attributes.ARMOR, 14.0);
     }
 
-    /** ¿Es el Dragón Infernal domesticable (el que sale de los huevos y se puede domar)? */
+    /** ¿Es la versión domesticable (la que sale de los huevos y se puede domar)? */
     public boolean isTameVariant() {
-        return getType() == com.civilizacionnether.registry.ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get();
+        return DragonSpecies.isTameType(getType());
+    }
+
+    @Override
+    public DragonSpecies species() {
+        return DragonSpecies.of(getType());
+    }
+
+    public boolean isHungry() {
+        return hunger > HUNGRY;
+    }
+
+    /** Su comida: hoglins y piglins. */
+    public static boolean isFood(LivingEntity e) {
+        return e instanceof net.minecraft.world.entity.monster.hoglin.Hoglin || e instanceof net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+    }
+
+    /** Al matar a su comida, se la come: se cura y se le pasa el hambre. */
+    @Override
+    public boolean killedEntity(net.minecraft.server.level.ServerLevel level, LivingEntity killed) {
+        if (isFood(killed)) {
+            hunger = 0;
+            heal(20.0f);
+            playSound(net.minecraft.sounds.SoundEvents.GENERIC_EAT, 1.5f, 0.6f);
+        }
+        return super.killedEntity(level, killed);
     }
 
     /** El salvaje no se domestica nunca (el domesticable sí, con rubíes o naciendo de su huevo). */
@@ -158,23 +187,29 @@ public class InfernalDragonEntity extends NetherDragonEntity {
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false,
                 e -> isTame() && NetherHumanoidEntity.isHostileTarget(e)));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false, this::isWildPrey));
+        // rivales: dragones de otra especie (si alguno es salvaje)
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, NetherDragonEntity.class, 10, true, false,
+                e -> e instanceof NetherDragonEntity d && isRivalOf(d)));
+        // comida: con hambre caza hoglins y piglins (los domesticados no, para no pelear con piglins al lado tuyo)
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false,
+                e -> !isTame() && isHungry() && isFood(e)));
     }
 
-    /** Salvaje: todos los mobs y jugadores cerca de su nido son presa (menos otros Dragones Infernales y los huevos). */
+    /** Salvaje: defiende su nido de todo lo que se acerque demasiado (mobs y jugadores). Nunca ataca huevos. */
     private boolean isWildPrey(LivingEntity e) {
-        if (!isWildHostile() || !e.isAlive() || (e instanceof NetherDragonEntity d && d.isWildHostile()) || e instanceof DragonEggEntity) {
+        if (!isWildHostile() || !e.isAlive() || e instanceof DragonEggEntity || e instanceof NetherDragonEntity) {
             return false;
         }
         if (!(e instanceof Mob) && !(e instanceof Player)) {
             return false;
         }
-        return nest == null || e.distanceToSqr(Vec3.atCenterOf(nest)) < 40.0 * 40.0;
+        return nest != null && e.distanceToSqr(Vec3.atCenterOf(nest)) < 14.0 * 14.0;
     }
 
     @Override
     public boolean canAttack(LivingEntity target) {
         if (isWildHostile()) {
-            if ((target instanceof NetherDragonEntity d && d.isWildHostile()) || target instanceof DragonEggEntity) {
+            if ((target instanceof NetherDragonEntity d && !isRivalOf(d)) || target instanceof DragonEggEntity) {
                 return false;
             }
             if (target instanceof Player && level().getDifficulty() == Difficulty.PEACEFUL) {
@@ -201,7 +236,7 @@ public class InfernalDragonEntity extends NetherDragonEntity {
     /** Bola de fuego explosiva. */
     @Override
     protected void spawnFireball(Vec3 from, Vec3 direction, float damage) {
-        DragonFireballEntity.shootExplosive(this, from, direction, damage * 0.7f, isTame() ? 2.0f : 2.6f, !isTame());
+        DragonFireballEntity.shootExplosive(this, from, direction, damage * 0.7f, isTame() ? 2.0f : 2.6f, isWildHostile());
     }
 
     /** En vez del aliento de fuego, la IA usa el agarre. */
@@ -238,9 +273,12 @@ public class InfernalDragonEntity extends NetherDragonEntity {
         if (level().isClientSide) {
             if (random.nextInt(4) == 0) {
                 Vec3 m = mouthPosition();
-                level().addParticle(random.nextBoolean() ? ParticleTypes.FLAME : ParticleTypes.SMOKE, m.x, m.y, m.z, 0.0, 0.03, 0.0);
+                level().addParticle(random.nextBoolean() ? species().flame() : ParticleTypes.SMOKE, m.x, m.y, m.z, 0.0, 0.03, 0.0);
             }
             return;
+        }
+        if (!isTame()) {
+            hunger++;
         }
         // el salvaje no se aleja de su nido
         if (isWildHostile() && nest != null && tickCount % 100 == 0 && getTarget() == null
@@ -249,6 +287,64 @@ public class InfernalDragonEntity extends NetherDragonEntity {
                 setFlyTarget(Vec3.atCenterOf(nest).add(0.0, 8.0, 0.0));
             } else {
                 getNavigation().moveTo(nest.getX() + 0.5, nest.getY(), nest.getZ() + 0.5, 1.0);
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------ aparición natural
+    /**
+     * Al aparecer solo en el mundo: a veces volando, a veces un joven solo, a veces una madre con su cría, o caminando
+     * con hambre (cazando). En los Páramos del Nether a veces aparece peleando con un dragón de otra especie.
+     */
+    @Override
+    public net.minecraft.world.entity.SpawnGroupData finalizeSpawn(net.minecraft.world.level.ServerLevelAccessor level,
+            net.minecraft.world.DifficultyInstance difficulty, net.minecraft.world.entity.MobSpawnType reason,
+            @Nullable net.minecraft.world.entity.SpawnGroupData data) {
+        net.minecraft.world.entity.SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
+        if (reason == net.minecraft.world.entity.MobSpawnType.NATURAL || reason == net.minecraft.world.entity.MobSpawnType.CHUNK_GENERATION) {
+            naturalState(level);
+        }
+        return out;
+    }
+
+    private void naturalState(net.minecraft.world.level.ServerLevelAccessor level) {
+        float r = random.nextFloat();
+        setGrowth(1.0f);
+        if (r < 0.30f) {
+            // volando por el cielo del Nether
+            moveTo(getX(), getY() + 10 + random.nextInt(12), getZ(), getYRot(), 0.0f);
+            if (level.noCollision(this)) {
+                takeOff();
+            } else {
+                moveTo(getX(), getY() - 10, getZ(), getYRot(), 0.0f);
+            }
+        } else if (r < 0.50f) {
+            setGrowth(0.40f + random.nextFloat() * 0.25f); // un joven solo
+        } else if (r < 0.72f) {
+            InfernalDragonEntity baby = (InfernalDragonEntity) getType().create(level.getLevel());
+            if (baby != null) {
+                baby.moveTo(getX() + 2.5, getY(), getZ() + 1.5, random.nextFloat() * 360.0f, 0.0f);
+                baby.setGrowth(0.05f + random.nextFloat() * 0.1f);
+                level.addFreshEntity(baby);
+            }
+        } else {
+            hunger = HUNGRY + 1; // sale a cazar
+        }
+        // campo de batalla: los Páramos del Nether
+        if (isWildHostile() && random.nextFloat() < 0.35f
+                && level.getBiome(blockPosition()).is(net.minecraft.world.level.biome.Biomes.NETHER_WASTES)) {
+            DragonSpecies[] all = {DragonSpecies.INFERNAL, DragonSpecies.ALMAS, DragonSpecies.OBSIDIANA};
+            DragonSpecies other = all[random.nextInt(3)];
+            if (other == species()) {
+                other = all[(other.ordinal()) % 3];
+            }
+            InfernalDragonEntity rival = other.wildType().create(level.getLevel());
+            if (rival != null) {
+                rival.moveTo(getX() + 8, getY() + 2, getZ() + 8, random.nextFloat() * 360.0f, 0.0f);
+                rival.setGrowth(1.0f);
+                level.addFreshEntity(rival);
+                rival.setTarget(this);
+                setTarget(rival);
             }
         }
     }

@@ -72,6 +72,10 @@ public final class ClientEvents {
             event.registerEntityRenderer(ModEntities.DRAGON_FIREBALL.get(), DragonFireballRenderer::new);
             event.registerEntityRenderer(ModEntities.DRAGON_INFERNAL.get(), InfernalDragonRenderer::new);
             event.registerEntityRenderer(ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get(), InfernalDragonRenderer::new);
+            event.registerEntityRenderer(ModEntities.DRAGON_ALMAS.get(), InfernalDragonRenderer::new);
+            event.registerEntityRenderer(ModEntities.DRAGON_ALMAS_DOMESTICABLE.get(), InfernalDragonRenderer::new);
+            event.registerEntityRenderer(ModEntities.DRAGON_OBSIDIANA.get(), InfernalDragonRenderer::new);
+            event.registerEntityRenderer(ModEntities.DRAGON_OBSIDIANA_DOMESTICABLE.get(), InfernalDragonRenderer::new);
             event.registerEntityRenderer(net.minecraft.world.entity.EntityType.TRIDENT, RubyTridentRenderer::new);
             // aldeanos: los del Nether (y los de las 5 profesiones nuevas) con sus skins; los demás, igual que vanilla
             event.registerEntityRenderer(net.minecraft.world.entity.EntityType.VILLAGER, NetherVillagerRenderer::new);

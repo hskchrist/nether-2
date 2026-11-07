@@ -48,7 +48,7 @@ import java.util.UUID;
 public class DragonEggEntity extends Mob implements GeoEntity {
     public static final int HATCH_TIME = 6000;
     /** Huevo de Dragón Infernal (otra textura; nace un Dragón Infernal). */
-    private static final EntityDataAccessor<Boolean> INFERNAL = SynchedEntityData.defineId(DragonEggEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> SPECIES = SynchedEntityData.defineId(DragonEggEntity.class, EntityDataSerializers.INT);
     private static final String P = "animation.nether_dragon_egg.";
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop(P + "idle");
 
@@ -77,15 +77,24 @@ public class DragonEggEntity extends Mob implements GeoEntity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(INFERNAL, false);
+        builder.define(SPECIES, 0);
     }
 
+    public DragonSpecies getSpecies() {
+        return DragonSpecies.byId(entityData.get(SPECIES));
+    }
+
+    public void setSpecies(DragonSpecies species) {
+        entityData.set(SPECIES, species.ordinal());
+    }
+
+    /** ¿Es de la familia infernal (Infernal, de Almas u Obsidiana)? */
     public boolean isInfernal() {
-        return entityData.get(INFERNAL);
+        return getSpecies().infernalFamily();
     }
 
     public void setInfernal(boolean infernal) {
-        entityData.set(INFERNAL, infernal);
+        setSpecies(infernal ? DragonSpecies.INFERNAL : DragonSpecies.NETHER);
     }
 
     /** Huevo del nido de un Dragón Infernal salvaje: si alguien lo toma, el dragón lo ataca. */
@@ -94,8 +103,9 @@ public class DragonEggEntity extends Mob implements GeoEntity {
             return;
         }
         boolean any = false;
+        DragonSpecies sp = getSpecies();
         for (InfernalDragonEntity d : level().getEntitiesOfClass(InfernalDragonEntity.class, getBoundingBox().inflate(48.0),
-                d -> !d.isTame() && d.isAlive())) {
+                d -> !d.isTame() && d.isAlive() && d.species() == sp)) {
             d.setResting(false);
             d.setTarget(thief);
             d.triggerAnim("action", "roar");
@@ -137,7 +147,8 @@ public class DragonEggEntity extends Mob implements GeoEntity {
         incubation += heated ? 2 : 1;
         float progress = (float) incubation / HATCH_TIME;
         if (heated && tickCount % 10 == 0) {
-            server.sendParticles(ParticleTypes.SMALL_FLAME, getX(), getY() + 0.2, getZ(), 1, 0.3, 0.1, 0.3, 0.0);
+            server.sendParticles(getSpecies() == DragonSpecies.NETHER ? ParticleTypes.SMALL_FLAME : getSpecies().flame(),
+                    getX(), getY() + 0.2, getZ(), 1, 0.3, 0.1, 0.3, 0.0);
         }
         int wobbleEvery = progress > 0.85f ? 60 : progress > 0.6f ? 140 : progress > 0.35f ? 300 : 0;
         if (wobbleEvery > 0 && tickCount % wobbleEvery == 0) {
@@ -165,8 +176,9 @@ public class DragonEggEntity extends Mob implements GeoEntity {
     private void hatch(ServerLevel server) {
         // huevo infernal con dueño (el que lo puso o lo robó del nido): sale el Dragón Infernal domesticable;
         // sin dueño (en el nido salvaje): sale un Dragón Infernal salvaje
-        NetherDragonEntity baby = isInfernal()
-                ? (owner != null ? ModEntities.DRAGON_INFERNAL_DOMESTICABLE.get() : ModEntities.DRAGON_INFERNAL.get()).create(server)
+        DragonSpecies sp = getSpecies();
+        NetherDragonEntity baby = sp.infernalFamily()
+                ? (owner != null ? sp.tameType() : sp.wildType()).create(server)
                 : ModEntities.NETHER_DRAGON.get().create(server);
         if (baby != null) {
             baby.moveTo(getX(), getY(), getZ(), getYRot(), 0.0f);
@@ -204,7 +216,7 @@ public class DragonEggEntity extends Mob implements GeoEntity {
         Entity attacker = source.getEntity();
         if (attacker instanceof Player player && hatchTimer < 0) {
             angerGuardians(player);
-            ItemStack stack = new ItemStack(isInfernal() ? ModItems.INFERNAL_DRAGON_EGG.get() : ModItems.DRAGON_EGG.get());
+            ItemStack stack = new ItemStack(getSpecies().eggItem());
             if (!player.getInventory().add(stack)) {
                 spawnAtLocation(stack);
             }
@@ -260,7 +272,7 @@ public class DragonEggEntity extends Mob implements GeoEntity {
             tag.putUUID("EggOwner", owner);
         }
         tag.putInt("Incubation", incubation);
-        tag.putBoolean("Infernal", isInfernal());
+        tag.putInt("Species", getSpecies().ordinal());
     }
 
     @Override
@@ -268,7 +280,11 @@ public class DragonEggEntity extends Mob implements GeoEntity {
         super.readAdditionalSaveData(tag);
         owner = tag.hasUUID("EggOwner") ? tag.getUUID("EggOwner") : null;
         incubation = tag.getInt("Incubation");
-        setInfernal(tag.getBoolean("Infernal"));
+        if (tag.contains("Species")) {
+            setSpecies(DragonSpecies.byId(tag.getInt("Species")));
+        } else {
+            setInfernal(tag.getBoolean("Infernal"));
+        }
     }
 
     // ------------------------------------------------------------------ GeckoLib

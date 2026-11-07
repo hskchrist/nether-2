@@ -25,6 +25,7 @@ import kingdom
 import sealife
 import manual
 import aldeanos
+import dragon_species
 import infernal_saddle
 
 if __name__ == "__main__":
@@ -47,6 +48,7 @@ if __name__ == "__main__":
     aldeanos.write_all()     # aldeanos del Nether: 5 mesas nuevas, skins con ojos que brillan, etiquetas y nombres
     manual.write_all()       # el manual (el libro dentro del juego)
     sealife.write_all()      # fauna del Océano Púrpura (12 criaturas) y Dragón Infernal con su nido
+    dragon_species.write_all()   # Dragón de Almas y de Obsidiana (skins del usuario), huevos, nidos y biomas
     infernal_saddle.write_all()  # silla visible del Dragón Infernal (hueso nuevo + su propia textura) y su crafteo
     info = kingdom.write_all()
     # GeckoLib cierra el juego si una máscara de brillo está vacía: esas se borran (sin máscara = sin brillo)

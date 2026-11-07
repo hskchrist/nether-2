@@ -17,7 +17,13 @@ public final class ModFeatures {
 
     /** Nido del Dragón Infernal en el Bosque Carmesí. */
     public static final DeferredHolder<Feature<?>, com.civilizacionnether.worldgen.InfernalNestFeature> INFERNAL_NEST = FEATURES.register("infernal_nest",
-            () -> new com.civilizacionnether.worldgen.InfernalNestFeature(NoneFeatureConfiguration.CODEC));
+            () -> new com.civilizacionnether.worldgen.InfernalNestFeature(NoneFeatureConfiguration.CODEC, com.civilizacionnether.entity.DragonSpecies.INFERNAL));
+    /** Nido del Dragón de Almas en el Valle de Arena de Almas. */
+    public static final DeferredHolder<Feature<?>, com.civilizacionnether.worldgen.InfernalNestFeature> ALMAS_NEST = FEATURES.register("almas_nest",
+            () -> new com.civilizacionnether.worldgen.InfernalNestFeature(NoneFeatureConfiguration.CODEC, com.civilizacionnether.entity.DragonSpecies.ALMAS));
+    /** Nido del Dragón de Obsidiana en los Deltas de Basalto. */
+    public static final DeferredHolder<Feature<?>, com.civilizacionnether.worldgen.InfernalNestFeature> OBSIDIANA_NEST = FEATURES.register("obsidiana_nest",
+            () -> new com.civilizacionnether.worldgen.InfernalNestFeature(NoneFeatureConfiguration.CODEC, com.civilizacionnether.entity.DragonSpecies.OBSIDIANA));
 
     private ModFeatures() {
     }

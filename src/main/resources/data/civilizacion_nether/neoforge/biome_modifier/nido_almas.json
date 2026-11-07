@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "minecraft:soul_sand_valley",
+  "features": "civilizacion_nether:nido_almas",
+  "step": "surface_structures"
+}

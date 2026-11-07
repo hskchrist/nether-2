@@ -1,0 +1,21 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "minecraft:soul_sand_valley",
+    "minecraft:warped_forest"
+  ],
+  "spawners": [
+    {
+      "type": "civilizacion_nether:dragon_almas",
+      "weight": 2,
+      "minCount": 1,
+      "maxCount": 1
+    },
+    {
+      "type": "civilizacion_nether:dragon_almas_domesticable",
+      "weight": 1,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

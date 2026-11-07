@@ -26,6 +26,8 @@ import net.minecraft.world.phys.Vec3;
 public class DragonFireballEntity extends Projectile {
     /** Bola de fuego explosiva del Dragón Infernal (otra textura y explota al chocar). */
     private static final EntityDataAccessor<Boolean> EXPLOSIVE = SynchedEntityData.defineId(DragonFireballEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Especie del dragón que la lanzó: naranja (Infernal), azul (de Almas) o morada (de Obsidiana). */
+    private static final EntityDataAccessor<Integer> SPECIES = SynchedEntityData.defineId(DragonFireballEntity.class, EntityDataSerializers.INT);
     private float damage = 8.0f;
     private float power;
     private boolean griefing;
@@ -60,10 +62,18 @@ public class DragonFireballEntity extends Projectile {
         ball.power = power;
         ball.griefing = griefing;
         ball.entityData.set(EXPLOSIVE, true);
+        if (shooter instanceof InfernalDragonEntity d) {
+            ball.entityData.set(SPECIES, d.species().ordinal());
+        }
         ball.moveTo(from.x, from.y, from.z, shooter.getYRot(), shooter.getXRot());
         Vec3 dir = direction.normalize();
         ball.shoot(dir.x, dir.y, dir.z, 1.8f, 0.6f);
         shooter.level().addFreshEntity(ball);
+    }
+
+    public DragonSpecies getSpecies() {
+        DragonSpecies s = DragonSpecies.byId(entityData.get(SPECIES));
+        return s == DragonSpecies.NETHER ? DragonSpecies.INFERNAL : s;
     }
 
     public boolean isExplosive() {
@@ -73,6 +83,7 @@ public class DragonFireballEntity extends Projectile {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(EXPLOSIVE, false);
+        builder.define(SPECIES, DragonSpecies.INFERNAL.ordinal());
     }
 
     @Override
@@ -89,14 +100,15 @@ public class DragonFireballEntity extends Projectile {
         setPos(getX() + v.x, getY() + v.y, getZ() + v.z);
         ProjectileUtil.rotateTowardsMovement(this, 0.2f);
         if (level().isClientSide && isExplosive()) {
+            DragonSpecies sp = getSpecies();
             for (int i = 0; i < 3; i++) {
-                level().addParticle(ParticleTypes.FLAME,
+                level().addParticle(sp.flame(),
                         getX() - v.x * i * 0.3 + (random.nextDouble() - 0.5) * 0.4,
                         getY() + 0.2 - v.y * i * 0.3 + (random.nextDouble() - 0.5) * 0.4,
                         getZ() - v.z * i * 0.3 + (random.nextDouble() - 0.5) * 0.4, 0, 0, 0);
             }
             if (random.nextInt(3) == 0) {
-                level().addParticle(ParticleTypes.LAVA, getX(), getY() + 0.2, getZ(), 0, 0, 0);
+                level().addParticle(sp.spark(), getX(), getY() + 0.2, getZ(), 0, 0, 0);
             }
             level().addParticle(ParticleTypes.LARGE_SMOKE, getX(), getY() + 0.2, getZ(), 0, 0, 0);
         } else if (level().isClientSide) {
@@ -128,8 +140,8 @@ public class DragonFireballEntity extends Projectile {
             return false;
         }
         if (owner instanceof NetherDragonEntity dragon && dragon.isWildHostile()) {
-            // el Dragón Infernal salvaje le pega a todos menos a los de su especie y a los huevos
-            return !(target instanceof DragonEggEntity) && !(target instanceof NetherDragonEntity other && other.isWildHostile());
+            // el dragón salvaje le pega a todos menos a los de su especie y a los huevos
+            return !(target instanceof DragonEggEntity) && !(target instanceof NetherDragonEntity other && other.species() == dragon.species());
         }
         return !(target instanceof LivingEntity living && NetherHumanoidEntity.isAlly(living));
     }
@@ -169,6 +181,7 @@ public class DragonFireballEntity extends Projectile {
         tag.putFloat("Damage", damage);
         tag.putInt("Life", life);
         tag.putBoolean("Explosive", isExplosive());
+        tag.putInt("Species", entityData.get(SPECIES));
         tag.putFloat("Power", power);
         tag.putBoolean("Griefing", griefing);
     }
@@ -179,6 +192,9 @@ public class DragonFireballEntity extends Projectile {
         damage = tag.getFloat("Damage");
         life = tag.getInt("Life");
         entityData.set(EXPLOSIVE, tag.getBoolean("Explosive"));
+        if (tag.contains("Species")) {
+            entityData.set(SPECIES, tag.getInt("Species"));
+        }
         power = tag.getFloat("Power");
         griefing = tag.getBoolean("Griefing");
     }

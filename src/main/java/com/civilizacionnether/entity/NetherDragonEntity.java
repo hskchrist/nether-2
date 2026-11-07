@@ -326,7 +326,20 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
                 e -> isTame() && NetherHumanoidEntity.isHostileTarget(e)));
         // rivales: el Dragón del Nether (y el Infernal domesticable) pelea con los Dragones Infernales salvajes
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, NetherDragonEntity.class, 10, true, false,
-                e -> !isWildHostile() && e instanceof NetherDragonEntity d && d.isWildHostile()));
+                e -> e instanceof NetherDragonEntity d && isRivalOf(d)));
+    }
+
+    /** Especie (el Dragón del Nether es NETHER; los infernales dicen la suya). */
+    public DragonSpecies species() {
+        return DragonSpecies.NETHER;
+    }
+
+    /**
+     * Rivales: dragones de distinta especie pelean si al menos uno es salvaje. Los de la misma especie nunca pelean,
+     * y si todos están domesticados tampoco.
+     */
+    public boolean isRivalOf(NetherDragonEntity other) {
+        return other != this && other.species() != species() && (isWildHostile() || other.isWildHostile());
     }
 
     /** ¿Se puede domesticar con rubíes? */
@@ -354,14 +367,17 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         }
         boolean wild = isWildHostile();
         if (attacker instanceof NetherDragonEntity other) {
-            return !wild && !other.isWildHostile();
+            return !isRivalOf(other);
         }
         return attacker instanceof NetherHumanoidEntity && !wild;
     }
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        if (target instanceof NetherDragonEntity other && other.isWildHostile()) {
+        if (species() == DragonSpecies.NETHER && target instanceof Player) {
+            return false; // el Dragón del Nether (el negro) nunca ataca a un jugador, ni salvaje ni aunque lo golpeen
+        }
+        if (target instanceof NetherDragonEntity other && isRivalOf(other)) {
             return super.canAttack(target);
         }
         if (target instanceof NetherHumanoidEntity || target instanceof NetherDragonEntity
