@@ -192,6 +192,8 @@ def tags():
     datagen2.add_tag("item/head_armor", [R + "obsidian_turtle_helmet", R + "serpent_helmet"])
     datagen2.add_tag("item/enchantable/trident", [R + "ruby_trident"])
     datagen2.add_tag("item/enchantable/durability", [R + "ruby_trident"])
+    # respiran bajo el agua (NeoForge no deja cambiarlo en el código: va por esta etiqueta)
+    datagen2.add_tag("entity_type/can_breathe_under_water", [R + "tortuga_obsidiana", R + "caballito_magma", R + "cangrejo_basalto"])
     # el encantamiento Empalamiento hace más daño a las criaturas del mar
     datagen2.add_tag("entity_type/aquatic", [R + k for k in CREATURES])
 
