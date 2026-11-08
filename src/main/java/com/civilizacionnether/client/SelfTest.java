@@ -223,6 +223,28 @@ public final class SelfTest {
         }
     }
 
+    /** Anota dónde está y hacia dónde mira cada criatura (para ver si alguna gira sin parar o se queda trabada). */
+    private static void logStats(Minecraft mc, String dim) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        server.execute(() -> {
+            var key = net.minecraft.resources.ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim));
+            var level = server.getLevel(key);
+            if (level == null) {
+                return;
+            }
+            for (var e : level.getAllEntities()) {
+                ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
+                if (e instanceof net.minecraft.world.entity.LivingEntity le && (CivilizacionNether.MODID.equals(id.getNamespace())
+                        || id.getPath().equals("villager"))) {
+                    CivilizacionNether.LOGGER.info(String.format(java.util.Locale.ROOT,
+                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f",
+                            dim, id.getPath(), e.getId(), e.getX(), e.getY(), e.getZ(), e.getYRot(), le.yBodyRot, e.getXRot(),
+                            e.isInWater(), e.onGround(), le.getHealth()));
+                }
+            }
+        });
+    }
+
     /** Cuenta los bloques del bioma alrededor (para saber si el pasto, la hierba y los árboles aparecieron). */
     private static void logBlocks(Minecraft mc) {
         MinecraftServer server = mc.getSingleplayerServer();
