@@ -234,9 +234,11 @@ public final class SeaFamily {
             mob.getMoveControl().setWantedPosition(t.getX(), t.getY(0.5), t.getZ(), 1.3);
             return;
         }
-        if (mob.tickCount % 50 != 0 || !mob.getNavigation().isDone()) {
+        // cada 2 segundos, si no avanza (el camino no sirve en la lava), elige solo a dónde nadar
+        if (mob.tickCount % 40 != 0 || mob.getDeltaMovement().lengthSqr() > 0.0025) {
             return;
         }
+        mob.getNavigation().stop();
         for (int i = 0; i < 8; i++) {
             BlockPos p = mob.blockPosition().offset(mob.getRandom().nextInt(17) - 8, mob.getRandom().nextInt(7) - 3,
                     mob.getRandom().nextInt(17) - 8);

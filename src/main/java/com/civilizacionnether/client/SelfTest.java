@@ -133,13 +133,12 @@ public final class SelfTest {
         String[] floors = {"minecraft:stone", "minecraft:netherrack", "minecraft:end_stone"};
         int phase = tick / 500;
         int t = tick % 500;
-        if (phase == dims.length) {
-            seaBiome(mc, t);
+        if (phase == dims.length || phase == dims.length + 1) {
+            seaBiome(mc, tick - dims.length * 500);
             return;
         }
-        if (phase > dims.length) {
+        if (phase > dims.length + 1) {
             if (t == 1) {
-                logBlocks(mc);
                 CivilizacionNether.LOGGER.info("SELFTEST terminado sin caerse");
                 mc.stop();
             }
@@ -190,65 +189,38 @@ public final class SelfTest {
 
     private static net.minecraft.core.BlockPos seaPos;
 
-    /** Visita el bioma Mar del Nether (y el Reino) en un mundo del Nether normal y saca fotos. */
+    /** Visita el Mar del Nether alrededor del Reino (en un Nether normal) y saca fotos. */
     private static void seaBiome(Minecraft mc, int t) {
         MinecraftServer server = mc.getSingleplayerServer();
         if (t == 20) {
             server.execute(() -> {
                 var nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
-                var key = net.minecraft.resources.ResourceKey.create(Registries.BIOME, CivilizacionNether.id("mar_del_nether"));
-                var found = nether.findClosestBiome3d(h -> h.is(key), net.minecraft.core.BlockPos.ZERO, 6400, 32, 64);
-                CivilizacionNether.LOGGER.info("SELFTEST mar del nether en {}", found == null ? "nada" : found.getFirst());
-                if (found != null) {
-                    seaPos = found.getFirst();
-                }
-            });
-        } else if (t == 40 && seaPos != null) {
-            cmd("execute in minecraft:the_nether run tp @s " + seaPos.getX() + " 60 " + seaPos.getZ() + " 30 25");
-        } else if ((t == 200 || t == 260 || t == 320) && seaPos != null) {
-            cmd("execute in minecraft:the_nether run tp @s " + seaPos.getX() + " " + (50 + t / 20) + " " + seaPos.getZ() + " " + (t * 2) + " 30");
-        } else if ((t == 230 || t == 290 || t == 350) && seaPos != null) {
-            shot("mar_del_nether_" + t);
-        } else if (t == 360) {
-            server.execute(() -> {
-                var nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
                 var p = nether.findNearestMapStructure(net.minecraft.tags.TagKey.create(Registries.STRUCTURE, CivilizacionNether.id("capitales")),
-                        seaPos == null ? net.minecraft.core.BlockPos.ZERO : seaPos, 50, false);
+                        net.minecraft.core.BlockPos.ZERO, 50, false);
                 CivilizacionNether.LOGGER.info("SELFTEST reino en {}", p);
-                if (p != null) {
-                    seaPos = p;
-                }
+                seaPos = p;
             });
-        } else if (t == 380 && seaPos != null) {
-            cmd("execute in minecraft:the_nether run tp @s " + seaPos.getX() + " 90 " + (seaPos.getZ() - 60) + " 0 25");
-        } else if (t == 470) {
-            shot("reino");
         }
-        if (t > 60 && t % 80 == 0) {
+        if (seaPos == null) {
+            return;
+        }
+        int x = seaPos.getX();
+        int z = seaPos.getZ();
+        // fotos: afuera del reino (el bioma), y el reino desde arriba
+        int[][] views = {{x + 130, 72, z + 10, 90, 20}, {x - 20, 70, z - 140, 200, 15}, {x + 90, 66, z + 120, 135, 15},
+                         {x, 140, z - 150, 0, 35}};
+        for (int i = 0; i < views.length; i++) {
+            int[] v = views[i];
+            if (t == 40 + i * 220) {
+                cmd("execute in minecraft:the_nether run tp @s " + v[0] + " " + v[1] + " " + v[2] + " " + v[3] + " " + v[4]);
+            } else if (t == 40 + i * 220 + 200) {
+                shot(i == 3 ? "reino" : "mar_del_nether_" + i);
+                logBlocks(mc);
+            }
+        }
+        if (t > 60 && t % 100 == 0) {
             logStats(mc, "minecraft:the_nether");
         }
-    }
-
-    /** Anota dónde está y hacia dónde mira cada criatura (para ver si alguna gira sin parar o se queda trabada). */
-    private static void logStats(Minecraft mc, String dim) {
-        MinecraftServer server = mc.getSingleplayerServer();
-        server.execute(() -> {
-            var key = net.minecraft.resources.ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim));
-            var level = server.getLevel(key);
-            if (level == null) {
-                return;
-            }
-            for (var e : level.getAllEntities()) {
-                ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
-                if (e instanceof net.minecraft.world.entity.LivingEntity le && (CivilizacionNether.MODID.equals(id.getNamespace())
-                        || id.getPath().equals("villager"))) {
-                    CivilizacionNether.LOGGER.info(String.format(java.util.Locale.ROOT,
-                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f",
-                            dim, id.getPath(), e.getId(), e.getX(), e.getY(), e.getZ(), e.getYRot(), le.yBodyRot, e.getXRot(),
-                            e.isInWater(), e.onGround(), le.getHealth()));
-                }
-            }
-        });
     }
 
     /** Cuenta los bloques del bioma alrededor (para saber si el pasto, la hierba y los árboles aparecieron). */
