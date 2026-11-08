@@ -257,13 +257,14 @@ public final class SelfTest {
             var c = mc.player.blockPosition();
             for (int x = -40; x <= 40; x++) {
                 for (int z = -40; z <= 40; z++) {
-                    for (int y = 30; y < 110; y++) {
+                    for (int y = 8; y < 120; y++) {
                         var p = new net.minecraft.core.BlockPos(c.getX() + x, y, c.getZ() + z);
                         if (!nether.isLoaded(p)) {
                             continue;
                         }
                         var id = BuiltInRegistries.BLOCK.getKey(nether.getBlockState(p).getBlock());
-                        if (CivilizacionNether.MODID.equals(id.getNamespace())) {
+                        if (CivilizacionNether.MODID.equals(id.getNamespace()) || id.getPath().equals("ancient_debris")
+                                || id.getPath().equals("nether_gold_ore") || id.getPath().equals("nether_quartz_ore")) {
                             count.merge(id.getPath(), 1, Integer::sum);
                         }
                     }

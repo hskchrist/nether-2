@@ -259,7 +259,11 @@ def worldgen():
     feats = [[] for _ in range(11)]
     # el árbol va en el mismo paso que el pasto (antes del Reino, que despeja su terreno: no crecen árboles adentro)
     feats[1] = [R + "mar_purpura", R + "arbol_de_hielo"]
-    feats[7] = [R + "piedra_brillante_purpura", R + "cuarzo_purpura"]
+    # menas normales del Nether (como en los otros biomas): oro, cuarzo, magma, grava, piedra negra y
+    # escombros ancestrales (la netherita), en el mismo orden que usa el juego
+    feats[7] = [R + "piedra_brillante_purpura", R + "cuarzo_purpura", "minecraft:ore_magma", "minecraft:spring_closed",
+                "minecraft:ore_gravel_nether", "minecraft:ore_blackstone", "minecraft:ore_gold_nether",
+                "minecraft:ore_quartz_nether", "minecraft:ore_ancient_debris_large", "minecraft:ore_debris_small"]
     save_json(os.path.join(wg, "biome", "mar_del_nether.json"), {
         "has_precipitation": False, "temperature": 2.0, "downfall": 0.0,
         "effects": {
