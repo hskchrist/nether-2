@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:crimson_stem"
+    },
+    {
+      "item": "civilizacion_nether:frost_leaves"
+    }
+  ],
+  "result": {
+    "id": "civilizacion_nether:tronco_hielo",
+    "count": 1
+  }
+}

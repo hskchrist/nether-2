@@ -86,7 +86,7 @@ public final class CommonEvents {
             event.register(t.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     CommonEvents::canSpawnInfernal, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         }
-        // fauna del Océano Púrpura
+        // fauna del Mar del Nether
         RegisterSpawnPlacementsEvent.Operation op = RegisterSpawnPlacementsEvent.Operation.REPLACE;
         Heightmap.Types hm = Heightmap.Types.MOTION_BLOCKING_NO_LEAVES;
         event.register(ModEntities.PEZ_BRASA.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnInWater, op);

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "civilizacion_nether:block/pasto_mar_nether_top",
+    "side": "civilizacion_nether:block/pasto_mar_nether_side",
+    "bottom": "minecraft:block/netherrack"
+  }
+}

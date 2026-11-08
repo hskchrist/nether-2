@@ -67,7 +67,7 @@
           }
         },
         {
-          "biome": "civilizacion_nether:oceano_purpura",
+          "biome": "civilizacion_nether:mar_del_nether",
           "parameters": {
             "temperature": -0.3,
             "humidity": 0.3,

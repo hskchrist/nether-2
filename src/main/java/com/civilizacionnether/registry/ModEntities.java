@@ -117,7 +117,7 @@ public final class ModEntities {
                     .clientTrackingRange(16)
                     .build("dragon_obsidiana_domesticable"));
 
-    // ------------------------------------------------------------------ fauna del Océano Púrpura
+    // ------------------------------------------------------------------ fauna del Mar del Nether
     public static final DeferredHolder<EntityType<?>, EntityType<NetherFishEntity>> PEZ_BRASA = fish("pez_brasa", 0.5f, 0.35f);
     public static final DeferredHolder<EntityType<?>, EntityType<NetherFishEntity>> PEZ_ALMA = fish("pez_alma", 0.5f, 0.45f);
     public static final DeferredHolder<EntityType<?>, EntityType<NetherFishEntity>> ANGUILA_RUBI = fish("anguila_rubi", 0.45f, 0.35f);

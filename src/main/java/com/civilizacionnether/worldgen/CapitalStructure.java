@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public class CapitalStructure extends Structure {
     public static final MapCodec<CapitalStructure> CODEC = simpleCodec(CapitalStructure::new);
-    /** Altura de la base de la plantilla: el piso del reino queda en y = 34 y el Océano Púrpura en y = 31 (el nivel del mar del Nether). */
+    /** Altura de la base de la plantilla: el piso del reino queda en y = 34 y el Mar del Nether en y = 31 (el nivel del mar del Nether). */
     public static final int BASE_Y = 30;
 
     public CapitalStructure(StructureSettings settings) {

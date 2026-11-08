@@ -25,7 +25,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 /**
- * Peces del Océano Púrpura (misma clase, distinto tipo):
+ * Peces del Mar del Nether (misma clase, distinto tipo):
  * <ul>
  *   <li>Pez Brasa: nada en cardúmenes de hasta 6; se come (asado da resistencia al fuego) y es la comida de los delfines.</li>
  *   <li>Pez Alma: cardúmenes de 4, deja una estela de almas; a veces suelta un alma.</li>
@@ -64,7 +64,7 @@ public class NetherFishEntity extends AbstractSchoolingFish implements GeoEntity
     /** El agua del Nether también es agua para ellos (respiran y nadan). */
     @Override
     public boolean isInWater() {
-        return super.isInWater() || SeaLife.inNetherWater(this);
+        return super.isInWater() || SeaLife.inNetherWater(this) || isInLava();
     }
 
     @Override

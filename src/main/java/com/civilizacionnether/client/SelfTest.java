@@ -81,11 +81,13 @@ public final class SelfTest {
     /** Arma una pileta de agua y un piso, y pone todas las criaturas en fila delante de la cámara. */
     private static void stage(String dim, String block) {
         String in = "execute in " + dim + " run ";
+        // en el Nether la pileta es de lava (para ver que nadan en la lava); en el End, de agua del Nether
+        String fluid = dim.endsWith("nether") ? "minecraft:lava" : dim.endsWith("end") ? "civilizacion_nether:nether_water" : "minecraft:water";
         cmd(in + "forceload add -32 -32 32 32");
         cmd(in + "fill -24 99 -4 24 112 30 minecraft:air");
         cmd(in + "fill -24 98 -4 24 98 30 " + block);
         cmd(in + "fill -25 88 13 25 98 31 minecraft:glass");
-        cmd(in + "fill -24 89 14 24 98 30 minecraft:water");
+        cmd(in + "fill -24 89 14 24 98 30 " + fluid);
         cmd(in + "tp @s 0 106 -2 0 35");
         int i = 0;
         for (String t : TYPES) {
@@ -131,8 +133,13 @@ public final class SelfTest {
         String[] floors = {"minecraft:stone", "minecraft:netherrack", "minecraft:end_stone"};
         int phase = tick / 500;
         int t = tick % 500;
-        if (phase >= dims.length) {
+        if (phase == dims.length) {
+            seaBiome(mc, t);
+            return;
+        }
+        if (phase > dims.length) {
             if (t == 1) {
+                logBlocks(mc);
                 CivilizacionNether.LOGGER.info("SELFTEST terminado sin caerse");
                 mc.stop();
             }
@@ -156,8 +163,69 @@ public final class SelfTest {
             shot(d + "_agua");
         } else if (t == 270) {
             cmd("execute in " + dims[phase] + " run tp @s 0 106 -2 0 35");
+        } else if (t == 120) {
+            babies(mc, dims[phase]);
         } else if (t == 490) {
             cmd("execute in " + dims[phase] + " run kill @e[type=!player]");
+        }
+    }
+
+    /** Vuelve crías a algunas criaturas del mar para verlas en las fotos. */
+    private static void babies(Minecraft mc, String dim) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        server.execute(() -> {
+            var level = server.getLevel(net.minecraft.resources.ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim)));
+            if (level == null) {
+                return;
+            }
+            for (var e : level.getAllEntities()) {
+                if (e instanceof net.minecraft.world.entity.Mob m && com.civilizacionnether.entity.sea.SeaFamily.food(m) != null
+                        && m.getId() % 2 == 0) {
+                    com.civilizacionnether.entity.sea.SeaFamily.makeBaby(m);
+                    CivilizacionNether.LOGGER.info("SELFTEST cria {}", BuiltInRegistries.ENTITY_TYPE.getKey(m.getType()));
+                }
+            }
+        });
+    }
+
+    private static net.minecraft.core.BlockPos seaPos;
+
+    /** Visita el bioma Mar del Nether (y el Reino) en un mundo del Nether normal y saca fotos. */
+    private static void seaBiome(Minecraft mc, int t) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (t == 20) {
+            server.execute(() -> {
+                var nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
+                var key = net.minecraft.resources.ResourceKey.create(Registries.BIOME, CivilizacionNether.id("mar_del_nether"));
+                var found = nether.findClosestBiome3d(h -> h.is(key), net.minecraft.core.BlockPos.ZERO, 6400, 32, 64);
+                CivilizacionNether.LOGGER.info("SELFTEST mar del nether en {}", found == null ? "nada" : found.getFirst());
+                if (found != null) {
+                    seaPos = found.getFirst();
+                }
+            });
+        } else if (t == 40 && seaPos != null) {
+            cmd("execute in minecraft:the_nether run tp @s " + seaPos.getX() + " 60 " + seaPos.getZ() + " 30 25");
+        } else if ((t == 200 || t == 260 || t == 320) && seaPos != null) {
+            cmd("execute in minecraft:the_nether run tp @s " + seaPos.getX() + " " + (50 + t / 20) + " " + seaPos.getZ() + " " + (t * 2) + " 30");
+        } else if ((t == 230 || t == 290 || t == 350) && seaPos != null) {
+            shot("mar_del_nether_" + t);
+        } else if (t == 360) {
+            server.execute(() -> {
+                var nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
+                var p = nether.findNearestMapStructure(net.minecraft.tags.TagKey.create(Registries.STRUCTURE, CivilizacionNether.id("capitales")),
+                        seaPos == null ? net.minecraft.core.BlockPos.ZERO : seaPos, 50, false);
+                CivilizacionNether.LOGGER.info("SELFTEST reino en {}", p);
+                if (p != null) {
+                    seaPos = p;
+                }
+            });
+        } else if (t == 380 && seaPos != null) {
+            cmd("execute in minecraft:the_nether run tp @s " + seaPos.getX() + " 90 " + (seaPos.getZ() - 60) + " 0 25");
+        } else if (t == 470) {
+            shot("reino");
+        }
+        if (t > 60 && t % 80 == 0) {
+            logStats(mc, "minecraft:the_nether");
         }
     }
 
@@ -180,6 +248,34 @@ public final class SelfTest {
                             e.isInWater(), e.onGround(), le.getHealth()));
                 }
             }
+        });
+    }
+
+    /** Cuenta los bloques del bioma alrededor (para saber si el pasto, la hierba y los árboles aparecieron). */
+    private static void logBlocks(Minecraft mc) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        if (seaPos == null) {
+            return;
+        }
+        server.execute(() -> {
+            var nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
+            java.util.Map<String, Integer> count = new java.util.TreeMap<>();
+            var c = mc.player.blockPosition();
+            for (int x = -40; x <= 40; x++) {
+                for (int z = -40; z <= 40; z++) {
+                    for (int y = 30; y < 110; y++) {
+                        var p = new net.minecraft.core.BlockPos(c.getX() + x, y, c.getZ() + z);
+                        if (!nether.isLoaded(p)) {
+                            continue;
+                        }
+                        var id = BuiltInRegistries.BLOCK.getKey(nether.getBlockState(p).getBlock());
+                        if (CivilizacionNether.MODID.equals(id.getNamespace())) {
+                            count.merge(id.getPath(), 1, Integer::sum);
+                        }
+                    }
+                }
+            }
+            CivilizacionNether.LOGGER.info("SELFTEST bloques del bioma: {}", count);
         });
     }
 

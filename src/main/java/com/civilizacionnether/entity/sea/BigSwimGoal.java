@@ -34,16 +34,35 @@ public class BigSwimGoal extends Goal {
         return wanted != null;
     }
 
+    /**
+     * Elige un punto más adelante donde el cuerpo entero quepa en el agua (o la lava), por debajo de la superficie: busca
+     * en la columna de ese punto el tramo de agua y nada por el medio, así no se queda flotando arriba ni trabado.
+     */
     private Vec3 pick() {
-        for (int i = 0; i < 12; i++) {
-            float yaw = mob.getYRot() + (mob.getRandom().nextFloat() - 0.5f) * (i < 6 ? 120.0f : 300.0f);
-            double dist = range * (0.4 + mob.getRandom().nextDouble() * 0.6);
-            double x = mob.getX() - Mth.sin(yaw * Mth.DEG_TO_RAD) * dist;
-            double z = mob.getZ() + Mth.cos(yaw * Mth.DEG_TO_RAD) * dist;
-            double y = mob.getY() + (mob.getRandom().nextDouble() - 0.5) * 8.0;
-            BlockPos p = BlockPos.containing(x, y, z);
-            if (SeaLife.isWater(mob.level(), p) && SeaLife.isWater(mob.level(), p.above((int) Math.ceil(mob.getBbHeight())))
-                    && SeaLife.isWater(mob.level(), p.below())) {
+        int body = (int) Math.ceil(mob.getBbHeight());
+        for (int i = 0; i < 24; i++) {
+            float yaw = mob.getYRot() + (mob.getRandom().nextFloat() - 0.5f) * (i < 8 ? 120.0f : 360.0f);
+            double dist = range * (i < 16 ? 0.4 + mob.getRandom().nextDouble() * 0.6 : 0.15 + mob.getRandom().nextDouble() * 0.3);
+            int x = Mth.floor(mob.getX() - Mth.sin(yaw * Mth.DEG_TO_RAD) * dist);
+            int z = Mth.floor(mob.getZ() + Mth.cos(yaw * Mth.DEG_TO_RAD) * dist);
+            // tramo de agua en esa columna, cerca de la altura actual
+            int y0 = Mth.floor(mob.getY());
+            int top = Integer.MIN_VALUE;
+            int bottom = Integer.MAX_VALUE;
+            for (int dy = -12; dy <= 12; dy++) {
+                if (SeaLife.isWater(mob.level(), new BlockPos(x, y0 + dy, z))) {
+                    top = Math.max(top, y0 + dy);
+                    bottom = Math.min(bottom, y0 + dy);
+                }
+            }
+            if (top == Integer.MIN_VALUE || top - bottom + 1 < body + 1) {
+                continue;
+            }
+            int lo = bottom + 1;
+            int hi = Math.max(lo, top - body - 1);
+            int y = lo + mob.getRandom().nextInt(hi - lo + 1);
+            BlockPos p = new BlockPos(x, y, z);
+            if (SeaLife.isWater(mob.level(), p) && SeaLife.isWater(mob.level(), p.above(body))) {
                 return Vec3.atCenterOf(p);
             }
         }
@@ -53,19 +72,31 @@ public class BigSwimGoal extends Goal {
     @Override
     public void start() {
         ticks = 0;
+        stuck = 0;
+        last = null;
         mob.getMoveControl().setWantedPosition(wanted.x, wanted.y, wanted.z, speed);
     }
 
     @Override
     public boolean canContinueToUse() {
-        return wanted != null && mob.getTarget() == null && ticks < 300 && mob.isInWater()
+        return wanted != null && mob.getTarget() == null && ticks < 300 && mob.isInWater() && stuck < 3
                 && mob.position().distanceToSqr(wanted) > 4.0;
     }
+
+    private Vec3 last;
+    private int stuck;
 
     @Override
     public void tick() {
         if (++ticks % 20 == 0) {
             mob.getMoveControl().setWantedPosition(wanted.x, wanted.y, wanted.z, speed);
+            // si casi no avanzó en un segundo, está trabado: busca otro punto
+            if (last != null && mob.position().distanceToSqr(last) < 0.25) {
+                stuck++;
+            } else {
+                stuck = 0;
+            }
+            last = mob.position();
         }
     }
 

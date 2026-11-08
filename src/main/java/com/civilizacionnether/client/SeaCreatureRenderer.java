@@ -13,7 +13,7 @@ import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
-/** Dibuja las criaturas del Océano Púrpura: brillo de su textura _glowmask, crías a la mitad y la medusa transparente. */
+/** Dibuja las criaturas del Mar del Nether: brillo de su textura _glowmask, crías a la mitad y la medusa transparente. */
 public class SeaCreatureRenderer<T extends LivingEntity & GeoAnimatable> extends GeoEntityRenderer<T> {
     private final boolean translucent;
     private final float shadow;

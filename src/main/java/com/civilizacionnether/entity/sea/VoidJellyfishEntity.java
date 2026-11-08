@@ -45,7 +45,7 @@ public class VoidJellyfishEntity extends WaterAnimal implements GeoEntity {
 
     @Override
     public boolean isInWater() {
-        return super.isInWater() || SeaLife.inNetherWater(this);
+        return super.isInWater() || SeaLife.inNetherWater(this) || isInLava();
     }
 
     @Override

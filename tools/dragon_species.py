@@ -8,7 +8,7 @@ También escribe: nombres, huevos de generación, botín, crafteos de los huevos
 Biomas:
   Infernal:  nido en el Bosque Carmesí; también en los Páramos del Nether.
   Almas:     nido en el Valle de Arena de Almas; también en el Bosque Distorsionado.
-  Obsidiana: nido en los Deltas de Basalto; también en el Océano Púrpura.
+  Obsidiana: nido en los Deltas de Basalto; también en el Mar del Nether.
   Páramos del Nether: aparecen las tres especies salvajes, y a veces ya peleando (InfernalDragonEntity.naturalState).
 """
 import json
@@ -52,7 +52,7 @@ SPAWNS = {
     "dragones_infernal": (["minecraft:crimson_forest"], [("dragon_infernal", 2, 1, 1), ("dragon_infernal_domesticable", 1, 1, 1)]),
     "dragones_almas": (["minecraft:soul_sand_valley", "minecraft:warped_forest"],
                        [("dragon_almas", 2, 1, 1), ("dragon_almas_domesticable", 1, 1, 1)]),
-    "dragones_obsidiana": (["minecraft:basalt_deltas", R + "oceano_purpura"],
+    "dragones_obsidiana": (["minecraft:basalt_deltas", R + "mar_del_nether"],
                            [("dragon_obsidiana", 2, 1, 1), ("dragon_obsidiana_domesticable", 1, 1, 1)]),
     # campo de batalla: las tres especies salvajes juntas
     "dragones_batalla": (["minecraft:nether_wastes"], [("dragon_infernal", 1, 1, 1), ("dragon_almas", 1, 1, 1),
@@ -76,6 +76,13 @@ def hue_shift(src, dst, degrees):
 def textures():
     ent = os.path.join(TEX, "entity")
     item = os.path.join(TEX, "item")
+    # skins de los salvajes (propuesta aprobada: más oscuros, ojos de furia que brillan); las del usuario quedan
+    # para los domesticables
+    for sp in ("infernal", "almas", "obsidiana"):
+        for suf in ("", "_glowmask"):
+            src = os.path.join(REF, "dragon_%s_salvaje%s.png" % (sp, suf))
+            if os.path.exists(src):
+                shutil.copy(src, os.path.join(ent, "dragon_%s_salvaje%s.png" % (sp, suf)))
     for sp in SPECIES:
         for suf in ("", "_glowmask"):
             src = os.path.join(REF, "dragon_%s%s.png" % (sp, suf))

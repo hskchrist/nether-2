@@ -1018,14 +1018,18 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
                 return;
             }
             setNoGravity(false);
-            super.travel(input);
+            if (!LavaSwim.travel(this, input)) {
+                super.travel(input);
+            }
             return;
         }
         if (isFlying() && !level().isClientSide) {
             flyTravel();
             return;
         }
-        super.travel(input);
+        if (!LavaSwim.travel(this, input)) {
+            super.travel(input);
+        }
     }
 
     @Override

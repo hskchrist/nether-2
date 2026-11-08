@@ -23,7 +23,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 /**
  * La pieza del Reino Humano del Nether (192 x 192). Antes de colocar la plantilla (data/civilizacion_nether/structure/capital.nbt),
  * en cada chunk: excava el aire, levanta la isla redonda de piedra negra (radio 84 + borde de 2) y deja alrededor el
- * Océano Púrpura de agua del Nether. Así la plantilla no necesita guardar aire y pesa mucho menos.
+ * Mar del Nether de agua del Nether. Así la plantilla no necesita guardar aire y pesa mucho menos.
  */
 public class CapitalPiece extends TemplateStructurePiece {
     public static final ResourceLocation TEMPLATE = CivilizacionNether.id("capital");
@@ -76,7 +76,7 @@ public class CapitalPiece extends TemplateStructurePiece {
                         level.setBlock(p.set(x, y, z), (x * 7 + y * 3 + z * 5) % 11 == 0 ? basalt : blackstone, 2);
                     }
                 } else {
-                    // el Océano Púrpura alrededor del reino (la superficie queda a la altura del mar del Nether)
+                    // el Mar del Nether alrededor del reino (la superficie queda a la altura del mar del Nether)
                     for (int y = baseY + 2; y < baseY + HEIGHT; y++) {
                         level.setBlock(p.set(x, y, z), air, 2);
                     }

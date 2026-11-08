@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:crimson_roots"
+    },
+    {
+      "item": "civilizacion_nether:frost_leaves"
+    }
+  ],
+  "result": {
+    "id": "civilizacion_nether:hierba_mar_nether",
+    "count": 2
+  }
+}

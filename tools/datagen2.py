@@ -1,5 +1,5 @@
 """Datos y recursos de la actualización del Reino Humano del Nether:
-nombres, modelos de ítems, crafteos, botín, etiquetas, sonidos (voces del usuario), bioma Océano Púrpura,
+nombres, modelos de ítems, crafteos, botín, etiquetas, sonidos (voces del usuario), bioma Mar del Nether,
 árbol de hielo de Picos de Hielo y el reino nuevo.
 """
 import json
@@ -34,14 +34,14 @@ NEW_BLOCKS = {
     "miner_cart": ("Carrito del Minero", "Miner Cart"),
     "nether_bed": ("Cama del Nether", "Nether Bed"),
     "nether_water": ("Agua del Nether", "Nether Water"),
-    "frost_leaves": ("Hojas de Pico de Hielo", "Ice Spike Leaves"),
+    "frost_leaves": ("Hojas del Árbol de Hielo", "Frost Tree Leaves"),
 }
 MESSAGES = {
     "msg.civilizacion_nether.need_beds": ("Para tener un hijo necesitan camas del Nether libres cerca.",
                                           "They need free Nether beds nearby to have a child."),
     "msg.civilizacion_nether.bed_spawn": ("Te acostaste en la cama del Nether: tu punto de reaparición quedó guardado.",
                                           "You lay down in the Nether bed: your respawn point is saved."),
-    "biome.civilizacion_nether.oceano_purpura": ("Océano Púrpura", "Purple Ocean"),
+    "biome.civilizacion_nether.mar_del_nether": ("Mar del Nether", "Nether Sea"),
     "subtitles.civilizacion_nether.human.hurt": ("Humano herido", "Human hurts"),
     "fluid_type.civilizacion_nether.nether_water": ("Agua del Nether", "Nether Water"),
 }
@@ -200,7 +200,7 @@ def tags():
         kind = {"helmet": "head_armor", "chestplate": "chest_armor", "leggings": "leg_armor", "boots": "foot_armor"}[p]
         add_tag("item/" + kind, [R + "human_" + p, R + "frost_" + p, R + "ruby_" + p])
     # el bioma nuevo es parte del Nether (para spawns, la mena de rubí y la música)
-    save_json(os.path.join(MCDATA, "tags", "worldgen", "biome", "is_nether.json"), {"replace": False, "values": [R + "oceano_purpura"]})
+    save_json(os.path.join(MCDATA, "tags", "worldgen", "biome", "is_nether.json"), {"replace": False, "values": [R + "mar_del_nether"]})
 
 
 # ---------------------------------------------------------------- sonidos: voces del usuario
@@ -226,9 +226,9 @@ def sounds():
     save_json(os.path.join(ASSETS, "sounds.json"), sj)
 
 
-# ---------------------------------------------------------------- bioma Océano Púrpura y árbol de hielo
+# ---------------------------------------------------------------- bioma Mar del Nether y árbol de hielo
 def sea(category):
-    """Fauna marina del Océano Púrpura (ver sealife.py)."""
+    """Fauna marina del Mar del Nether (ver sealife.py)."""
     import sealife
     return [{"type": R + k, "weight": w, "minCount": lo, "maxCount": hi} for k, w, lo, hi in sealife.SPAWNS[category]]
 
@@ -259,10 +259,11 @@ def worldgen():
     feats = [[] for _ in range(11)]
     feats[1] = [R + "mar_purpura"]
     feats[7] = [R + "piedra_brillante_purpura", R + "cuarzo_purpura"]
-    save_json(os.path.join(wg, "biome", "oceano_purpura.json"), {
+    feats[9] = [R + "arbol_de_hielo"]
+    save_json(os.path.join(wg, "biome", "mar_del_nether.json"), {
         "has_precipitation": False, "temperature": 2.0, "downfall": 0.0,
         "effects": {
-            "fog_color": 0x3A1458, "sky_color": 0x6E1A3C, "water_color": 0x7A2BD6, "water_fog_color": 0x3B0F66,
+            "fog_color": 0x5A1A38, "sky_color": 0x6E1A3C, "water_color": 0x7A2BD6, "water_fog_color": 0x3B0F66,
             "particle": {"options": {"type": "minecraft:portal"}, "probability": 0.006},
             "ambient_sound": "minecraft:ambient.crimson_forest.loop",
             "mood_sound": {"sound": "minecraft:ambient.crimson_forest.mood", "tick_delay": 6000, "block_search_extent": 8, "offset": 2.0},
@@ -278,42 +279,23 @@ def worldgen():
         "spawn_costs": {},
         "carvers": {"air": "minecraft:nether_cave"},
         "features": feats})
-    # el Nether con el Océano Púrpura (los 5 biomas normales con sus parámetros de siempre + el nuevo)
+    # el Nether con el Mar del Nether (los 5 biomas normales con sus parámetros de siempre + el nuevo)
     nb = [("minecraft:nether_wastes", 0.0, 0.0, 0.0), ("minecraft:soul_sand_valley", 0.0, -0.5, 0.0),
           ("minecraft:crimson_forest", 0.4, 0.0, 0.0), ("minecraft:warped_forest", 0.0, 0.5, 0.375),
-          ("minecraft:basalt_deltas", -0.5, 0.0, 0.175), (R + "oceano_purpura", -0.3, 0.3, 0.0)]
+          ("minecraft:basalt_deltas", -0.5, 0.0, 0.175), (R + "mar_del_nether", -0.3, 0.3, 0.0)]
     save_json(os.path.join(MCDATA, "dimension", "the_nether.json"), {
         "type": "minecraft:the_nether",
         "generator": {"type": "minecraft:noise", "settings": "minecraft:nether", "biome_source": {
             "type": "minecraft:multi_noise", "biomes": [
                 {"biome": b, "parameters": {"temperature": t, "humidity": h, "continentalness": 0.0, "erosion": 0.0,
                                             "depth": 0.0, "weirdness": 0.0, "offset": o}} for b, t, h, o in nb]}}})
-    # árbol de hielo en Picos de Hielo (sus hojas dan la Hoja del Frío Eterno)
-    save_json(os.path.join(wg, "configured_feature", "arbol_de_hielo.json"), {
-        "type": "minecraft:tree", "config": {
-            "dirt_provider": {"type": "minecraft:simple_state_provider", "state": {"Name": "minecraft:snow_block"}},
-            "trunk_provider": {"type": "minecraft:simple_state_provider", "state": {"Name": "minecraft:spruce_log", "Properties": {"axis": "y"}}},
-            "foliage_provider": {"type": "minecraft:simple_state_provider", "state": {"Name": R + "frost_leaves", "Properties": {
-                "distance": "7", "persistent": "false", "waterlogged": "false"}}},
-            "trunk_placer": {"type": "minecraft:straight_trunk_placer", "base_height": 6, "height_rand_a": 3, "height_rand_b": 1},
-            "foliage_placer": {"type": "minecraft:spruce_foliage_placer",
-                               "radius": {"type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3},
-                               "offset": {"type": "minecraft:uniform", "min_inclusive": 0, "max_inclusive": 2},
-                               "trunk_height": {"type": "minecraft:uniform", "min_inclusive": 1, "max_inclusive": 2}},
-            "minimum_size": {"type": "minecraft:two_layers_feature_size", "limit": 2, "lower_size": 0, "upper_size": 2},
-            "decorators": [], "ignore_vines": True, "force_dirt": False}})
+    # Árbol de Hielo: crece en el Mar del Nether (sus hojas dan la Hoja del Frío Eterno), ya no en Picos de Hielo
+    save_json(os.path.join(wg, "configured_feature", "arbol_de_hielo.json"), {"type": R + "frost_tree", "config": {}})
     save_json(os.path.join(wg, "placed_feature", "arbol_de_hielo.json"), {
         "feature": R + "arbol_de_hielo", "placement": [
-            {"type": "minecraft:rarity_filter", "chance": 2}, {"type": "minecraft:in_square"},
-            {"type": "minecraft:heightmap", "heightmap": "OCEAN_FLOOR"}, {"type": "minecraft:biome"},
-            {"type": "minecraft:block_predicate_filter", "predicate": {"type": "minecraft:matching_blocks", "offset": [0, -1, 0],
-                                                                       "blocks": ["minecraft:snow_block", "minecraft:packed_ice",
-                                                                                  "minecraft:ice", "minecraft:dirt", "minecraft:grass_block"]}}]})
-    save_json(os.path.join(DATA, "neoforge", "biome_modifier", "arbol_de_hielo.json"), {
-        "type": "neoforge:add_features", "biomes": "minecraft:ice_spikes", "features": R + "arbol_de_hielo",
-        "step": "vegetal_decoration"})
-    # el reino aparece en el Océano Púrpura
-    save_json(os.path.join(DATA, "tags", "worldgen", "biome", "has_reino.json"), {"values": [R + "oceano_purpura"]})
+            {"type": "minecraft:count_on_every_layer", "count": 2}, {"type": "minecraft:biome"}]})
+    # el reino aparece en el Mar del Nether
+    save_json(os.path.join(DATA, "tags", "worldgen", "biome", "has_reino.json"), {"values": [R + "mar_del_nether"]})
     save_json(os.path.join(wg, "structure", "capital.json"), {
         "type": R + "capital", "biomes": "#" + R + "has_reino", "step": "surface_structures",
         # dentro del reino (de borde a borde, con el muelle) no aparece ningún mob hostil; los humanos y el dragón

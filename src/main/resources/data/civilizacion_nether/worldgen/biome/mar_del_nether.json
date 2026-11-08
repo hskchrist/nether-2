@@ -3,7 +3,7 @@
   "temperature": 2.0,
   "downfall": 0.0,
   "effects": {
-    "fog_color": 3806296,
+    "fog_color": 5904952,
     "sky_color": 7215676,
     "water_color": 8006614,
     "water_fog_color": 3870566,
@@ -53,9 +53,9 @@
       },
       {
         "type": "civilizacion_nether:tiburon_infernal",
-        "weight": 8,
+        "weight": 3,
         "minCount": 1,
-        "maxCount": 2
+        "maxCount": 1
       },
       {
         "type": "civilizacion_nether:serpiente_marina",
@@ -71,9 +71,9 @@
     "water_creature": [
       {
         "type": "civilizacion_nether:delfin_nether",
-        "weight": 4,
+        "weight": 9,
         "minCount": 3,
-        "maxCount": 3
+        "maxCount": 5
       },
       {
         "type": "civilizacion_nether:ballena_azul",
@@ -84,7 +84,7 @@
       {
         "type": "civilizacion_nether:manta_carmesi",
         "weight": 3,
-        "minCount": 1,
+        "minCount": 2,
         "maxCount": 2
       },
       {
@@ -97,7 +97,7 @@
         "type": "civilizacion_nether:caballito_magma",
         "weight": 3,
         "minCount": 1,
-        "maxCount": 2
+        "maxCount": 1
       },
       {
         "type": "civilizacion_nether:cangrejo_basalto",
@@ -153,7 +153,9 @@
       "civilizacion_nether:cuarzo_purpura"
     ],
     [],
-    [],
+    [
+      "civilizacion_nether:arbol_de_hielo"
+    ],
     []
   ]
 }

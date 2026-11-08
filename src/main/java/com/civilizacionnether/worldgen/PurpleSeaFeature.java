@@ -16,11 +16,12 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import com.mojang.serialization.Codec;
 
 /**
- * Océano Púrpura del Nether: en cada columna del chunk que esté en el bioma, el mar de lava (bajo el nivel 32) se
- * convierte en agua del Nether; el fondo se cubre de nylium carmesí y distorsionado, con raíces y luces de hongo.
+ * Mar del Nether: en cada columna del chunk que esté en el bioma, el mar de lava (bajo el nivel 32) se convierte en
+ * agua del Nether y el fondo se cubre de nylium y luces de hongo. En tierra firme el netherrack que da al aire se cubre
+ * de Pasto del Mar del Nether con su hierba y cristales morados, y de los techos cuelgan algunos carámbanos.
  */
 public class PurpleSeaFeature extends Feature<NoneFeatureConfiguration> {
-    public static final ResourceKey<Biome> BIOME = ResourceKey.create(Registries.BIOME, CivilizacionNether.id("oceano_purpura"));
+    public static final ResourceKey<Biome> BIOME = ResourceKey.create(Registries.BIOME, CivilizacionNether.id("mar_del_nether"));
     private static final int SEA_TOP = 31;
 
     public PurpleSeaFeature(Codec<NoneFeatureConfiguration> codec) {
@@ -39,6 +40,7 @@ public class PurpleSeaFeature extends Feature<NoneFeatureConfiguration> {
         boolean any = false;
         for (int x = cx; x < cx + 16; x++) {
             for (int z = cz; z < cz + 16; z++) {
+                any |= land(level, rnd, x, z);
                 m.set(x, SEA_TOP, z);
                 if (!level.getBiome(m).is(BIOME)) {
                     continue;
@@ -67,6 +69,41 @@ public class PurpleSeaFeature extends Feature<NoneFeatureConfiguration> {
                         }
                     }
                 }
+            }
+        }
+        return any;
+    }
+
+    /** Pasto, hierba y cristales en el suelo; carámbanos en los techos. */
+    private static boolean land(WorldGenLevel level, RandomSource rnd, int x, int z) {
+        BlockState grass = ModBlocks.NETHER_SEA_GRASS_BLOCK.get().defaultBlockState();
+        BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+        BlockPos.MutableBlockPos up = new BlockPos.MutableBlockPos();
+        boolean any = false;
+        int max = Math.min(level.getMaxBuildHeight() - 8, 122);
+        boolean in = false;
+        for (int y = SEA_TOP; y < max; y++) {
+            m.set(x, y, z);
+            if ((y & 3) == 0 || y == SEA_TOP) {
+                in = level.getBiome(m).is(BIOME); // el Nether tiene biomas a distintas alturas
+            }
+            if (!in) {
+                continue;
+            }
+            BlockState s = level.getBlockState(m);
+            up.set(x, y + 1, z);
+            BlockState a = level.getBlockState(up);
+            if ((s.is(Blocks.NETHERRACK) || s.is(Blocks.SOUL_SOIL) || s.is(Blocks.CRIMSON_NYLIUM) || s.is(Blocks.WARPED_NYLIUM)) && a.isAir()) {
+                level.setBlock(m, grass, 2);
+                any = true;
+                float k = rnd.nextFloat();
+                if (k < 0.32f) {
+                    level.setBlock(up, ModBlocks.NETHER_SEA_GRASS.get().defaultBlockState(), 2);
+                } else if (k < 0.355f) {
+                    level.setBlock(up, ModBlocks.NETHER_SEA_CRYSTAL.get().defaultBlockState(), 2);
+                }
+            } else if (s.isAir() && a.is(Blocks.NETHERRACK) && rnd.nextInt(45) == 0) {
+                level.setBlock(m, ModBlocks.FROST_ICICLE.get().defaultBlockState(), 2);
             }
         }
         return any;

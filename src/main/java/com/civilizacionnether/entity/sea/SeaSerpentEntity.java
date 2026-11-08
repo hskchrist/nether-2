@@ -39,7 +39,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.EnumSet;
 
 /**
- * Serpiente Marina del Nether: criatura rara del Océano Púrpura (20 de vida, como el esqueleto wither; no es jefe).
+ * Serpiente Marina del Nether: criatura rara del Mar del Nether (20 de vida, como el esqueleto wither; no es jefe).
  * Muerde fuerte y cada tanto ruge: empuja y debilita a los que estén cerca. Nunca entra a pelear dentro del Reino.
  * Suelta Escamas de Serpiente (para el Casco de la Serpiente) y a veces un Corazón del Mar.
  */
@@ -69,7 +69,7 @@ public class SeaSerpentEntity extends WaterAnimal implements GeoEntity, Enemy {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new SerpentAttackGoal());
-        this.goalSelector.addGoal(4, new BigSwimGoal(this, 0.8, 24, 40));
+        this.goalSelector.addGoal(4, new BigSwimGoal(this, 0.8, 24, 6));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
                 e -> !SeaLife.insideKingdom(level(), e.blockPosition())));
@@ -77,7 +77,7 @@ public class SeaSerpentEntity extends WaterAnimal implements GeoEntity, Enemy {
 
     @Override
     public boolean isInWater() {
-        return super.isInWater() || SeaLife.inNetherWater(this);
+        return super.isInWater() || SeaLife.inNetherWater(this) || isInLava();
     }
 
     @Override

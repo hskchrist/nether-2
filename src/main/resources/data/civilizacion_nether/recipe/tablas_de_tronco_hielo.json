@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "civilizacion_nether:tronco_hielo"
+    }
+  ],
+  "result": {
+    "id": "minecraft:crimson_planks",
+    "count": 4
+  }
+}

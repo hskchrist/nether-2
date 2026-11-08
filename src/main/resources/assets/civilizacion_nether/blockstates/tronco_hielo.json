@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "civilizacion_nether:block/tronco_hielo"
+    },
+    "axis=z": {
+      "model": "civilizacion_nether:block/tronco_hielo_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "civilizacion_nether:block/tronco_hielo_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

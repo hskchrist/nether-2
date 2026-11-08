@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:ice"
+    },
+    {
+      "item": "civilizacion_nether:frost_leaves"
+    }
+  ],
+  "result": {
+    "id": "civilizacion_nether:carambano_hielo",
+    "count": 3
+  }
+}

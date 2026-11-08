@@ -79,9 +79,31 @@ public final class ModBlocks {
             ModFluids.NETHER_WATER.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).mapColor(MapColor.COLOR_PURPLE)
                     .lightLevel(state -> 4)));
 
-    /** Hojas del árbol de hielo de Picos de Hielo (con tijeras se obtienen; dan la Hoja del Frío Eterno). */
+    /** Hojas del Árbol de Hielo del Mar del Nether (con tijeras se obtienen; dan la Hoja del Frío Eterno). */
     public static final DeferredBlock<LeavesBlock> FROST_LEAVES = BLOCKS.register("frost_leaves", () -> new LeavesBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LEAVES).mapColor(MapColor.ICE).lightLevel(state -> 3)));
+
+    // ------------------------------------------------------------------ Mar del Nether
+    /** Pasto del Mar del Nether: el suelo del bioma (netherrack cubierto de pasto azul y violeta). */
+    public static final DeferredBlock<Block> NETHER_SEA_GRASS_BLOCK = BLOCKS.register("pasto_mar_nether", () -> new Block(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_NYLIUM).mapColor(MapColor.COLOR_LIGHT_BLUE)));
+    /** Hierba del Mar del Nether (crece sobre el pasto). */
+    public static final DeferredBlock<net.minecraft.world.level.block.RootsBlock> NETHER_SEA_GRASS = BLOCKS.register("hierba_mar_nether",
+            () -> new net.minecraft.world.level.block.RootsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_ROOTS)
+                    .mapColor(MapColor.COLOR_LIGHT_BLUE)));
+    /** Cristal del Mar del Nether: cristales morados que brillan entre el pasto. */
+    public static final DeferredBlock<net.minecraft.world.level.block.RootsBlock> NETHER_SEA_CRYSTAL = BLOCKS.register("cristal_mar_nether",
+            () -> new net.minecraft.world.level.block.RootsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_ROOTS)
+                    .mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST_CLUSTER).lightLevel(state -> 7)));
+    /** Carámbano de Hielo: cuelga de las hojas del Árbol de Hielo. */
+    public static final DeferredBlock<com.civilizacionnether.block.IcicleBlock> FROST_ICICLE = BLOCKS.register("carambano_hielo",
+            () -> new com.civilizacionnether.block.IcicleBlock(BlockBehaviour.Properties.of().mapColor(MapColor.ICE)
+                    .noCollission().instabreak().sound(SoundType.GLASS).lightLevel(state -> 4).noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
+    /** Tronco del Árbol de Hielo. */
+    public static final DeferredBlock<net.minecraft.world.level.block.RotatedPillarBlock> FROST_LOG = BLOCKS.register("tronco_hielo",
+            () -> new net.minecraft.world.level.block.RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CRIMSON_STEM)
+                    .mapColor(MapColor.COLOR_RED)));
 
     private ModBlocks() {
     }

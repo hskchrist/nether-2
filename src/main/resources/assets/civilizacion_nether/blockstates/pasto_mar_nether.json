@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "civilizacion_nether:block/pasto_mar_nether"
+      },
+      {
+        "model": "civilizacion_nether:block/pasto_mar_nether",
+        "y": 90
+      },
+      {
+        "model": "civilizacion_nether:block/pasto_mar_nether",
+        "y": 180
+      },
+      {
+        "model": "civilizacion_nether:block/pasto_mar_nether",
+        "y": 270
+      }
+    ]
+  }
+}

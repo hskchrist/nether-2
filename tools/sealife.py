@@ -1,4 +1,4 @@
-"""Fauna del Océano Púrpura (12 criaturas) y Dragón Infernal: modelos, texturas, animaciones, nombres, ítems,
+"""Fauna del Mar del Nether (12 criaturas) y Dragón Infernal: modelos, texturas, animaciones, nombres, ítems,
 crafteos, botín, etiquetas, apariciones y el nido del Dragón Infernal en el Bosque Carmesí.
 
 Los modelos y texturas de las criaturas están en tools/ref/sea (los que vio y aprobó el usuario);
@@ -87,12 +87,15 @@ LOOT = {
     "dragon_infernal_domesticable": [(S, 2, 4, None), (M + "magma_cream", 1, 3, None), (M + "blaze_rod", 0, 2, None)],
 }
 
-# apariciones en el Océano Púrpura: categoría -> [(id, peso, mín, máx)]
+# apariciones en el Mar del Nether: categoría -> [(id, peso, mín, máx)]
 SPAWNS = {
     "water_ambient": [("pez_brasa", 15, 3, 6), ("pez_alma", 8, 2, 4), ("anguila_rubi", 3, 1, 1), ("medusa_vacio", 6, 1, 3)],
-    "water_creature": [("delfin_nether", 4, 3, 3), ("ballena_azul", 1, 1, 1), ("manta_carmesi", 3, 1, 2),
-                       ("tortuga_obsidiana", 3, 1, 2), ("caballito_magma", 3, 1, 2), ("cangrejo_basalto", 5, 1, 3)],
-    "monster": [("tiburon_infernal", 8, 1, 2), ("serpiente_marina", 1, 1, 1)],
+    # grupos (las crías se agregan al aparecer, ver SeaFamily.java): delfines de 3 a 5 (+2 crías, más comunes),
+    # 2 mantas (+1 cría), caballito solo (+4 crías), ballena sola (rara vez con cría)
+    "water_creature": [("delfin_nether", 9, 3, 5), ("ballena_azul", 1, 1, 1), ("manta_carmesi", 3, 2, 2),
+                       ("tortuga_obsidiana", 3, 1, 2), ("caballito_magma", 3, 1, 1), ("cangrejo_basalto", 5, 1, 3)],
+    # tiburón: menos, y solo (a veces con una cría)
+    "monster": [("tiburon_infernal", 3, 1, 1), ("serpiente_marina", 1, 1, 1)],
 }
 
 RECIPES = {

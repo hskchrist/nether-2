@@ -19,6 +19,10 @@ public class InfernalDragonModel extends GeoModel<InfernalDragonEntity> {
     private static final ResourceLocation TAME_TEXTURE = CivilizacionNether.id("textures/entity/dragon_infernal_domesticable.png");
     private static final ResourceLocation ALMAS_TEXTURE = CivilizacionNether.id("textures/entity/dragon_almas.png");
     private static final ResourceLocation OBSIDIANA_TEXTURE = CivilizacionNether.id("textures/entity/dragon_obsidiana.png");
+    /** Los salvajes: más oscuros y con ojos de furia que brillan. */
+    private static final ResourceLocation INFERNAL_WILD = CivilizacionNether.id("textures/entity/dragon_infernal_salvaje.png");
+    private static final ResourceLocation ALMAS_WILD = CivilizacionNether.id("textures/entity/dragon_almas_salvaje.png");
+    private static final ResourceLocation OBSIDIANA_WILD = CivilizacionNether.id("textures/entity/dragon_obsidiana_salvaje.png");
     private static final ResourceLocation ANIMATIONS = CivilizacionNether.id("animations/entity/dragon_infernal.animation.json");
     private static final String[] WINGS = {"wing", "wing1"};
     private static final String[] LEGS = {"frontleg", "frontleg1", "rearleg", "rearleg1"};
@@ -32,10 +36,11 @@ public class InfernalDragonModel extends GeoModel<InfernalDragonEntity> {
 
     @Override
     public ResourceLocation getTextureResource(InfernalDragonEntity animatable) {
+        boolean tame = animatable.isTameVariant();
         return switch (animatable.species()) {
-            case ALMAS -> ALMAS_TEXTURE;
-            case OBSIDIANA -> OBSIDIANA_TEXTURE;
-            default -> animatable.isTameVariant() ? TAME_TEXTURE : TEXTURE;
+            case ALMAS -> tame ? ALMAS_TEXTURE : ALMAS_WILD;
+            case OBSIDIANA -> tame ? OBSIDIANA_TEXTURE : OBSIDIANA_WILD;
+            default -> tame ? TAME_TEXTURE : INFERNAL_WILD;
         };
     }
 

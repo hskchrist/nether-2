@@ -69,7 +69,7 @@ public class BlueWhaleEntity extends WaterAnimal implements GeoEntity {
 
     @Override
     public boolean isInWater() {
-        return super.isInWater() || SeaLife.inNetherWater(this);
+        return super.isInWater() || SeaLife.inNetherWater(this) || isInLava();
     }
 
     @Override
@@ -224,7 +224,7 @@ public class BlueWhaleEntity extends WaterAnimal implements GeoEntity {
                 }
             } else if (phase == 1) {
                 getMoveControl().setWantedPosition(getX() + ahead.x, surfaceY - getBbHeight() * 0.55, getZ() + ahead.z, 0.6);
-                if (ticks == 30 && random.nextInt(3) == 0) {
+                if (ticks == 30 && random.nextInt(2) == 0) {
                     breach(ahead.normalize());
                 }
                 if (ticks > 70) {
@@ -263,9 +263,10 @@ public class BlueWhaleEntity extends WaterAnimal implements GeoEntity {
             triggerAnim("action", "breach");
             setDeltaMovement(forward.x * 0.5, 1.05, forward.z * 0.5);
             hurtMarked = true;
-            playSound(SoundEvents.GENERIC_SPLASH, 3.0f, 0.4f);
+            boolean lava = isInLava();
+            playSound(lava ? SoundEvents.LAVA_POP : SoundEvents.GENERIC_SPLASH, 3.0f, 0.4f);
             if (level() instanceof ServerLevel server) {
-                server.sendParticles(ParticleTypes.SPLASH, getX(), surfaceY + 0.2, getZ(), 120, 3.0, 0.3, 3.0, 0.4);
+                server.sendParticles(lava ? ParticleTypes.LAVA : ParticleTypes.SPLASH, getX(), surfaceY + 0.2, getZ(), lava ? 40 : 120, 3.0, 0.3, 3.0, 0.4);
             }
             setXRot(Mth.clamp(getXRot() - 30.0f, -60.0f, 60.0f));
         }

@@ -70,7 +70,7 @@ public class BasaltCrabEntity extends Animal implements GeoEntity {
 
     @Override
     public boolean isInWater() {
-        return super.isInWater() || SeaLife.inNetherWater(this);
+        return super.isInWater() || SeaLife.inNetherWater(this) || isInLava();
     }
 
     @Override

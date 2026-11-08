@@ -45,6 +45,11 @@ public final class ModCreativeTabs {
                 output.accept(ModItems.FROST_BOOTS.get());
                 output.accept(ModItems.ETERNAL_FROST_LEAF.get());
                 output.accept(ModItems.FROST_LEAVES.get());
+                output.accept(ModItems.FROST_LOG.get());
+                output.accept(ModItems.FROST_ICICLE.get());
+                output.accept(ModItems.NETHER_SEA_GRASS_BLOCK.get());
+                output.accept(ModItems.NETHER_SEA_GRASS.get());
+                output.accept(ModItems.NETHER_SEA_CRYSTAL.get());
                 output.accept(ModItems.NECROMANCER_TABLE.get());
                 output.accept(ModItems.LIBRARIAN_LECTERN.get());
                 output.accept(ModItems.TAMER_NEST.get());

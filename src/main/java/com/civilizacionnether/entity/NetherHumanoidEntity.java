@@ -132,6 +132,19 @@ public class NetherHumanoidEntity extends TamableAnimal implements GeoEntity, Me
         this.xpReward = type.isKing() ? 50 : (type.isSoul() ? 0 : 6);
         equipDefaults();
         addTypeGoals();
+        // la lava y el fuego no les hacen daño: pueden cruzarla nadando
+        setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.LAVA, 8.0f);
+        setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.DANGER_FIRE, 0.0f);
+        setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.DAMAGE_FIRE, 0.0f);
+        setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER, 0.0f);
+    }
+
+    /** En la lava nadan como en el agua (no se hunden). */
+    @Override
+    public void travel(net.minecraft.world.phys.Vec3 input) {
+        if (!LavaSwim.travel(this, input)) {
+            super.travel(input);
+        }
     }
 
     public HumanoidType getHumanoidType() {

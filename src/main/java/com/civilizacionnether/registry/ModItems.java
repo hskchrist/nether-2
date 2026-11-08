@@ -145,8 +145,13 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> NETHER_BED = ITEMS.register("nether_bed",
             () -> new BlockItem(ModBlocks.NETHER_BED.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<BlockItem> FROST_LEAVES = block("frost_leaves", ModBlocks.FROST_LEAVES);
+    public static final DeferredItem<BlockItem> NETHER_SEA_GRASS_BLOCK = block("pasto_mar_nether", ModBlocks.NETHER_SEA_GRASS_BLOCK);
+    public static final DeferredItem<BlockItem> NETHER_SEA_GRASS = block("hierba_mar_nether", ModBlocks.NETHER_SEA_GRASS);
+    public static final DeferredItem<BlockItem> NETHER_SEA_CRYSTAL = block("cristal_mar_nether", ModBlocks.NETHER_SEA_CRYSTAL);
+    public static final DeferredItem<BlockItem> FROST_ICICLE = block("carambano_hielo", ModBlocks.FROST_ICICLE);
+    public static final DeferredItem<BlockItem> FROST_LOG = block("tronco_hielo", ModBlocks.FROST_LOG);
 
-    // ---- Océano Púrpura y Dragón Infernal
+    // ---- Mar del Nether y Dragón Infernal
     /** Pez Brasa crudo (comida de los delfines; se cría a los cangrejos, tortugas y caballitos con él). */
     public static final DeferredItem<Item> PEZ_BRASA = ITEMS.register("pez_brasa", () -> new Item(new Item.Properties()
             .food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1f).build())));

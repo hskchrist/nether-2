@@ -18,7 +18,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
 
-/** Ayudas comunes de la fauna del Océano Púrpura: agua del Nether, zona del Reino y reglas de aparición. */
+/** Ayudas comunes de la fauna del Mar del Nether: agua del Nether, zona del Reino y reglas de aparición. */
 public final class SeaLife {
     public static final ResourceKey<Structure> CAPITAL = ResourceKey.create(Registries.STRUCTURE, CivilizacionNether.id("capital"));
 
@@ -27,7 +27,14 @@ public final class SeaLife {
         return entity.isInFluidType(ModFluids.NETHER_WATER_TYPE.get());
     }
 
+    /** ¿Se puede nadar ahí? Agua normal, agua del Nether o lava (la fauna del Nether nada en las tres). */
     public static boolean isWater(LevelReader level, BlockPos pos) {
+        var f = level.getFluidState(pos);
+        return f.is(FluidTags.WATER) || f.is(FluidTags.LAVA);
+    }
+
+    /** Sólo agua (para dónde aparecen). */
+    public static boolean isRealWater(LevelReader level, BlockPos pos) {
         return level.getFluidState(pos).is(FluidTags.WATER);
     }
 
@@ -54,25 +61,25 @@ public final class SeaLife {
     /** Peces, medusas, delfines, mantas y caballitos: en el agua (con agua encima). */
     public static <T extends Entity> boolean canSpawnInWater(EntityType<T> type, ServerLevelAccessor level, MobSpawnType reason,
                                                              BlockPos pos, RandomSource random) {
-        return isWater(level, pos) && isWater(level, pos.above());
+        return isRealWater(level, pos) && isRealWater(level, pos.above());
     }
 
     /** Ballena: agua honda (al menos 4 bloques de agua). */
     public static <T extends Entity> boolean canSpawnDeep(EntityType<T> type, ServerLevelAccessor level, MobSpawnType reason,
                                                           BlockPos pos, RandomSource random) {
         for (int dy = 0; dy < 4; dy++) {
-            if (!isWater(level, pos.above(dy))) {
+            if (!isRealWater(level, pos.above(dy))) {
                 return false;
             }
         }
-        return isWater(level, pos.below());
+        return isRealWater(level, pos.below());
     }
 
     /** Cangrejo y tortuga: en el fondo del mar. */
     public static <T extends Entity> boolean canSpawnOnFloor(EntityType<T> type, ServerLevelAccessor level, MobSpawnType reason,
                                                              BlockPos pos, RandomSource random) {
         BlockPos below = pos.below();
-        return isWater(level, pos) && level.getBlockState(below).isFaceSturdy(level, below, Direction.UP);
+        return isRealWater(level, pos) && level.getBlockState(below).isFaceSturdy(level, below, Direction.UP);
     }
 
     /** Tiburón: en el agua y nunca dentro del Reino. */

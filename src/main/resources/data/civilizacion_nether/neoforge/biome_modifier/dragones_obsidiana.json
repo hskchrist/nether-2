@@ -2,7 +2,7 @@
   "type": "neoforge:add_spawns",
   "biomes": [
     "minecraft:basalt_deltas",
-    "civilizacion_nether:oceano_purpura"
+    "civilizacion_nether:mar_del_nether"
   ],
   "spawners": [
     {

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "civilizacion_nether:block/tronco_hielo_top",
+    "side": "civilizacion_nether:block/tronco_hielo"
+  }
+}

@@ -79,7 +79,7 @@ public final class ClientEvents {
             event.registerEntityRenderer(net.minecraft.world.entity.EntityType.TRIDENT, RubyTridentRenderer::new);
             // aldeanos: los del Nether (y los de las 5 profesiones nuevas) con sus skins; los demás, igual que vanilla
             event.registerEntityRenderer(net.minecraft.world.entity.EntityType.VILLAGER, NetherVillagerRenderer::new);
-            // fauna del Océano Púrpura: (nombre, escala, sombra, se inclina al nadar, brilla, transparente)
+            // fauna del Mar del Nether: (nombre, escala, sombra, se inclina al nadar, brilla, transparente)
             event.registerEntityRenderer(ModEntities.PEZ_BRASA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "pez_brasa", 1.0f, 0.25f, false, true, false));
             event.registerEntityRenderer(ModEntities.PEZ_ALMA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "pez_alma", 1.0f, 0.25f, false, true, false));
             event.registerEntityRenderer(ModEntities.ANGUILA_RUBI.get(), ctx -> new SeaCreatureRenderer<>(ctx, "anguila_rubi", 1.0f, 0.25f, false, true, false));

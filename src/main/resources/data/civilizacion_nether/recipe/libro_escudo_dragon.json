@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RMR",
+    "MBM",
+    "RMR"
+  ],
+  "key": {
+    "R": {
+      "item": "civilizacion_nether:ruby"
+    },
+    "M": {
+      "item": "minecraft:magma_cream"
+    },
+    "B": {
+      "item": "minecraft:book"
+    }
+  },
+  "result": {
+    "id": "minecraft:enchanted_book",
+    "count": 1,
+    "components": {
+      "minecraft:stored_enchantments": {
+        "levels": {
+          "civilizacion_nether:escudo_dragon": 1
+        }
+      }
+    }
+  }
+}
