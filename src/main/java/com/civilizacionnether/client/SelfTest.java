@@ -208,7 +208,7 @@ public final class SelfTest {
         int z = seaPos.getZ();
         // fotos: afuera del reino (el bioma), y el reino desde arriba
         int[][] views = {{x + 130, 72, z + 10, 90, 20}, {x - 20, 70, z - 140, 200, 15}, {x + 90, 66, z + 120, 135, 15},
-                         {x, 140, z - 150, 0, 35}};
+                         {x, 62, z - 110, 0, 12}};
         for (int i = 0; i < views.length; i++) {
             int[] v = views[i];
             if (t == 40 + i * 220) {

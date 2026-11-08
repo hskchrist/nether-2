@@ -257,9 +257,9 @@ def worldgen():
                                                            "max_inclusive": {"below_top": 10}}},
             {"type": "minecraft:biome"}]})
     feats = [[] for _ in range(11)]
-    feats[1] = [R + "mar_purpura"]
+    # el árbol va en el mismo paso que el pasto (antes del Reino, que despeja su terreno: no crecen árboles adentro)
+    feats[1] = [R + "mar_purpura", R + "arbol_de_hielo"]
     feats[7] = [R + "piedra_brillante_purpura", R + "cuarzo_purpura"]
-    feats[9] = [R + "arbol_de_hielo"]
     save_json(os.path.join(wg, "biome", "mar_del_nether.json"), {
         "has_precipitation": False, "temperature": 2.0, "downfall": 0.0,
         "effects": {

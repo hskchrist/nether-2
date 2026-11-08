@@ -141,7 +141,8 @@
   "features": [
     [],
     [
-      "civilizacion_nether:mar_purpura"
+      "civilizacion_nether:mar_purpura",
+      "civilizacion_nether:arbol_de_hielo"
     ],
     [],
     [],
@@ -153,9 +154,7 @@
       "civilizacion_nether:cuarzo_purpura"
     ],
     [],
-    [
-      "civilizacion_nether:arbol_de_hielo"
-    ],
+    [],
     []
   ]
 }
