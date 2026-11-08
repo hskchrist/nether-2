@@ -70,17 +70,19 @@ def grass_side():
 def tall_grass():
     r = random.Random(9)
     im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    for blade in range(9):
-        x0 = r.randint(1, 14)
-        h = r.randint(6, 14)
+    for blade in range(16):
+        x0 = r.randint(0, 15)
+        h = r.randint(5, 15)
         lean = r.choice((-1, 0, 0, 1))
         col = r.choice([(150, 176, 196), (128, 150, 186), (170, 186, 210), (140, 110, 200), (112, 130, 176)])
         for i in range(h):
             y = 15 - i
             x = x0 + (lean * i) // 5
             if 0 <= x < 16:
-                k = 0.7 + 0.3 * i / h
+                k = 0.65 + 0.35 * i / h
                 px(im, x, y, tuple(v * k for v in col))
+                if i < h * 0.6 and x + 1 < 16 and blade % 2 == 0:
+                    px(im, x + 1, y, tuple(v * k * 0.85 for v in col))
     return im
 
 

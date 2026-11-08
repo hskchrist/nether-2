@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 public final class LavaSwim {
     /** @return true si se movió nadando en la lava (entonces no hay que llamar al travel normal). */
     public static boolean travel(LivingEntity e, Vec3 input) {
-        if (!e.isInLava() || !e.isControlledByLocalInstance() || !e.isAffectedByFluids() || !e.fireImmune()) {
+        if (!e.isInLava() || !e.isControlledByLocalInstance() || e.isSpectator() || !e.fireImmune()) {
             return false;
         }
         e.moveRelative(0.1f, input);
