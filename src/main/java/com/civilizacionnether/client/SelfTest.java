@@ -232,6 +232,13 @@ public final class SelfTest {
                         net.minecraft.core.BlockPos.ZERO, 50, false);
                 CivilizacionNether.LOGGER.info("SELFTEST reino en {}", p);
                 seaPos = p;
+                // lo mismo que hace /locate biome desde donde está el jugador
+                var key = net.minecraft.resources.ResourceKey.create(Registries.BIOME, CivilizacionNether.id("mar_del_nether"));
+                var found = nether.findClosestBiome3d(h -> h.is(key), new net.minecraft.core.BlockPos(0, 64, 0), 6400, 32, 64);
+                CivilizacionNether.LOGGER.info("SELFTEST locate biome mar_del_nether desde 0,64,0: {}", found == null ? "NO ENCONTRADO" : found.getFirst());
+                if (p != null) {
+                    CivilizacionNether.LOGGER.info("SELFTEST bioma en el reino: {}", nether.getBiome(p.atY(40)).getRegisteredName());
+                }
             });
         }
         if (seaPos == null) {
