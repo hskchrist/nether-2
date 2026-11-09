@@ -16,7 +16,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -270,8 +269,6 @@ public final class SeaFamily {
     }
 
     // ------------------------------------------------------------------ grupos al aparecer
-    private static final class Family implements SpawnGroupData {
-    }
 
     @SubscribeEvent
     public static void groups(FinalizeSpawnEvent event) {
@@ -283,18 +280,21 @@ public final class SeaFamily {
         if (!isSeaCreature(mob)) {
             return;
         }
-        boolean first = !(event.getSpawnData() instanceof Family);
-        if (first) {
-            event.setSpawnData(new Family());
-        }
+        // ¿es el primero del grupo? (no se toca el dato del grupo: los peces usan el suyo para el cardumen)
+        // si ya hay crías de su especie justo al lado, otro del grupo ya las trajo
+        ServerLevelAccessor lvl = event.getLevel();
+        boolean first = lvl.getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(event.getX() - 10, event.getY() - 6,
+                event.getZ() - 10, event.getX() + 10, event.getY() + 6, event.getZ() + 10),
+                m -> m != mob && m.getType() == mob.getType() && isBaby(m)).isEmpty();
         var rnd = mob.getRandom();
         int babies = 0;
         if (mob instanceof MagmaSeahorseEntity) {
             babies = 4;
-        } else if (mob instanceof CrimsonMantaEntity && first) {
-            babies = 1;
-        } else if (mob instanceof NetherDolphinEntity && first) {
-            babies = 2;
+        } else if (mob instanceof CrimsonMantaEntity) {
+            // al generarse el mundo no se ven los otros del grupo: se reparte al azar (en promedio 1 cría)
+            babies = reason == MobSpawnType.CHUNK_GENERATION ? (rnd.nextBoolean() ? 1 : 0) : (first ? 1 : 0);
+        } else if (mob instanceof NetherDolphinEntity) {
+            babies = reason == MobSpawnType.CHUNK_GENERATION ? (rnd.nextFloat() < 0.45f ? 1 : 0) : (first ? 2 : 0);
         } else if (mob instanceof InfernalSharkEntity && rnd.nextFloat() < 0.3f) {
             babies = 1;
         } else if (mob instanceof BlueWhaleEntity && rnd.nextFloat() < 0.15f) {

@@ -164,9 +164,42 @@ public final class SelfTest {
             cmd("execute in " + dims[phase] + " run tp @s 0 106 -2 0 35");
         } else if (t == 120) {
             babies(mc, dims[phase]);
+        } else if (t == 130) {
+            naturalSpawns(mc, dims[phase]);
         } else if (t == 490) {
             cmd("execute in " + dims[phase] + " run kill @e[type=!player]");
         }
+    }
+
+    /**
+     * Simula la aparición natural en grupo (como el juego): a cada criatura del mod le pasa el evento y el dato del grupo
+     * dos veces seguidas, igual que cuando aparece un cardumen o una manada. Así se ve si algo se cae al aparecer solo.
+     */
+    private static void naturalSpawns(Minecraft mc, String dim) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        server.execute(() -> {
+            var level = server.getLevel(net.minecraft.resources.ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim)));
+            if (level == null) {
+                return;
+            }
+            int i = 0;
+            for (String t : TYPES) {
+                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(t));
+                net.minecraft.world.entity.SpawnGroupData data = null;
+                for (int k = 0; k < 2; k++) {
+                    var e = type.create(level);
+                    if (!(e instanceof net.minecraft.world.entity.Mob mob)) {
+                        break;
+                    }
+                    mob.moveTo(-20 + (i % 11) * 4, 93, 22 + k, 0, 0);
+                    data = net.neoforged.neoforge.event.EventHooks.finalizeMobSpawn(mob, level,
+                            level.getCurrentDifficultyAt(mob.blockPosition()), net.minecraft.world.entity.MobSpawnType.NATURAL, data);
+                    level.addFreshEntity(mob);
+                }
+                i++;
+            }
+            CivilizacionNether.LOGGER.info("SELFTEST aparicion natural en grupo ok en {}", dim);
+        });
     }
 
     /** Vuelve crías a algunas criaturas del mar para verlas en las fotos. */
