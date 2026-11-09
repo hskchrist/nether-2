@@ -226,9 +226,7 @@ def tags():
 def worldgen():
     wg = os.path.join(DATA, "worldgen")
     water = {"Name": R + "nether_water", "Properties": {"level": "0"}}
-    save_json(os.path.join(wg, "configured_feature", "lago_mar_nether.json"), {"type": "minecraft:lake", "config": {
-        "fluid": {"type": "minecraft:simple_state_provider", "state": water},
-        "barrier": {"type": "minecraft:simple_state_provider", "state": {"Name": "minecraft:blackstone"}}}})
+    save_json(os.path.join(wg, "configured_feature", "lago_mar_nether.json"), {"type": R + "nether_lake", "config": {}})
     save_json(os.path.join(wg, "placed_feature", "lago_mar_nether.json"), {"feature": R + "lago_mar_nether", "placement": [
         {"type": "minecraft:count_on_every_layer", "count": 1}, {"type": "minecraft:rarity_filter", "chance": 2},
         {"type": "minecraft:biome"}]})

@@ -19,6 +19,10 @@ public final class ModFeatures {
     public static final DeferredHolder<Feature<?>, com.civilizacionnether.worldgen.FrostTreeFeature> FROST_TREE = FEATURES.register("frost_tree",
             () -> new com.civilizacionnether.worldgen.FrostTreeFeature(NoneFeatureConfiguration.CODEC));
 
+    /** Lagos y lagunas de agua del Nether en el Mar del Nether. */
+    public static final DeferredHolder<Feature<?>, com.civilizacionnether.worldgen.NetherLakeFeature> NETHER_LAKE = FEATURES.register("nether_lake",
+            () -> new com.civilizacionnether.worldgen.NetherLakeFeature(NoneFeatureConfiguration.CODEC));
+
     /** Nido del Dragón Infernal en el Bosque Carmesí. */
     public static final DeferredHolder<Feature<?>, com.civilizacionnether.worldgen.InfernalNestFeature> INFERNAL_NEST = FEATURES.register("infernal_nest",
             () -> new com.civilizacionnether.worldgen.InfernalNestFeature(NoneFeatureConfiguration.CODEC, com.civilizacionnether.entity.DragonSpecies.INFERNAL));

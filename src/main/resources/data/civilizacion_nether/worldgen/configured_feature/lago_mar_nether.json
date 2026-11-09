@@ -1,20 +1,4 @@
 {
-  "type": "minecraft:lake",
-  "config": {
-    "fluid": {
-      "type": "minecraft:simple_state_provider",
-      "state": {
-        "Name": "civilizacion_nether:nether_water",
-        "Properties": {
-          "level": "0"
-        }
-      }
-    },
-    "barrier": {
-      "type": "minecraft:simple_state_provider",
-      "state": {
-        "Name": "minecraft:blackstone"
-      }
-    }
-  }
+  "type": "civilizacion_nether:nether_lake",
+  "config": {}
 }
