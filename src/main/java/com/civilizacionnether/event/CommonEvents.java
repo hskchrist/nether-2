@@ -98,9 +98,10 @@ public final class CommonEvents {
         event.register(ModEntities.MANTA_CARMESI.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnInWater, op);
         event.register(ModEntities.TORTUGA_OBSIDIANA.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnOnFloor, op);
         event.register(ModEntities.TIBURON_INFERNAL.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnShark, op);
-        event.register(ModEntities.SERPIENTE_MARINA.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnSerpent, op);
+        // ballena y serpiente: en lo hondo del agua del Nether o de la lava (la regla la revisa canSpawnDeep)
+        event.register(ModEntities.SERPIENTE_MARINA.get(), SpawnPlacementTypes.NO_RESTRICTIONS, hm, SeaLife::canSpawnSerpent, op);
         event.register(ModEntities.DELFIN_NETHER.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnInWater, op);
-        event.register(ModEntities.BALLENA_AZUL.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnDeep, op);
+        event.register(ModEntities.BALLENA_AZUL.get(), SpawnPlacementTypes.NO_RESTRICTIONS, hm, SeaLife::canSpawnDeep, op);
     }
 
     private static boolean canSpawnHumanoid(EntityType<NetherHumanoidEntity> type, ServerLevelAccessor level,

@@ -64,15 +64,29 @@ public final class SeaLife {
         return isRealWater(level, pos) && isRealWater(level, pos.above());
     }
 
-    /** Ballena: agua honda (al menos 4 bloques de agua). */
+    /**
+     * Ballena (y serpiente): sólo abajo, en lo hondo de un mar, lago o laguna grande de agua del Nether o de lava: al menos
+     * 10 bloques de líquido encima y líquido para todos lados.
+     */
     public static <T extends Entity> boolean canSpawnDeep(EntityType<T> type, ServerLevelAccessor level, MobSpawnType reason,
                                                           BlockPos pos, RandomSource random) {
-        for (int dy = 0; dy < 4; dy++) {
-            if (!isRealWater(level, pos.above(dy))) {
-                return false;
+        if (!isWater(level, pos) || !isWater(level, pos.below())) {
+            return false;
+        }
+        if (reason != MobSpawnType.NATURAL && reason != MobSpawnType.CHUNK_GENERATION) {
+            return true;
+        }
+        if (surfaceAbove(level, pos) - pos.getY() < 10) {
+            return false;
+        }
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            for (int k = 3; k <= 9; k += 3) {
+                if (!isWater(level, pos.relative(d, k)) || !isWater(level, pos.relative(d, k).above(3))) {
+                    return false;
+                }
             }
         }
-        return isRealWater(level, pos.below());
+        return true;
     }
 
     /** Cangrejo y tortuga: en el fondo del mar. */

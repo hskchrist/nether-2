@@ -126,7 +126,7 @@ public final class ModItems {
 
     /** Balde de agua del Nether. */
     public static final DeferredItem<BucketItem> NETHER_WATER_BUCKET = ITEMS.register("nether_water_bucket",
-            () -> new BucketItem(ModFluids.NETHER_WATER.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+            () -> new com.civilizacionnether.item.NetherWaterBucketItem(ModFluids.NETHER_WATER.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
     public static final DeferredItem<BlockItem> RUBY_BLOCK = block("ruby_block", ModBlocks.RUBY_BLOCK);
     public static final DeferredItem<BlockItem> RUBY_ORE = block("ruby_ore", ModBlocks.RUBY_ORE);

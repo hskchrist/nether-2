@@ -286,7 +286,9 @@ def worldgen():
     # el Nether con el Mar del Nether (los 5 biomas normales con sus parámetros de siempre + el nuevo)
     nb = [("minecraft:nether_wastes", 0.0, 0.0, 0.0), ("minecraft:soul_sand_valley", 0.0, -0.5, 0.0),
           ("minecraft:crimson_forest", 0.4, 0.0, 0.0), ("minecraft:warped_forest", 0.0, 0.5, 0.375),
-          ("minecraft:basalt_deltas", -0.5, 0.0, 0.175), (R + "mar_del_nether", -0.3, 0.3, 0.0)]
+          ("minecraft:basalt_deltas", -0.5, 0.0, 0.175), (R + "mar_del_nether", -0.3, 0.3, 0.0),
+          # puntos extra: el Mar del Nether es un bioma grande
+          (R + "mar_del_nether", -0.5, 0.5, 0.0), (R + "mar_del_nether", -0.2, 0.15, 0.0)]
     save_json(os.path.join(MCDATA, "dimension", "the_nether.json"), {
         "type": "minecraft:the_nether",
         "generator": {"type": "minecraft:noise", "settings": "minecraft:nether", "biome_source": {

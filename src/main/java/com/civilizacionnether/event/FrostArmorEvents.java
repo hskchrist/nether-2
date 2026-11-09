@@ -42,7 +42,7 @@ public final class FrostArmorEvents {
             }
         }
         // moverse bajo la lava: lo calcula el juego del jugador (en el servidor no hay teclas)
-        if (p.isInLava() && p.level().isClientSide() && p.isLocalPlayer() && !p.getAbilities().flying) {
+        if ((p.isInLava() || inNetherWater(p)) && p.level().isClientSide() && p.isLocalPlayer() && !p.getAbilities().flying) {
             lavaMove(p);
         }
         if (p.isInLava()) {
@@ -54,6 +54,10 @@ public final class FrostArmorEvents {
      * Bajo la lava se camina, se corre y se nada casi como en el agua: con W hacia adelante (más rápido corriendo),
      * espacio para subir, Shift para bajar, y corriendo con la vista bajo la lava se nada hacia donde miras.
      */
+    private static boolean inNetherWater(Player p) {
+        return p.isInFluidType(com.civilizacionnether.registry.ModFluids.NETHER_WATER_TYPE.get());
+    }
+
     private static void lavaMove(Player p) {
         Vec3 v = p.getDeltaMovement();
         float fwd = p.zza;
@@ -68,8 +72,10 @@ public final class FrostArmorEvents {
             wx /= len;
             wz /= len;
         }
-        boolean swimming = p.isSprinting() && fwd > 0 && p.isEyeInFluid(FluidTags.LAVA);
-        double speed = p.isSprinting() ? 0.30 : 0.18;
+        boolean eyesIn = p.isEyeInFluid(FluidTags.LAVA) || p.isEyeInFluidType(com.civilizacionnether.registry.ModFluids.NETHER_WATER_TYPE.get());
+        boolean swimming = p.isSprinting() && fwd > 0 && eyesIn;
+        // rápido: caminando como corriendo en tierra, y corriendo casi el doble
+        double speed = p.isSprinting() ? 0.50 : 0.28;
         double vy;
         if (swimming) {
             // nadar: hacia donde miras, como en el agua

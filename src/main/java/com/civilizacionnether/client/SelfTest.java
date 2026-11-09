@@ -166,6 +166,8 @@ public final class SelfTest {
             babies(mc, dims[phase]);
         } else if (t == 130) {
             naturalSpawns(mc, dims[phase]);
+        } else if (t == 140) {
+            bucketTest(mc, dims[phase]);
         } else if (t == 490) {
             cmd("execute in " + dims[phase] + " run kill @e[type=!player]");
         }
@@ -199,6 +201,18 @@ public final class SelfTest {
                 i++;
             }
             CivilizacionNether.LOGGER.info("SELFTEST aparicion natural en grupo ok en {}", dim);
+        });
+    }
+
+    /** Vacía un balde de agua del Nether en el aire (en el Nether no se tiene que evaporar). */
+    private static void bucketTest(Minecraft mc, String dim) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        server.execute(() -> {
+            var level = server.getLevel(net.minecraft.resources.ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim)));
+            var pos = new net.minecraft.core.BlockPos(22, 104, 2);
+            var bucket = (net.minecraft.world.item.BucketItem) com.civilizacionnether.registry.ModItems.NETHER_WATER_BUCKET.get();
+            bucket.emptyContents(null, level, pos, null);
+            CivilizacionNether.LOGGER.info("SELFTEST balde agua del nether en {}: {}", dim, level.getBlockState(pos));
         });
     }
 
@@ -303,7 +317,7 @@ public final class SelfTest {
                             continue;
                         }
                         var id = BuiltInRegistries.BLOCK.getKey(nether.getBlockState(p).getBlock());
-                        if (CivilizacionNether.MODID.equals(id.getNamespace()) || id.getPath().equals("ancient_debris")
+                        if (CivilizacionNether.MODID.equals(id.getNamespace()) || id.getPath().equals("ancient_debris") || id.getPath().equals("lava")
                                 || id.getPath().equals("nether_gold_ore") || id.getPath().equals("nether_quartz_ore")) {
                             count.merge(id.getPath(), 1, Integer::sum);
                         }

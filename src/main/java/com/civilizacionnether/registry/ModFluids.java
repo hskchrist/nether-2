@@ -23,7 +23,13 @@ public final class ModFluids {
                     .supportsBoating(true).canHydrate(true).fallDistanceModifier(0.0f).lightLevel(4)
                     .density(1000).viscosity(1000).motionScale(0.014)
                     .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-                    .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)));
+                    .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)) {
+        /** El agua del Nether no se evapora en el Nether. */
+        public boolean isVaporizedOnPlacement(net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos,
+                                              net.neoforged.neoforge.fluids.FluidStack stack) {
+            return false;
+        }
+    });
 
     public static final DeferredHolder<Fluid, BaseFlowingFluid.Source> NETHER_WATER = FLUIDS.register("nether_water",
             () -> new BaseFlowingFluid.Source(props()));

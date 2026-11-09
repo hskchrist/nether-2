@@ -77,6 +77,30 @@
             "weirdness": 0.0,
             "offset": 0.0
           }
+        },
+        {
+          "biome": "civilizacion_nether:mar_del_nether",
+          "parameters": {
+            "temperature": -0.5,
+            "humidity": 0.5,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "civilizacion_nether:mar_del_nether",
+          "parameters": {
+            "temperature": -0.2,
+            "humidity": 0.15,
+            "continentalness": 0.0,
+            "erosion": 0.0,
+            "depth": 0.0,
+            "weirdness": 0.0,
+            "offset": 0.0
+          }
         }
       ]
     }
