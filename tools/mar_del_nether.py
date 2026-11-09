@@ -223,7 +223,39 @@ def tags():
     datagen2.add_tag("block/replaceable_by_trees", [R + "hierba_mar_nether"])
 
 
+def worldgen():
+    wg = os.path.join(DATA, "worldgen")
+    water = {"Name": R + "nether_water", "Properties": {"level": "0"}}
+    save_json(os.path.join(wg, "configured_feature", "lago_mar_nether.json"), {"type": "minecraft:lake", "config": {
+        "fluid": {"type": "minecraft:simple_state_provider", "state": water},
+        "barrier": {"type": "minecraft:simple_state_provider", "state": {"Name": "minecraft:blackstone"}}}})
+    save_json(os.path.join(wg, "placed_feature", "lago_mar_nether.json"), {"feature": R + "lago_mar_nether", "placement": [
+        {"type": "minecraft:count_on_every_layer", "count": 1}, {"type": "minecraft:rarity_filter", "chance": 2},
+        {"type": "minecraft:biome"}]})
+    spring = {"type": "minecraft:spring_feature", "config": {
+        "state": {"Name": R + "nether_water", "Properties": {"falling": "true"}},
+        "requires_block_below": False, "rock_count": 4, "hole_count": 1,
+        "valid_blocks": [M + "netherrack", R + "pasto_mar_nether", M + "blackstone", M + "soul_soil"]}}
+    save_json(os.path.join(wg, "configured_feature", "manantial_mar_nether.json"), spring)
+    save_json(os.path.join(wg, "placed_feature", "manantial_mar_nether.json"), {"feature": R + "manantial_mar_nether", "placement": [
+        {"type": "minecraft:count", "count": 14}, {"type": "minecraft:in_square"},
+        {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": 36},
+                                                       "max_inclusive": {"below_top": 10}}},
+        {"type": "minecraft:biome"}]})
+    closed = json.loads(json.dumps(spring))
+    closed["config"]["rock_count"] = 5
+    closed["config"]["hole_count"] = 0
+    save_json(os.path.join(wg, "configured_feature", "manantial_mar_nether_escondido.json"), closed)
+    save_json(os.path.join(wg, "placed_feature", "manantial_mar_nether_escondido.json"), {
+        "feature": R + "manantial_mar_nether_escondido", "placement": [
+            {"type": "minecraft:count", "count": 8}, {"type": "minecraft:in_square"},
+            {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": 36},
+                                                           "max_inclusive": {"below_top": 10}}},
+            {"type": "minecraft:biome"}]})
+
+
 def write_all():
+    worldgen()
     textures()
     models()
     lang()

@@ -157,10 +157,6 @@ public class PurpleSeaFeature extends Feature<NoneFeatureConfiguration> {
             up.set(x, y + 1, z);
             BlockState a = level.getBlockState(up);
             if ((s.is(Blocks.NETHERRACK) || s.is(Blocks.SOUL_SOIL) || s.is(Blocks.CRIMSON_NYLIUM) || s.is(Blocks.WARPED_NYLIUM)) && a.isAir()) {
-                if (river(level, x, y, z)) {
-                    any = true;
-                    continue;
-                }
                 level.setBlock(m, grass, 2);
                 any = true;
                 float k = rnd.nextFloat();

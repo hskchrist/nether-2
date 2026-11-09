@@ -258,7 +258,9 @@ def worldgen():
             {"type": "minecraft:biome"}]})
     feats = [[] for _ in range(11)]
     # el árbol va en el mismo paso que el pasto (antes del Reino, que despeja su terreno: no crecen árboles adentro)
-    feats[1] = [R + "mar_purpura", R + "arbol_de_hielo"]
+    # lagos y lagunas de agua del Nether, y manantiales que bajan como arroyos y cascadas (los ríos del Nether)
+    feats[1] = [R + "mar_purpura", R + "lago_mar_nether", R + "arbol_de_hielo"]
+    feats[8] = [R + "manantial_mar_nether", R + "manantial_mar_nether_escondido"]
     # menas normales del Nether (como en los otros biomas): oro, cuarzo, magma, grava, piedra negra y
     # escombros ancestrales (la netherita), en el mismo orden que usa el juego
     feats[7] = [R + "piedra_brillante_purpura", R + "cuarzo_purpura", "minecraft:ore_magma", "minecraft:spring_closed",

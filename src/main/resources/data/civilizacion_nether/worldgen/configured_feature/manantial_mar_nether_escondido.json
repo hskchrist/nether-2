@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:spring_feature",
+  "config": {
+    "state": {
+      "Name": "civilizacion_nether:nether_water",
+      "Properties": {
+        "falling": "true"
+      }
+    },
+    "requires_block_below": false,
+    "rock_count": 5,
+    "hole_count": 0,
+    "valid_blocks": [
+      "minecraft:netherrack",
+      "civilizacion_nether:pasto_mar_nether",
+      "minecraft:blackstone",
+      "minecraft:soul_soil"
+    ]
+  }
+}

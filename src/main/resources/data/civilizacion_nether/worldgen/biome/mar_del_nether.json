@@ -142,6 +142,7 @@
     [],
     [
       "civilizacion_nether:mar_purpura",
+      "civilizacion_nether:lago_mar_nether",
       "civilizacion_nether:arbol_de_hielo"
     ],
     [],
@@ -161,7 +162,10 @@
       "minecraft:ore_ancient_debris_large",
       "minecraft:ore_debris_small"
     ],
-    [],
+    [
+      "civilizacion_nether:manantial_mar_nether",
+      "civilizacion_nether:manantial_mar_nether_escondido"
+    ],
     [],
     []
   ]
