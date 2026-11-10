@@ -48,6 +48,19 @@ public class DragonCombatGoal extends Goal {
         return true;
     }
 
+    /** ¿El enemigo va volando? (ghast, fantasma, Dragón del End, un dragón volando, alguien con élitros...) */
+    public static boolean flies(LivingEntity t) {
+        if (t.onGround() || t.isInWater() || t.isInLava()) {
+            return false;
+        }
+        return t instanceof net.minecraft.world.entity.FlyingMob || t instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon
+                || t instanceof net.minecraft.world.entity.monster.Phantom || t instanceof net.minecraft.world.entity.ambient.Bat
+                || t.isFallFlying() || t.isNoGravity()
+                || (t instanceof NetherDragonEntity d && d.isFlying())
+                || (t.getVehicle() instanceof NetherDragonEntity m && m.isFlying())
+                || t instanceof net.minecraft.world.entity.monster.Blaze;
+    }
+
     @Override
     public void tick() {
         LivingEntity target = dragon.getTarget();
@@ -61,13 +74,20 @@ public class DragonCombatGoal extends Goal {
         if (biteCooldown > 0) {
             biteCooldown--;
         }
-        if (!dragon.isFlying() && dragon.canFlyNow() && target.getY() - dragon.getY() > 5.0) {
-            dragon.takeOff(); // el objetivo está en lo alto (por ejemplo un ghast): sube a pelear
+        boolean flyingTarget = flies(target);
+        if (!dragon.isFlying() && dragon.canFlyNow() && (flyingTarget || target.getY() - dragon.getY() > 5.0)) {
+            dragon.takeOff(); // el objetivo vuela o está en lo alto (un ghast, el Dragón del End): sube a pelear
             repath = 0;
         }
         if (--repath <= 0) {
-            repath = 10;
-            if (dragon.isFlying()) {
+            repath = flyingTarget ? 3 : 10;
+            if (dragon.isFlying() && flyingTarget) {
+                // lo persigue en el aire, pegado a él y un poco más arriba
+                Vec3 lead = target.position().add(target.getDeltaMovement().scale(6.0));
+                Vec3 away = dragon.position().subtract(lead).multiply(1, 0, 1);
+                Vec3 side = away.lengthSqr() < 1.0e-3 ? new Vec3(1, 0, 0) : away.normalize();
+                dragon.setFlyTarget(lead.add(side.scale(2.0 + target.getBbWidth() * 0.3)).add(0, 1.0 + target.getBbHeight() * 0.5, 0));
+            } else if (dragon.isFlying()) {
                 // da vueltas por encima del objetivo
                 Vec3 away = dragon.position().subtract(target.position()).multiply(1, 0, 1);
                 Vec3 side = away.lengthSqr() < 1.0e-3 ? new Vec3(1, 0, 0) : away.normalize();

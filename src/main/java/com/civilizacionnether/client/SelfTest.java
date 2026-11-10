@@ -133,11 +133,11 @@ public final class SelfTest {
         String[] floors = {"minecraft:stone", "minecraft:netherrack", "minecraft:end_stone"};
         int phase = tick / 500;
         int t = tick % 500;
-        if (phase == dims.length || phase == dims.length + 1) {
+        if (phase >= dims.length && phase <= dims.length + 2) {
             seaBiome(mc, tick - dims.length * 500);
             return;
         }
-        if (phase > dims.length + 1) {
+        if (phase > dims.length + 2) {
             if (t == 1) {
                 CivilizacionNether.LOGGER.info("SELFTEST terminado sin caerse");
                 mc.stop();
@@ -168,6 +168,9 @@ public final class SelfTest {
             naturalSpawns(mc, dims[phase]);
         } else if (t == 140) {
             bucketTest(mc, dims[phase]);
+        } else if (t == 150 && dims[phase].endsWith("end")) {
+            // el Dragón del End: los dragones domesticables tienen que ir por él volando
+            cmd("execute in minecraft:the_end run summon minecraft:ender_dragon 0 125 40");
         } else if (t == 490) {
             cmd("execute in " + dims[phase] + " run kill @e[type=!player]");
         }
@@ -262,13 +265,13 @@ public final class SelfTest {
         int z = seaPos.getZ();
         // fotos: afuera del reino (el bioma), y el reino desde arriba
         int[][] views = {{x + 130, 72, z + 10, 90, 20}, {x - 20, 70, z - 140, 200, 15}, {x + 90, 66, z + 120, 135, 15},
-                         {x, 62, z - 110, 0, 12}};
+                         {x, 62, z - 110, 0, 12}, {x, 52, z + 30, 180, 8}, {x + 70, 48, z, 90, 5}};
         for (int i = 0; i < views.length; i++) {
             int[] v = views[i];
             if (t == 40 + i * 220) {
                 cmd("execute in minecraft:the_nether run tp @s " + v[0] + " " + v[1] + " " + v[2] + " " + v[3] + " " + v[4]);
             } else if (t == 40 + i * 220 + 200) {
-                shot(i == 3 ? "reino" : "mar_del_nether_" + i);
+                shot(i >= 3 ? "reino_" + i : "mar_del_nether_" + i);
                 logBlocks(mc);
             }
         }
@@ -289,11 +292,13 @@ public final class SelfTest {
             for (var e : level.getAllEntities()) {
                 ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
                 if (e instanceof net.minecraft.world.entity.LivingEntity le && (CivilizacionNether.MODID.equals(id.getNamespace())
-                        || id.getPath().equals("villager"))) {
+                        || id.getPath().equals("villager") || id.getPath().equals("ender_dragon"))) {
                     CivilizacionNether.LOGGER.info(String.format(java.util.Locale.ROOT,
-                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f",
+                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f target=%s",
                             dim, id.getPath(), e.getId(), e.getX(), e.getY(), e.getZ(), e.getYRot(), le.yBodyRot, e.getXRot(),
-                            e.isInWater(), e.onGround(), le.getHealth()));
+                            e.isInWater(), e.onGround(), le.getHealth(),
+                            e instanceof net.minecraft.world.entity.Mob m && m.getTarget() != null
+                                    ? BuiltInRegistries.ENTITY_TYPE.getKey(m.getTarget().getType()).getPath() : "-"));
                 }
             }
         });

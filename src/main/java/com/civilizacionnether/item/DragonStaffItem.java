@@ -47,7 +47,7 @@ public class DragonStaffItem extends Item {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
-    private static List<NetherDragonEntity> targets(ServerLevel level, Player player, ItemStack stack) {
+    public static List<NetherDragonEntity> targets(ServerLevel level, Player player, ItemStack stack) {
         List<NetherDragonEntity> out = new ArrayList<>();
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         if (tag.hasUUID(KEY)) {
@@ -109,5 +109,6 @@ public class DragonStaffItem extends Item {
         }
         tooltip.add(Component.translatable("tooltip.civilizacion_nether.staff_use").withStyle(ChatFormatting.RED));
         tooltip.add(Component.translatable("tooltip.civilizacion_nether.staff_use2").withStyle(ChatFormatting.RED));
+        tooltip.add(Component.translatable("tooltip.civilizacion_nether.staff_use3").withStyle(ChatFormatting.RED));
     }
 }

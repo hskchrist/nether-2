@@ -149,7 +149,9 @@
     [],
     [],
     [],
-    [],
+    [
+      "civilizacion_nether:rubi_mar_nether"
+    ],
     [
       "civilizacion_nether:piedra_brillante_purpura",
       "civilizacion_nether:cuarzo_purpura",

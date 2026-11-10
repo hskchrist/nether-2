@@ -149,6 +149,8 @@ public final class CommonEvents {
     public static void payloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("3");
         registrar.playToServer(DragonBreathPayload.TYPE, DragonBreathPayload.STREAM_CODEC, DragonBreathPayload::handle);
+        registrar.playToServer(com.civilizacionnether.network.DragonEscortPayload.TYPE,
+                com.civilizacionnether.network.DragonEscortPayload.STREAM_CODEC, com.civilizacionnether.network.DragonEscortPayload::handle);
         registrar.playToServer(com.civilizacionnether.network.DragonGrabPayload.TYPE,
                 com.civilizacionnether.network.DragonGrabPayload.STREAM_CODEC, com.civilizacionnether.network.DragonGrabPayload::handle);
         registrar.playToServer(DragonShootPayload.TYPE, DragonShootPayload.STREAM_CODEC, DragonShootPayload::handle);

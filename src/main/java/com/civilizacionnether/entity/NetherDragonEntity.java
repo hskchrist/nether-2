@@ -306,6 +306,8 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         this.goalSelector.addGoal(2, new DragonCombatGoal(this));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0));
         this.goalSelector.addGoal(1, new com.civilizacionnether.entity.ai.DragonRecallGoal(this));
+        // seguir al dueño volando (y escoltarlo en el aire si va montado en un dragón); sólo se teletransporta si no puede volar
+        this.goalSelector.addGoal(3, new com.civilizacionnether.entity.ai.DragonEscortGoal(this));
         this.goalSelector.addGoal(4, new FollowOwnerSimpleGoal(this, 1.1, 16.0, 6.0) {
             @Override
             public boolean canUse() {
@@ -327,6 +329,28 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         // rivales: el Dragón del Nether (y el Infernal domesticable) pelea con los Dragones Infernales salvajes
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, NetherDragonEntity.class, 10, true, false,
                 e -> e instanceof NetherDragonEntity d && isRivalOf(d)));
+    }
+
+    /**
+     * En el End, los dragones domesticados y los domesticables (no los salvajes) van primero por el Dragón del End: si está
+     * cerca, lo eligen como objetivo antes que cualquier otro mob y lo persiguen volando.
+     */
+    private void huntEnderDragon() {
+        if (isWildHostile() || isOrderedToSit() || isVehicle() || !canFlyNow()
+                || !level().dimension().equals(net.minecraft.world.level.Level.END)) {
+            return;
+        }
+        if (getTarget() instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon e && e.isAlive()) {
+            return;
+        }
+        if (isTame() && isFree() && getOwner() != null && distanceTo(getOwner()) > 64) {
+            return; // libre y lejos de ti: se queda en lo suyo
+        }
+        var list = level().getEntitiesOfClass(net.minecraft.world.entity.boss.enderdragon.EnderDragon.class,
+                getBoundingBox().inflate(160.0), e -> e.isAlive() && e.getHealth() > 0);
+        if (!list.isEmpty()) {
+            setTarget(list.get(0));
+        }
     }
 
     /** Especie (el Dragón del Nether es NETHER; los infernales dicen la suya). */
@@ -894,6 +918,9 @@ public class NetherDragonEntity extends TamableAnimal implements GeoEntity {
         }
         if (grabPhase != GRAB_NONE) {
             tickGrab();
+        }
+        if (tickCount % 20 == 0) {
+            huntEnderDragon();
         }
         if (breathTicks > 0) {
             breathTicks--;

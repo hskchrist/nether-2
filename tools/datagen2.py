@@ -261,6 +261,7 @@ def worldgen():
     # lagos y lagunas de agua del Nether, y manantiales que bajan como arroyos y cascadas (los ríos del Nether)
     feats[1] = [R + "mar_purpura", R + "lago_mar_nether", R + "arbol_de_hielo"]
     feats[8] = [R + "manantial_mar_nether", R + "manantial_mar_nether_escondido"]
+    feats[6] = [R + "rubi_mar_nether"]  # más rubí en este bioma
     # menas normales del Nether (como en los otros biomas): oro, cuarzo, magma, grava, piedra negra y
     # escombros ancestrales (la netherita), en el mismo orden que usa el juego
     feats[7] = [R + "piedra_brillante_purpura", R + "cuarzo_purpura", "minecraft:ore_magma", "minecraft:spring_closed",

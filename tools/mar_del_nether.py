@@ -252,7 +252,18 @@ def worldgen():
             {"type": "minecraft:biome"}]})
 
 
+def more_ruby():
+    """Más rubí en el Mar del Nether (además del que sale en todo el Nether)."""
+    wg = os.path.join(DATA, "worldgen")
+    save_json(os.path.join(wg, "placed_feature", "rubi_mar_nether.json"), {"feature": R + "ruby_ore", "placement": [
+        {"type": "minecraft:count", "count": 18}, {"type": "minecraft:in_square"},
+        {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"above_bottom": 10},
+                                                       "max_inclusive": {"below_top": 10}}},
+        {"type": "minecraft:biome"}]})
+
+
 def write_all():
+    more_ruby()
     worldgen()
     textures()
     models()

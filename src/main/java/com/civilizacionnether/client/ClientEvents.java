@@ -54,6 +54,9 @@ public final class ClientEvents {
     /** G: agarrar al mob que tenga adelante y lanzarlo por los aires (los dos dragones). */
     public static final KeyMapping GRAB_KEY = new KeyMapping("key.civilizacion_nether.dragon_grab",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.categories.civilizacion_nether");
+    /** T con el Báculo en la mano: tus dragones te siguen (y te escoltan volando si vas en un dragón). */
+    public static final KeyMapping ESCORT_KEY = new KeyMapping("key.civilizacion_nether.dragon_escort",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_T, "key.categories.civilizacion_nether");
     public static final KeyMapping CAMERA_KEY = new KeyMapping("key.civilizacion_nether.dragon_camera",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, "key.categories.civilizacion_nether");
     /** Distancia de la cámara de dragón (la normal de Minecraft es 4). */
@@ -99,6 +102,7 @@ public final class ClientEvents {
             event.register(BREATH_KEY);
             event.register(CAMERA_KEY);
             event.register(GRAB_KEY);
+            event.register(ESCORT_KEY);
         }
 
         @SubscribeEvent
@@ -231,6 +235,26 @@ public final class ClientEvents {
                 if (mc.player != null && mc.player.getVehicle() instanceof NetherDragonEntity) {
                     PacketDistributor.sendToServer(new com.civilizacionnether.network.DragonGrabPayload());
                 }
+            }
+            while (ESCORT_KEY.consumeClick()) {
+                if (mc.player != null && holdsStaff(mc.player)) {
+                    PacketDistributor.sendToServer(new com.civilizacionnether.network.DragonEscortPayload());
+                }
+            }
+        }
+
+        private static boolean holdsStaff(net.minecraft.world.entity.player.Player p) {
+            return p.getMainHandItem().is(com.civilizacionnether.registry.ModItems.DRAGON_STAFF.get())
+                    || p.getOffhandItem().is(com.civilizacionnether.registry.ModItems.DRAGON_STAFF.get());
+        }
+
+        /** T es también la tecla del chat: con el Báculo en la mano, T da la orden y no abre el chat. */
+        @SubscribeEvent
+        public static void noChatWithStaff(net.neoforged.neoforge.client.event.ScreenEvent.Opening event) {
+            Minecraft mc = Minecraft.getInstance();
+            if (event.getNewScreen() instanceof net.minecraft.client.gui.screens.ChatScreen && mc.screen == null && mc.player != null
+                    && holdsStaff(mc.player) && ESCORT_KEY.isDown() && ESCORT_KEY.getKey().equals(mc.options.keyChat.getKey())) {
+                event.setCanceled(true);
             }
         }
 
