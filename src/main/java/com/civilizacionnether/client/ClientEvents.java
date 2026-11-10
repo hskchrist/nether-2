@@ -88,6 +88,7 @@ public final class ClientEvents {
             event.registerEntityRenderer(ModEntities.ANGUILA_RUBI.get(), ctx -> new SeaCreatureRenderer<>(ctx, "anguila_rubi", 1.0f, 0.25f, false, true, false));
             event.registerEntityRenderer(ModEntities.MEDUSA_VACIO.get(), ctx -> new SeaCreatureRenderer<>(ctx, "medusa_vacio", 1.0f, 0.35f, false, true, true));
             event.registerEntityRenderer(ModEntities.CANGREJO_BASALTO.get(), ctx -> new SeaCreatureRenderer<>(ctx, "cangrejo_basalto", 1.0f, 0.5f, false, true, false));
+            event.registerEntityRenderer(ModEntities.CABALLO_NETHER.get(), NetherHorseRenderer::new);
             event.registerEntityRenderer(ModEntities.CABALLITO_MAGMA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "caballito_magma", 1.0f, 0.25f, false, true, false));
             event.registerEntityRenderer(ModEntities.MANTA_CARMESI.get(), ctx -> new SeaCreatureRenderer<>(ctx, "manta_carmesi", 1.0f, 1.2f, true, true, false));
             event.registerEntityRenderer(ModEntities.TORTUGA_OBSIDIANA.get(), ctx -> new SeaCreatureRenderer<>(ctx, "tortuga_obsidiana", 1.0f, 0.8f, true, true, false));

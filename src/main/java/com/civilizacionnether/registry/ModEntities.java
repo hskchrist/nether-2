@@ -128,6 +128,11 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<BasaltCrabEntity>> CANGREJO_BASALTO = ENTITIES.register("cangrejo_basalto",
             () -> EntityType.Builder.<BasaltCrabEntity>of(BasaltCrabEntity::new, MobCategory.WATER_CREATURE)
                     .sized(0.9f, 0.45f).eyeHeight(0.35f).fireImmune().clientTrackingRange(8).build("cangrejo_basalto"));
+    /** Caballo del Nether (modelo del usuario, un poco más grande que uno normal para que lo monten los humanos del Nether). */
+    public static final DeferredHolder<EntityType<?>, EntityType<com.civilizacionnether.entity.NetherHorseEntity>> CABALLO_NETHER = ENTITIES.register("caballo_nether",
+            () -> EntityType.Builder.<com.civilizacionnether.entity.NetherHorseEntity>of(com.civilizacionnether.entity.NetherHorseEntity::new, MobCategory.CREATURE)
+                    .sized(1.6f, 1.84f).eyeHeight(1.75f).passengerAttachments(new Vec3(0.0, 1.545, 0.05))
+                    .fireImmune().clientTrackingRange(10).build("caballo_nether"));
     public static final DeferredHolder<EntityType<?>, EntityType<MagmaSeahorseEntity>> CABALLITO_MAGMA = ENTITIES.register("caballito_magma",
             () -> EntityType.Builder.<MagmaSeahorseEntity>of(MagmaSeahorseEntity::new, MobCategory.WATER_CREATURE)
                     .sized(0.4f, 1.0f).eyeHeight(0.85f).fireImmune().clientTrackingRange(8).build("caballito_magma"));

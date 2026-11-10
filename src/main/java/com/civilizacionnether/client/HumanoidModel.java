@@ -37,5 +37,18 @@ public class HumanoidModel extends GeoModel<NetherHumanoidEntity> {
             head.setRotX(data.headPitch() * Mth.DEG_TO_RAD);
             head.setRotY(data.netHeadYaw() * Mth.DEG_TO_RAD);
         }
+        if (animatable.isPassenger()) {
+            // sentado a caballo: piernas hacia adelante y abiertas (la pose que eligió el usuario)
+            GeoBone rl = getAnimationProcessor().getBone("right_leg");
+            GeoBone ll = getAnimationProcessor().getBone("left_leg");
+            if (rl != null && ll != null) {
+                rl.setRotX(80 * Mth.DEG_TO_RAD);
+                rl.setRotY(-18 * Mth.DEG_TO_RAD);
+                rl.setRotZ(0);
+                ll.setRotX(80 * Mth.DEG_TO_RAD);
+                ll.setRotY(18 * Mth.DEG_TO_RAD);
+                ll.setRotZ(0);
+            }
+        }
     }
 }

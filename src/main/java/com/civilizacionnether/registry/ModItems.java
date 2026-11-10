@@ -227,6 +227,20 @@ public final class ModItems {
         SPAWN_EGGS.add(spawnEgg("serpiente_marina", ModEntities.SERPIENTE_MARINA, 0x2A0620, 0xFF6AB4));
         SPAWN_EGGS.add(spawnEgg("delfin_nether", ModEntities.DELFIN_NETHER, 0x3B1F5C, 0xE8C8FF));
         SPAWN_EGGS.add(spawnEgg("ballena_azul", ModEntities.BALLENA_AZUL, 0x1E2E5A, 0x9AB8FF));
+        SPAWN_EGGS.add(spawnEgg("caballo_nether", ModEntities.CABALLO_NETHER, 0x3A0A08, 0xFF7A1A));
+        // jinetes: el huevo crea el caballo con su jinete arriba (guerrero, ballestero o arquero)
+        SPAWN_EGGS.add(riderEgg("guerrero", 0x3A0A08, 0xD6A026));
+        SPAWN_EGGS.add(riderEgg("ballestero", 0x3A0A08, 0xB8B8C8));
+        SPAWN_EGGS.add(riderEgg("arquero", 0x3A0A08, 0xEC4040));
+    }
+
+    private static DeferredItem<DeferredSpawnEggItem> riderEgg(String kind, int background, int spots) {
+        net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+        tag.putString("id", "civilizacion_nether:caballo_nether");
+        tag.putString("Jinete", kind);
+        return ITEMS.register(kind + "_a_caballo_spawn_egg", () -> new DeferredSpawnEggItem(ModEntities.CABALLO_NETHER, background, spots,
+                new Item.Properties().component(net.minecraft.core.component.DataComponents.ENTITY_DATA,
+                        net.minecraft.world.item.component.CustomData.of(tag))));
     }
 
     private static <E extends Mob> DeferredItem<DeferredSpawnEggItem> spawnEgg(String id, DeferredHolder<EntityType<?>, EntityType<E>> type,

@@ -1,0 +1,16 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": [
+    "civilizacion_nether:mar_del_nether",
+    "minecraft:crimson_forest",
+    "minecraft:nether_wastes"
+  ],
+  "spawners": [
+    {
+      "type": "civilizacion_nether:caballo_nether",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

@@ -27,6 +27,7 @@ import manual
 import aldeanos
 import dragon_species
 import mar_del_nether
+import caballo
 import encantamientos
 import infernal_saddle
 
@@ -50,6 +51,7 @@ if __name__ == "__main__":
     aldeanos.write_all()     # aldeanos del Nether: 5 mesas nuevas, skins con ojos que brillan, etiquetas y nombres
     manual.write_all()       # el manual (el libro dentro del juego)
     sealife.write_all()      # fauna del Océano Púrpura (12 criaturas) y Dragón Infernal con su nido
+    caballo.write_all()          # Caballo del Nether (modelo del usuario) y sus jinetes
     mar_del_nether.write_all()   # bioma Mar del Nether: pasto, hierba, cristales, carámbanos y tronco del Árbol de Hielo
     encantamientos.write_all()   # Escudo de Dragón (contra los disparos de los dragones)
     dragon_species.write_all()   # Dragón de Almas y de Obsidiana (skins del usuario), huevos, nidos y biomas

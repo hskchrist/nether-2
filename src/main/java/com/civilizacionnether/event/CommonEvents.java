@@ -62,6 +62,7 @@ public final class CommonEvents {
         event.put(ModEntities.MEDUSA_VACIO.get(), VoidJellyfishEntity.createAttributes().build());
         event.put(ModEntities.CANGREJO_BASALTO.get(), BasaltCrabEntity.createAttributes().build());
         event.put(ModEntities.CABALLITO_MAGMA.get(), MagmaSeahorseEntity.createAttributes().build());
+        event.put(ModEntities.CABALLO_NETHER.get(), com.civilizacionnether.entity.NetherHorseEntity.createAttributes().build());
         event.put(ModEntities.MANTA_CARMESI.get(), CrimsonMantaEntity.createAttributes().build());
         event.put(ModEntities.TORTUGA_OBSIDIANA.get(), ObsidianTurtleEntity.createAttributes().build());
         event.put(ModEntities.TIBURON_INFERNAL.get(), InfernalSharkEntity.createAttributes().build());
@@ -95,6 +96,8 @@ public final class CommonEvents {
         event.register(ModEntities.MEDUSA_VACIO.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnInWater, op);
         event.register(ModEntities.CANGREJO_BASALTO.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnOnFloor, op);
         event.register(ModEntities.CABALLITO_MAGMA.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnInWater, op);
+        event.register(ModEntities.CABALLO_NETHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                com.civilizacionnether.entity.NetherHorseEntity::canSpawn, op);
         event.register(ModEntities.MANTA_CARMESI.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnInWater, op);
         event.register(ModEntities.TORTUGA_OBSIDIANA.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnOnFloor, op);
         event.register(ModEntities.TIBURON_INFERNAL.get(), SpawnPlacementTypes.IN_WATER, hm, SeaLife::canSpawnShark, op);

@@ -139,6 +139,15 @@ public class NetherHumanoidEntity extends TamableAnimal implements GeoEntity, Me
         setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER, 0.0f);
     }
 
+    /** Montado en un caballo: la cadera va sobre la silla (las piernas, hacia adelante). */
+    @Override
+    public net.minecraft.world.phys.Vec3 getVehicleAttachmentPoint(net.minecraft.world.entity.Entity vehicle) {
+        if (vehicle instanceof NetherHorseEntity) {
+            return new net.minecraft.world.phys.Vec3(0.0, 13.0 / 16.0 * humanoidType.renderScale, 0.0);
+        }
+        return super.getVehicleAttachmentPoint(vehicle);
+    }
+
     /** En la lava nadan como en el agua (no se hunden). */
     @Override
     public void travel(net.minecraft.world.phys.Vec3 input) {
@@ -995,6 +1004,9 @@ public class NetherHumanoidEntity extends TamableAnimal implements GeoEntity, Me
         RawAnimation work = RawAnimation.begin().thenLoop(p + "work");
         RawAnimation sleep = RawAnimation.begin().thenLoop(p + ((human || villager) ? "sleep" : "idle"));
         controllers.add(new AnimationController<>(this, "movement", 4, state -> {
+            if (isPassenger()) {
+                return state.setAndContinue(idle); // montado: las piernas las pone el modelo (sentado)
+            }
             if (isSleeping()) {
                 return state.setAndContinue(sleep);
             }

@@ -98,6 +98,10 @@ public final class SelfTest {
             cmd(in + "summon " + t + " " + x + " " + (sea ? 93 : 99) + " " + z + extra);
             i++;
         }
+        // jinetes a caballo (de frente a la cámara) y dos husks para que peleen
+        cmd(in + "summon civilizacion_nether:caballo_nether -5 99 -1 {Jinete:\"guerrero\",Rotation:[160f,0f]}");
+        cmd(in + "summon civilizacion_nether:caballo_nether 0 99 -1 {Jinete:\"ballestero\",Rotation:[180f,0f]}");
+        cmd(in + "summon civilizacion_nether:caballo_nether 5 99 -1 {Jinete:\"arquero\",Rotation:[200f,0f]}");
         cmd(in + "summon minecraft:villager 6 99 9");
         cmd(in + "summon minecraft:villager 9 99 9 {VillagerData:{type:\"civilizacion_nether:nether\",profession:\"civilizacion_nether:albanil\",level:2}}");
         cmd(in + "summon minecraft:villager 12 99 9 {VillagerData:{type:\"civilizacion_nether:nether\",profession:\"minecraft:cleric\",level:2}}");
@@ -152,6 +156,14 @@ public final class SelfTest {
             stage(dims[phase], floors[phase]);
         } else if (t == 160 || t == 300 || t == 440) {
             shot(d + "_" + t);
+        } else if (t == 100 && phase == 0) {
+            cmd("execute in " + dims[phase] + " run tp @s 0 101.5 -9 0 8");
+        } else if (t == 106 && phase == 0) {
+            shot("jinetes");
+        } else if (t == 108 && phase == 0) {
+            cmd("execute in " + dims[phase] + " run tp @s 0 106 -2 0 35");
+            cmd("execute in " + dims[phase] + " run summon minecraft:husk 0 99 8");
+            cmd("execute in " + dims[phase] + " run summon minecraft:husk 3 99 10");
         } else if (t == 230) {
             cmd("execute in " + dims[phase] + " run tp @s 0 100 8 0 15");
         } else if (t == 240) {
@@ -292,13 +304,14 @@ public final class SelfTest {
             for (var e : level.getAllEntities()) {
                 ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
                 if (e instanceof net.minecraft.world.entity.LivingEntity le && (CivilizacionNether.MODID.equals(id.getNamespace())
-                        || id.getPath().equals("villager") || id.getPath().equals("ender_dragon"))) {
+                        || id.getPath().equals("villager") || id.getPath().equals("ender_dragon") || id.getPath().equals("husk"))) {
                     CivilizacionNether.LOGGER.info(String.format(java.util.Locale.ROOT,
-                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f target=%s",
+                            "SELFTEST stat %s %s id=%d pos=%.1f,%.1f,%.1f yaw=%.1f body=%.1f pitch=%.1f water=%s ground=%s hp=%.0f target=%s riding=%s",
                             dim, id.getPath(), e.getId(), e.getX(), e.getY(), e.getZ(), e.getYRot(), le.yBodyRot, e.getXRot(),
                             e.isInWater(), e.onGround(), le.getHealth(),
                             e instanceof net.minecraft.world.entity.Mob m && m.getTarget() != null
-                                    ? BuiltInRegistries.ENTITY_TYPE.getKey(m.getTarget().getType()).getPath() : "-"));
+                                    ? BuiltInRegistries.ENTITY_TYPE.getKey(m.getTarget().getType()).getPath() : "-",
+                            e.getVehicle() == null ? "-" : BuiltInRegistries.ENTITY_TYPE.getKey(e.getVehicle().getType()).getPath()));
                 }
             }
         });

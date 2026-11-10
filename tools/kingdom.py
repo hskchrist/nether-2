@@ -1123,6 +1123,13 @@ def build():
         guards.append((x, FLOOR, z, "guerrero" if (x + z) % 2 else "arquero"))
     for (x, z) in ((C - 6, C + 6), (C + 6, C - 6), (C + 6, C + 6), (C - 6, C - 6)):
         people.append((x, FLOOR, z, "ciudadano"))
+    # jinetes: guerreros, ballesteros y arqueros montados en Caballos del Nether patrullan las avenidas
+    for (x, z, kind) in ((C + 30, C - 3, "guerrero"), (C - 30, C + 3, "ballestero"), (C + 3, C + 30, "arquero"),
+                         (C - 3, C - 30, "guerrero"), (C + 58, C + 3, "ballestero"), (C - 58, C - 3, "arquero")):
+        w.entity(x, FLOOR, z, R + "caballo_nether", {"Jinete": String(kind), "Tame": Byte(1)})
+    # y un par de caballos sueltos junto a la plaza
+    for (x, z) in ((C + 10, C + 10), (C - 10, C - 10)):
+        w.entity(x, FLOOR, z, R + "caballo_nether", {"Tame": Byte(1)})
     for (x, y, z, kind) in people + guards:
         skins = SKINS.get(kind, (1, 1))
         female = rnd.random() < 0.5
