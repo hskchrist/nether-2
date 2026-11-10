@@ -127,335 +127,340 @@
  {
   "go": 51,
   "cls": "sub",
-  "label": "Montar y volar"
+  "label": "Escolta en el aire"
  },
  {
   "go": 52,
   "cls": "sub",
-  "label": "Fuego negro"
+  "label": "Montar y volar"
  },
  {
-  "go": 54,
+  "go": 53,
   "cls": "sub",
-  "label": "El agarre"
+  "label": "Fuego negro"
  },
  {
   "go": 55,
   "cls": "sub",
-  "label": "Combate y crianza"
+  "label": "El agarre"
  },
  {
   "go": 56,
+  "cls": "sub",
+  "label": "Combate y crianza"
+ },
+ {
+  "go": 57,
   "cls": "ch",
   "label": "III. Almas y magia"
  },
  {
-  "go": 57,
+  "go": 58,
   "cls": "sub",
   "label": "Hoz de almas"
  },
  {
-  "go": 58,
+  "go": 59,
   "cls": "sub",
   "label": "Pociones encantadas"
  },
  {
-  "go": 59,
+  "go": 60,
   "cls": "sub",
   "label": "Báculo del Rey"
  },
  {
-  "go": 60,
+  "go": 61,
   "cls": "ch",
   "label": "IV. El arsenal de rubí"
  },
  {
-  "go": 61,
+  "go": 62,
   "cls": "sub",
   "label": "Espada y arco"
  },
  {
-  "go": 62,
-  "cls": "sub",
-  "label": "Armadura de rubí"
- },
- {
   "go": 63,
   "cls": "sub",
-  "label": "Crafteos de armadura"
+  "label": "Armadura de rubí"
  },
  {
   "go": 64,
   "cls": "sub",
-  "label": "Bloques de rubí"
+  "label": "Crafteos de armadura"
  },
  {
   "go": 65,
   "cls": "sub",
-  "label": "Espada larga y ballesta"
+  "label": "Bloques de rubí"
  },
  {
   "go": 66,
   "cls": "sub",
+  "label": "Espada larga y ballesta"
+ },
+ {
+  "go": 67,
+  "cls": "sub",
   "label": "Armadura Humana"
  },
  {
-  "go": 68,
+  "go": 69,
   "cls": "sub",
   "label": "Armadura del Frío Eterno"
  },
  {
-  "go": 70,
+  "go": 71,
   "cls": "ch",
   "label": "V. Mesas, cama y agua"
  },
  {
-  "go": 71,
-  "cls": "sub",
-  "label": "Mesas de trabajo"
- },
- {
   "go": 72,
   "cls": "sub",
-  "label": "Mesas de los aldeanos"
+  "label": "Mesas de trabajo"
  },
  {
   "go": 73,
   "cls": "sub",
-  "label": "Cama del Nether"
+  "label": "Mesas de los aldeanos"
  },
  {
   "go": 74,
   "cls": "sub",
-  "label": "Agua del Nether"
+  "label": "Cama del Nether"
  },
  {
   "go": 75,
+  "cls": "sub",
+  "label": "Agua del Nether"
+ },
+ {
+  "go": 76,
   "cls": "ch",
   "label": "VI. El Reino Humano"
  },
  {
-  "go": 76,
+  "go": 77,
   "cls": "sub",
   "label": "El Mar del Nether"
  },
  {
-  "go": 78,
+  "go": 79,
   "cls": "sub",
   "label": "Plantas del Mar del Nether"
  },
  {
-  "go": 80,
+  "go": 81,
   "cls": "sub",
   "label": "Plano del reino"
  },
  {
-  "go": 81,
+  "go": 82,
   "cls": "sub",
   "label": "Salón del Rey"
  },
  {
-  "go": 82,
+  "go": 83,
   "cls": "sub",
   "label": "Las salas"
  },
  {
-  "go": 84,
+  "go": 85,
   "cls": "ch",
   "label": "VII. La fauna del Mar del Nether"
  },
  {
-  "go": 85,
+  "go": 86,
   "cls": "sub",
   "label": "Familias y crías"
  },
  {
-  "go": 86,
+  "go": 87,
   "cls": "sub",
   "label": "Peces"
  },
  {
-  "go": 87,
+  "go": 88,
   "cls": "sub",
   "label": "Medusa, cangrejo y caballito"
  },
  {
-  "go": 88,
+  "go": 89,
   "cls": "sub",
   "label": "Manta y tortuga"
  },
  {
-  "go": 89,
+  "go": 90,
   "cls": "sub",
   "label": "Delfín del Nether"
  },
  {
-  "go": 90,
+  "go": 91,
   "cls": "sub",
   "label": "Ballena Azul"
  },
  {
-  "go": 91,
+  "go": 92,
   "cls": "sub",
   "label": "Tiburón Infernal"
  },
  {
-  "go": 92,
+  "go": 93,
   "cls": "sub",
   "label": "Tridente de Rubí"
  },
  {
-  "go": 93,
+  "go": 94,
   "cls": "sub",
   "label": "Serpiente Marina"
  },
  {
-  "go": 94,
+  "go": 95,
   "cls": "sub",
   "label": "Comida y pociones del mar"
  },
  {
-  "go": 95,
+  "go": 96,
   "cls": "ch",
   "label": "VIII. Los Dragones Infernales"
  },
  {
-  "go": 96,
+  "go": 97,
   "cls": "sub",
   "label": "Tres especies"
  },
  {
-  "go": 97,
+  "go": 98,
   "cls": "sub",
   "label": "Salvajes"
  },
  {
-  "go": 98,
+  "go": 99,
   "cls": "sub",
   "label": "Escudo de Dragón"
  },
  {
-  "go": 99,
+  "go": 100,
   "cls": "sub",
   "label": "Dónde viven"
  },
  {
-  "go": 100,
+  "go": 101,
   "cls": "sub",
   "label": "Comida y territorio"
  },
  {
-  "go": 101,
+  "go": 102,
   "cls": "sub",
   "label": "Salvaje y su nido"
  },
  {
-  "go": 102,
+  "go": 103,
   "cls": "sub",
   "label": "Salvaje y domesticable"
  },
  {
-  "go": 103,
+  "go": 104,
   "cls": "sub",
   "label": "Sus ataques"
  },
  {
-  "go": 104,
+  "go": 105,
   "cls": "sub",
   "label": "Huevos de las especies"
  },
  {
-  "go": 105,
+  "go": 106,
   "cls": "sub",
   "label": "Su silla"
  },
  {
-  "go": 106,
+  "go": 107,
   "cls": "ch",
   "label": "IX. Guía rápida"
  },
  {
-  "go": 107,
+  "go": 108,
   "cls": "sub",
   "label": "Qué suelta cada criatura"
  },
  {
-  "go": 108,
+  "go": 109,
   "cls": "sub",
   "label": "Comandos y créditos"
  },
  {
-  "go": 109,
+  "go": 110,
   "cls": "ch",
   "label": "X. Recetario completo"
  },
  {
-  "go": 110,
+  "go": 111,
   "cls": "sub",
   "label": "Rubí y bloques"
  },
  {
-  "go": 111,
+  "go": 112,
   "cls": "sub",
   "label": "Armas de rubí"
  },
  {
-  "go": 112,
+  "go": 113,
   "cls": "sub",
   "label": "Armas especiales"
  },
  {
-  "go": 113,
+  "go": 114,
   "cls": "sub",
   "label": "Armadura de rubí"
  },
  {
-  "go": 114,
+  "go": 115,
   "cls": "sub",
   "label": "Armadura humana"
  },
  {
-  "go": 115,
+  "go": 116,
   "cls": "sub",
   "label": "Armadura del Frío Eterno"
  },
  {
-  "go": 116,
+  "go": 117,
   "cls": "sub",
   "label": "Hoja del Frío y cascos del mar"
  },
  {
-  "go": 117,
+  "go": 118,
   "cls": "sub",
   "label": "Dragones"
  },
  {
-  "go": 118,
+  "go": 119,
   "cls": "sub",
   "label": "Mesas de trabajo"
  },
  {
-  "go": 119,
+  "go": 120,
   "cls": "sub",
   "label": "Mesas de trabajo (2)"
  },
  {
-  "go": 120,
+  "go": 121,
   "cls": "sub",
   "label": "Mesas de los aldeanos"
  },
  {
-  "go": 121,
+  "go": 122,
   "cls": "sub",
   "label": "Mesas de los aldeanos (2)"
  },
  {
-  "go": 122,
+  "go": 123,
   "cls": "sub",
   "label": "Cama, agua y manual"
  },
  {
-  "go": 123,
+  "go": 124,
   "cls": "sub",
   "label": "Hornos y pociones"
  }
