@@ -44,7 +44,7 @@ public class FrostTreeFeature extends Feature<NoneFeatureConfiguration> {
         WorldGenLevel level = ctx.level();
         RandomSource rnd = ctx.random();
         BlockPos base = ctx.origin();
-        if (!ground(level.getBlockState(base.below()))) {
+        if (!ground(level.getBlockState(base.below())) || KingdomArea.near(level, ctx.chunkGenerator(), base, 10)) {
             return false;
         }
         int height = 5 + rnd.nextInt(4);

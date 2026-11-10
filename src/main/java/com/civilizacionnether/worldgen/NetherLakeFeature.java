@@ -30,7 +30,8 @@ public class NetherLakeFeature extends Feature<NoneFeatureConfiguration> {
         RandomSource rnd = ctx.random();
         BlockPos o = ctx.origin();
         BlockPos c = o.below(); // el suelo (como mucho 8 bloques a cada lado: no se sale de la zona que se puede tocar)
-        if (!ground(level.getBlockState(c)) || !level.getBlockState(c.above()).canBeReplaced()) {
+        if (!ground(level.getBlockState(c)) || !level.getBlockState(c.above()).canBeReplaced()
+                || KingdomArea.near(level, ctx.chunkGenerator(), c, 12)) {
             return false;
         }
         double rx = 3.5 + rnd.nextInt(4);
