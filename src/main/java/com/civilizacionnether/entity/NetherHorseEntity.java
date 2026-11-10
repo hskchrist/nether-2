@@ -217,7 +217,7 @@ public class NetherHorseEntity extends AbstractHorse implements GeoEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         if (!rider.isEmpty()) {
             tag.putString("Jinete", rider);
@@ -225,7 +225,7 @@ public class NetherHorseEntity extends AbstractHorse implements GeoEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         rider = tag.getString("Jinete");
     }
